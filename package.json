@@ -1,0 +1,30 @@
+{
+  "name": "lilysbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iamasink/lilysbot.git"
+  },
+  "keywords": [
+    "bot",
+    "discord",
+    "discord-bot"
+  ],
+  "author": "lily",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Iamasink/lilysbot/issues"
+  },
+  "homepage": "https://github.com/Iamasink/lilysbot#readme",
+  "dependencies": {
+    "discord.js": "^14.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.23.0"
+  }
+}

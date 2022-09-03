@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, SlashCommandSubcommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 
 function fetchPromise(toFetch) {
 	return new Promise((resolve, reject) => {
@@ -9,20 +9,16 @@ function fetchPromise(toFetch) {
 }
 
 
-function exists(val, name) {
-	output = `${name}: `
+function format(val, name, append = ``) {
+	output = `\n**${name}**: `
 	if (val != undefined) {
-		output += `${val}`
+		output += `${val}${append}`
 	} else {
-		output += `Not found`
+		output = ``
 	}
-	console.log(output)
 	return output
 }
 
-function capitalizeFirstLetter(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1)
-}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -32,7 +28,18 @@ module.exports = {
 			subcommand
 				.setName('user')
 				.setDescription('Info about a user')
-				.addUserOption(option => option.setName('target').setDescription('The user'))
+				.addUserOption(option => option.setName('target').setDescription('A user. Ping or ID'))
+				.addStringOption(option => option
+					.setName('show')
+					.setDescription('Image to show')
+					.addChoices(
+						{ name: 'avatar', value: 'avatar' },
+						{ name: 'guild avatar', value: 'guild avatar' },
+						{ name: 'banner', value: 'banner' }
+
+					)
+
+				)
 		)
 		.addSubcommand(subcommand =>
 			subcommand
@@ -47,78 +54,120 @@ module.exports = {
 
 				console.log(interaction.options.getString('info'))
 				fetchPromise(user).then(user => {
-					info = `${exists(user.username, `Username`)}
-${exists(user.discriminator, `Discriminator`)}
-${exists(user.bot, `Bot`)}
-${exists(user.system, `System`)}
-${exists(user.createdAt, `Created at`)}
-${exists(user.createdTimestamp, `Created timestamp`)}
-${exists(user.hexAccentColor, `Accent color`)}
-${exists(user.bannerURL(true), `banner`)} 
-${exists(user.avatarURL(true), `avatar`)}
-		`
-					interaction.reply(info)
+
+					if (interaction.guild.members.resolve(user).avatar != undefined) {
+						gavURL = `https://cdn.discordapp.com/guilds/${interaction.guild.id}/users/${user.id}/avatars/${interaction.guild.members.resolve(user).avatar}.webp`
+					} else { gavURL = undefined }
+					a = format(user.hexAccentColor, `Accent color`)
+					av = format(user.avatarURL(true), `Avatar URL`, `?size=4096`)
+					gav = format(gavURL, `Guild Avatar URL`, `?size=4096`)
+					b = format(user.bannerURL(true), `Banner URL`, `?size=4096`)
+
+					switch (interaction.options.getString('show')) {
+						case 'avatar': {
+							image = user.avatarURL(true)
+							break
+						}
+						case 'banner': {
+							if (b) {
+								image = user.bannerURL(true)
+							}
+							break
+						}
+						case 'guild avatar': {
+							image = gavURL
+							break
+						}
+						default: {
+							if (b) {
+								image = user.bannerURL(true)
+							} else { image = user.avatarURL(true) }
+							break
+						}
+					}
+
+
+
+					// inside a command, event listener, etc.
+					const exampleEmbed = new EmbedBuilder()
+						.setColor(user.hexAccentColor)
+						.setTitle(`__${user.username}#${user.discriminator}__`)
+						.setThumbnail(`${user.avatarURL(true)}?size=4096`)
+						//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+						.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
+						.addFields(
+							{
+								name: '__Profile__', value: `${a}${av}${gav}${b}`
+							},
+						)
+
+						.setImage(`${image}?size=4096`)
+
+					//.setTimestamp()
+					//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
+
+					interaction.reply({ embeds: [exampleEmbed] })
 				})
 				break
 			}
 			case 'guild': {
 				console.log(interaction.guild)
 				const guild = interaction.guild
+				//				fetchPromise(guild).then(async guild => {
+				// 					info = `${format(guild.name, `Name`)
+				// 						}
+				// ${format(guild.nameAcronym, `nameAcronym`)
+				// 						}
+				// ${format(guild.approximateMemberCount, `approximateMemberCount`)}
+				// ${format(guild.approximatePresenceCount, `approximatePresenceCount`)}
+				// ${format(guild.available, `available`)}
+				// ${format(guild.banner, `banner`)}
+				// ${format(guild.createdAt, `createdAt`)}
+				// ${format(guild.createdTimestamp, `createdTimestamp`)}
+				// ${format(guild.description, `description`)}
+				// ${format(guild.discoverySplash, `discoverySplash`)} `
+				// 					info2 = `${format(guild.explicitContentFilter, `explicitContentFilter`)}
+				// ${format(guild.features, `features`)}
+				// ${format(guild.icon, `icon`)}
+				// ${format(guild.id, `id`)}
+				// ${format(guild.joinedAt, `joinedAt`)}
+				// ${format(guild.joinedTimestamp, `joinedTimestamp`)}
+				// ${format(guild.large, `large`)}
+				// ${format(guild.maximumBitrate, `maximumBitrate`)}
+				// ${format(guild.maximumMembers, `maximumMembers`)} `
+				// 					info3 = `${format(guild.maximumPresences, `maximumPresences`)}
+				// ${format(guild.memberCount, `memberCount`)}
+				// ${format(guild.mfaLevel, `mfaLevel`)}
+				// ${format(guild.nsfwLevel, `nsfwLevel`)}
+				// ${format(guild.ownerId, `ownerId`)}
+				// ${format(guild.partnered, `partnered`)}
+				// ${format(guild.preferredLocale, `preferredLocale`)}
+				// ${format(guild.premiumProgressBarEnabled, `premiumProgressBarEnabled`)}
+				// ${format(guild.premiumSubscriptionCount, `premiumSubscriptionCount`)}
+				// ${format(guild.premiumTier, `premiumTier`)} `
+				// 					info4 = `${format(guild.shard, `shard`)}
+				// ${format(guild.shardId, `shardId`)}
+				// ${format(guild.splash, `splash`)}
+				// ${format(guild.systemChannel, `systemChannel`)}
+				// ${format(guild.vanityURLCode, `vanityURLCode`)} `
+				// 					info5 = `${format(guild.vanityURLUses, `vanityURLUses`)}
+				// ${format(guild.verificationLevel, `verificationLevel`)}
+				// ${format(guild.verified, `verified`)}
+				// ${format(guild.widgetChannel, `widgetChannel`)}
+				// ${format(guild.widgetChannelId, `widgetChannelId`)}
+				// ${format(guild.widgetEnabled, `widgetEnabled`)} `
+				await interaction.reply(`An error occurred`)
 
-				fetchPromise(guild).then(async guild => {
-					info = `${exists(guild.name, `Name`)}
-${exists(guild.nameAcronym, `nameAcronym`)}
-${exists(guild.approximateMemberCount, `approximateMemberCount`)}
-${exists(guild.approximatePresenceCount, `approximatePresenceCount`)}
-${exists(guild.available, `available`)}
-${exists(guild.banner, `banner`)}
-${exists(guild.createdAt, `createdAt`)}
-${exists(guild.createdTimestamp, `createdTimestamp`)}
-${exists(guild.description, `description`)}
-${exists(guild.discoverySplash, `discoverySplash`)}`
-					info2 = `${exists(guild.explicitContentFilter, `explicitContentFilter`)}
-${exists(guild.features, `features`)}
-${exists(guild.icon, `icon`)}
-${exists(guild.id, `id`)}
-${exists(guild.joinedAt, `joinedAt`)}
-${exists(guild.joinedTimestamp, `joinedTimestamp`)}
-${exists(guild.large, `large`)}
-${exists(guild.maximumBitrate, `maximumBitrate`)}
-${exists(guild.maximumMembers, `maximumMembers`)}`
-					info3 = `${exists(guild.maximumPresences, `maximumPresences`)}
-${exists(guild.memberCount, `memberCount`)}
-${exists(guild.mfaLevel, `mfaLevel`)}
-${exists(guild.nsfwLevel, `nsfwLevel`)}
-${exists(guild.ownerId, `ownerId`)}
-${exists(guild.partnered, `partnered`)}
-${exists(guild.preferredLocale, `preferredLocale`)}
-${exists(guild.premiumProgressBarEnabled, `premiumProgressBarEnabled`)}
-${exists(guild.premiumSubscriptionCount, `premiumSubscriptionCount`)}
-${exists(guild.premiumTier, `premiumTier`)}`
-					info4 = `${exists(guild.shard, `shard`)}
-${exists(guild.shardId, `shardId`)}
-${exists(guild.splash, `splash`)}
-${exists(guild.systemChannel, `systemChannel`)}
-${exists(guild.vanityURLCode, `vanityURLCode`)}`
-					info5 = `${exists(guild.vanityURLUses, `vanityURLUses`)}
-${exists(guild.verificationLevel, `verificationLevel`)}
-${exists(guild.verified, `verified`)}
-${exists(guild.widgetChannel, `widgetChannel`)}
-${exists(guild.widgetChannelId, `widgetChannelId`)}
-${exists(guild.widgetEnabled, `widgetEnabled`)}`
-
-					await interaction.reply(info)
-					await interaction.followUp(info2)
-					await interaction.followUp(info3)
-					await interaction.followUp(info4)
-					await interaction.followUp(info5)
+				//})
 
 
 
 
 
 
-				})
+
+
+
 				break
 
 

@@ -8,6 +8,19 @@ function fetchUser(user) {
 	})
 }
 
+function exists(val, name) {
+	output = `${capitalizeFirstLetter(name)}: `
+	if (val) {
+		output += `${val}`
+	} else {
+		output += `No '${name}' found`
+	}
+	return output
+}
+
+function capitalizeFirstLetter(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1)
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,15 +31,7 @@ module.exports = {
 				.setName('user')
 				.setDescription('Info about a user')
 				.addUserOption(option => option.setName('target').setDescription('The user'))
-				.addStringOption(option =>
-					option.setName('info')
-						.setDescription('Information to retrieve')
-						.addChoices(
-							{ name: 'all', value: 'all' },
-							{ name: 'avatar', value: 'avatar' },
-							{ name: 'banner', value: 'banner' }
-						)
-				))
+		)
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('guild')
@@ -39,64 +44,22 @@ module.exports = {
 
 				console.log(interaction.options.getString('info'))
 				fetchUser(user).then(user => {
-					switch (interaction.options.getString('info') || 'all') {
-						case 'all': {
-							avatar = user.avatarURL(true)
-							if (avatar) {
-								avatar = `Avatar: ${avatar}?size=4096`
-							} else {
-								avatar = `No avatar found`
-							}
-							banner = user.bannerURL(true)
-							if (banner) {
-								banner = `Banner: ${banner}?size=4096`
-							} else {
-								banner = `No banner found`
-							}
-
-							info = `ID: ${user.id}
+					info = `ID: ${user.id}
 Username: ${user.username}
 Discriminator: ${user.discriminator}
-Avatar: ${user.avatar}
-Bot?: ${user.bot}
-System?: ${user.system}
-Accent Color: ${user.hexAccentColor}
-Banner: ${avatar}
-Avatar: ${banner}`
-							break
-						}
-						case 'avatar': {
-							avatar = user.avatarURL(true)
-							if (avatar) {
-								info = `Avatar: ${avatar}?size=4096`
-							} else {
-								info = `No avatar found`
-							}
-							break
-						}
-						case 'banner': {
-							banner = user.bannerURL(true)
-							if (banner) {
-								info = `Banner: ${banner}?size=4096`
-							} else {
-								info = `No banner found`
-							}
-							break
-						}
-
-						default: {
-							info = `An error occured. Invalid option?`
-							break
-						}
-					}
-					interaction.reply(info)
-
+Bot ?: ${user.bot}
+System ?: ${user.system}
+Created at: ${user.createdAt}
+Created timestamp: ${user.createdTimestamp}
+Accent color: ${user.hexAccentColor}
+${banner}
+${exists(user.avatarURL(true), `avatar`)} `
 				})
-
 
 				break
 			}
 			case 'guild': {
+
 			}
 
 		}

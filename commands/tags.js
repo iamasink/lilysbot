@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const Tags = require('../events/ready.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()

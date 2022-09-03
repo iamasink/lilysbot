@@ -72,7 +72,7 @@ module.exports = {
 
 				try {
 					// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
-					const tag = await db.Tags.create({
+					const tag = await global.Tags.create({
 						name: tagName,
 						description: tagDescription,
 						username: interaction.author.username,

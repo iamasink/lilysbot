@@ -68,7 +68,7 @@ module.exports = {
 			case 'add': {
 				const tagName = interaction.options.getString('2name')
 				const tagDescription = interaction.options.getString('2description')
-				const tagUsername = interaction.author.username
+				const tagUsername = interaction.user.name + ' ' + interaction.user.discriminator
 
 				try {
 					// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);

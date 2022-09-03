@@ -14,7 +14,7 @@ const sequelize = new Sequelize('discord', 'root', 'XZL$cWr35&@@BQ2g', {
 })
 
 const Tags = sequelize.define('tags', {
-	name: {
+	dname: {
 		type: Sequelize.STRING,
 		unique: true,
 	},

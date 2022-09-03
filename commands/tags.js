@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const db = require('../events/ready.js')
+const db = require('../index.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()

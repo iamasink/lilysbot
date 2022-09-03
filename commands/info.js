@@ -31,7 +31,7 @@ module.exports = {
 				.addUserOption(option => option.setName('target').setDescription('A user. Ping or ID'))
 				.addStringOption(option => option
 					.setName('show')
-					.setDescription('Image to show')
+					.setDescription('Image to show. The main avatar will be shown if selected image is unavailable')
 					.addChoices(
 						{ name: 'avatar', value: 'avatar' },
 						{ name: 'guild avatar', value: 'guild avatar' },
@@ -66,22 +66,37 @@ module.exports = {
 					switch (interaction.options.getString('show')) {
 						case 'avatar': {
 							image = user.avatarURL(true)
+							imagename = `avatar`
 							break
 						}
 						case 'banner': {
 							if (b) {
 								image = user.bannerURL(true)
+								imagename = `banner`
+							} else {
+								image = user.avatarURL(true)
+								imagename = `avatar`
 							}
 							break
 						}
 						case 'guild avatar': {
-							image = gavURL
+							if (gav) {
+								image = gavURL
+								imagename = `guild avatar`
+							} else {
+								image = user.avatarURL(true)
+								imagename = `avatar`
+							}
 							break
 						}
 						default: {
 							if (b) {
 								image = user.bannerURL(true)
-							} else { image = user.avatarURL(true) }
+								imagename = `banner`
+							} else {
+								image = user.avatarURL(true)
+								imagename = `avatar`
+							}
 							break
 						}
 					}
@@ -97,7 +112,7 @@ module.exports = {
 						.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
 						.addFields(
 							{
-								name: '__Profile__', value: `${a}${av}${gav}${b}`
+								name: '__Profile__', value: `${a}${av}${gav}${b}\n\nShowing ${imagename}:`
 							},
 						)
 
@@ -159,14 +174,6 @@ module.exports = {
 				await interaction.reply(`An error occurred`)
 
 				//})
-
-
-
-
-
-
-
-
 
 				break
 

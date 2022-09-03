@@ -2,8 +2,13 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { Client, Collection, GatewayIntentBits } = require('discord.js')
 const { token } = require('./config.json')
+const Sequelize = require('sequelize')
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+
+
+
+
 
 // dynamically retrieve commands
 client.commands = new Collection() // add commands to a collection so they can be retrieved elsewhere i think
@@ -32,3 +37,4 @@ for (const file of eventFiles) {
 
 
 client.login(token)
+

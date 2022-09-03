@@ -44,16 +44,18 @@ module.exports = {
 
 				console.log(interaction.options.getString('info'))
 				fetchUser(user).then(user => {
-					info = `ID: ${user.id}
-Username: ${user.username}
-Discriminator: ${user.discriminator}
-Bot ?: ${user.bot}
-System ?: ${user.system}
-Created at: ${user.createdAt}
-Created timestamp: ${user.createdTimestamp}
-Accent color: ${user.hexAccentColor}
-${banner}
-${exists(user.avatarURL(true), `avatar`)} `
+					info = `${exists(user.username, `Username`)}
+${exists(user.discriminator, `Discriminator`)}
+${exists(user.bot), `Bot ?: `}
+${exists(user.system), `System ?: `}
+${exists(user.createdAt), `Created at: `}
+${exists(user.createdTimestamp), `Created timestamp: `}
+${exists(user.hexAccentColor), `Accent color: `}
+${exists(user.bannerURL(true), `banner`)} 
+${exists(user.avatarURL(true), `avatar`)} 
+`
+
+
 				})
 
 				break

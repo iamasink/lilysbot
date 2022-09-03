@@ -12,7 +12,7 @@ module.exports = {
 		const sequelize = new Sequelize('discord', 'root', 'XZL$cWr35&@@BQ2g', {
 			host: 'localhost',
 			dialect: 'mysql',
-			logging: false,
+			logging: true,
 		})
 
 		const Tags = sequelize.define('tags', {

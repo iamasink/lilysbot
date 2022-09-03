@@ -6,27 +6,7 @@ const Sequelize = require('sequelize')
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
-// setup Sequelize database
-const sequelize = new Sequelize('discord', 'root', 'XZL$cWr35&@@BQ2g', {
-	host: 'localhost',
-	dialect: 'mysql',
-	logging: true,
-})
 
-global.Tags = sequelize.define('tags', {
-	name: {
-		type: Sequelize.STRING,
-		unique: true,
-	},
-	description: Sequelize.TEXT,
-	username: Sequelize.STRING,
-	usage_count: {
-		type: Sequelize.INTEGER,
-		defaultValue: 0,
-		allowNull: false,
-	},
-})
-global.Tags.sync()
 
 
 

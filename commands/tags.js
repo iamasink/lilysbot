@@ -83,7 +83,7 @@ module.exports = {
 						return interaction.reply('That tag already exists.')
 					}
 
-					return interaction.reply('Something went wrong with adding a tag.\n `${error}`')
+					return interaction.reply(`Something went wrong with adding a tag.\nError- ${error}`)
 				}
 			}
 			case 'tag': {

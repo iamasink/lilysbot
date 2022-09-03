@@ -13,8 +13,8 @@ const sequelize = new Sequelize('discord', 'root', 'XZL$cWr35&@@BQ2g', {
 	logging: true,
 })
 
-const Tags = sequelize.define('tags', {
-	dname: {
+global.Tags = sequelize.define('tags', {
+	name: {
 		type: Sequelize.STRING,
 		unique: true,
 	},
@@ -26,7 +26,7 @@ const Tags = sequelize.define('tags', {
 		allowNull: false,
 	},
 })
-Tags.sync()
+global.Tags.sync()
 
 
 

@@ -68,13 +68,14 @@ module.exports = {
 			case 'add': {
 				const tagName = interaction.options.getString('2name')
 				const tagDescription = interaction.options.getString('2description')
+				const tagUsername = interaction.author.username
 
 				try {
 					// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
 					const tag = await global.Tags.create({
 						name: tagName,
 						description: tagDescription,
-						username: interaction.author.username,
+						username: tagUsername,
 					})
 
 					return interaction.reply(`Tag ${tag.name} added.`)

@@ -1,5 +1,6 @@
 
 
+const Sequelize = require('sequelize')
 
 module.exports = {
 	name: 'ready',

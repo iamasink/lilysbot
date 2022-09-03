@@ -31,6 +31,8 @@ module.exports = {
 
 		Tags.sync()
 
+		exports.Tags = Tags
+
 		console.log(`Ready! Logged in as ${client.user.tag}`)
 
 	},

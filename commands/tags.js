@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
-const Tags = require('../events/ready.js')
+const db = require('../events/ready.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -72,7 +72,7 @@ module.exports = {
 
 				try {
 					// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
-					const tag = await Tags.create({
+					const tag = await db.Tags.create({
 						name: tagName,
 						description: tagDescription,
 						username: interaction.author.username,

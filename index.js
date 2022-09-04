@@ -5,7 +5,7 @@ const { token } = require('./config.json') // retrieve token from config
 
 // Client setup
 const client = new Client({
-	// Fetch the recommended amount of shards from Discord and spawn that amount
+	// Fetch the recommended amount of shards from Discord and spawn that amount (idk)
 	"shards": "auto",
 	// Status when starting
 	"presence": {

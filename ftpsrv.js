@@ -1,3 +1,6 @@
+// starts an ftp server for the C: drive
+// thanks to emily for this code <3<3
+
 const ftp_srv = require("ftp-srv")
 const { ftpusername, ftppassword } = require("./config.json")
 

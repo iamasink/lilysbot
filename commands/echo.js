@@ -12,4 +12,3 @@ module.exports = {
 		await interaction.reply(interaction.options.getString('input'))
 	},
 }
-6

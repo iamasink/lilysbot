@@ -23,11 +23,9 @@ module.exports = {
 			.addChoices(
 				{ name: 'smug', value: 'smug' },
 				{ name: 'woof', value: 'woof' },
-				{ name: 'gasm', value: 'gasm' },
 				{ name: '8ball', value: '8ball' },
 				{ name: 'goose', value: 'goose' },
 				{ name: 'cuddle', value: 'cuddle' },
-				{ name: 'avatar', value: 'avatar' },
 				{ name: 'slap', value: 'slap' },
 				{ name: 'pat', value: 'pat' },
 				{ name: 'gecg', value: 'gecg' },
@@ -40,10 +38,7 @@ module.exports = {
 				{ name: 'kiss', value: 'kiss' },
 				{ name: 'wallpaper', value: 'wallpaper' },
 				{ name: 'tickle', value: 'tickle' },
-				{ name: 'spank', value: 'spank' },
 				{ name: 'waifu', value: 'waifu' },
-				{ name: 'lewd', value: 'lewd' },
-				{ name: 'ngif', value: 'ngif' }
 			)
 			.setRequired(true)
 		),

@@ -17,12 +17,13 @@ module.exports = {
 		})
 
 		global.Tags = sequelize.define('tags', {
+			guild: Sequelize.STRING,
 			name: {
 				type: Sequelize.STRING,
 				unique: true,
 			},
 			description: Sequelize.TEXT,
-			username: Sequelize.STRING,
+			user: Sequelize.STRING,
 			usage_count: {
 				type: Sequelize.INTEGER,
 				defaultValue: 0,

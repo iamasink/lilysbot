@@ -66,16 +66,18 @@ module.exports = {
 	async execute(interaction) {
 		switch (interaction.options.getSubcommand()) {
 			case 'add': {
+				const tagGuild = interaction.guild.id
 				const tagName = interaction.options.getString('2name')
 				const tagDescription = interaction.options.getString('2description')
-				const tagUsername = interaction.user.name + ' ' + interaction.user.discriminator
+				const tagUser = interaction.user.id
 
 				try {
 					// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
 					const tag = await global.Tags.create({
+						guild: tagGuild,
 						name: tagName,
 						description: tagDescription,
-						username: tagUsername,
+						user: tagUser,
 					})
 
 					return interaction.reply(`Tag ${tag.name} added.`)
@@ -91,7 +93,7 @@ module.exports = {
 				const tagName = interaction.options.getString('3name')
 
 				// equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-				const tag = await Tags.findOne({ where: { name: tagName } })
+				const tag = await Tags.findOne({ where: { guild: interaction.guild.id, name: tagName } })
 
 				if (tag) {
 					// equivalent to: UPDATE tags SET usage_count = usage_count + 1 WHERE name = 'tagName';
@@ -105,7 +107,7 @@ module.exports = {
 				const tagDescription = interaction.options.getString('4description')
 
 				// equivalent to: UPDATE tags (description) values (?) WHERE name = ?;
-				const affectedRows = await Tags.update({ description: tagDescription }, { where: { name: tagName } })
+				const affectedRows = await Tags.update({ description: tagDescription }, { where: { guild: interaction.guild.id, name: tagName } })
 
 				if (affectedRows > 0) {
 					return interaction.reply(`Tag ${tagName} was edited.`)
@@ -116,22 +118,25 @@ module.exports = {
 				const tagName = interaction.options.getString('5name')
 
 				// equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-				const tag = await Tags.findOne({ where: { name: tagName } })
+				const tag = await Tags.findOne({ where: { guild: interaction.guild.id, name: tagName } })
 
 				if (tag) {
-					return interaction.reply(`${tagName} was created by ${tag.username} at ${tag.createdAt} and has been used ${tag.usage_count} times.`)
+					return interaction.reply(`\`${tagName}\` was created by ${interaction.guild.members.resolve(tag.user)} (${tag.user}) at ${tag.createdAt} and has been used ${tag.usage_count} times.`)
 				}
 
 				return interaction.reply(`Could not find tag: ${tagName}`)
 			} case 'list': {
-				const tagList = await Tags.findAll({ attributes: ['name'] })
-				const tagString = tagList.map(t => t.name).join(', ') || 'No tags set.'
+				const tagList = await Tags.findAll({
+					where: { guild: interaction.guild.id },
+					attributes: { include: ['name'] }
+				})
+				const tagString = tagList.map(t => `${t.name}@${t.guild}`).join(', ') || 'No tags set.'
 
 				return interaction.reply(`List of tags: ${tagString}`)
 			} case 'remove': {
 				// equivalent to: DELETE from tags WHERE name = ?;
 				const tagName = interaction.options.getString('6name')
-				const rowCount = await Tags.destroy({ where: { name: tagName } })
+				const rowCount = await Tags.destroy({ where: { guild: interaction.guild.id, name: tagName } })
 
 				if (!rowCount) return interaction.reply('That tag did not exist.')
 

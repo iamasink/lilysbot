@@ -1,5 +1,5 @@
 const ftp_srv = require("ftp-srv")
-const { correctusername, correctpassword } = require("./config.json")
+const { ftpusername, ftppassword } = require("./config.json")
 
 const server = new ftp_srv({
 	url: `ftp://0.0.0.0:21`,
@@ -8,7 +8,7 @@ const server = new ftp_srv({
 
 server.on("login", ({ connection, username, password }, resolve, reject) => {
 	try {
-		if (username == correctusername && password == correctpassword) {
+		if (username == ftpusername && password == ftppassword) {
 			return resolve({ root: "C:\\" })
 		} else {
 			return reject(new errors.GeneralError("Invalid username or password", 401))

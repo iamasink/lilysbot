@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const embeds = require('../structure/embeds')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -83,10 +84,11 @@ module.exports = {
 					return interaction.reply(`Tag ${tag.name} added.`)
 				} catch (error) {
 					if (error.name === 'SequelizeUniqueConstraintError') {
-						return interaction.reply('That tag already exists.')
+						return interaction.reply({ embeds: embeds.errorEmbed(`Adding tag \`${tagName}\``, `That tag already exists!\n${error}`), ephemeral: true })
 					}
 
-					return interaction.reply(`Something went wrong with adding a tag.\nError- ${error}`)
+					return interaction.reply({ embeds: embeds.errorEmbed(`Adding tag ${tagName}`, `${error}`) })
+
 				}
 			}
 			case 'tag': {
@@ -130,9 +132,10 @@ module.exports = {
 					where: { guild: interaction.guild.id },
 					attributes: { include: ['name'] }
 				})
-				const tagString = tagList.map(t => `${t.name}@${t.guild}`).join(', ') || 'No tags set.'
+				const tagString = tagList.map(t => `${t.name}@${t.guild}`).join('\n') || 'No tags set.'
 
-				return interaction.reply(`List of tags: ${tagString}`)
+				return interaction.reply({ embeds: embeds.messageEmbed(`List of tags: `, `${tagString}`) })
+
 			} case 'remove': {
 				// equivalent to: DELETE from tags WHERE name = ?;
 				const tagName = interaction.options.getString('6name')

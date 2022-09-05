@@ -1,4 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const embeds = require('../structure/embeds.js')
+
 const childProcess = require('child_process')
 const interactionCreate = require('../events/interactionCreate')
 
@@ -32,18 +34,18 @@ module.exports = {
 		.setDescription('Reloads the bot and commands'),
 	async execute(interaction) {
 		interaction.deferReply()
+
+
 		runScript('./deploy-commands.js', function (err) {
 			if (err) {
-				return interaction.editReply(`Could not deploy commands.\nError- ${err}`)
+				return interaction.followUp({ embeds: embeds.errorEmbed('An error occurred while deploying commands!`', err) })
 			} else {
-				interaction.editReply(`Finished deploying commands!\nRestarting!`)
+				interaction.followUp({ embeds: embeds.successEmbed('Successfully deployed commands!') })
+				interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
 				setTimeout(function () {
 					process.exit()
 				}, 1000)
 			}
-
-
-
 		})
 
 

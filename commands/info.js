@@ -28,7 +28,7 @@ module.exports = {
 			subcommand
 				.setName('user')
 				.setDescription('Info about a user')
-				.addUserOption(option => option.setName('target').setDescription('A user. Ping or ID'))
+				.addUserOption(option => option.setName('target').setDescription('A user. Ping or ID').setRequired(true))
 				.addStringOption(option => option
 					.setName('show')
 					.setDescription('Image to show. The main avatar will be shown if selected image is unavailable')
@@ -45,6 +45,11 @@ module.exports = {
 			subcommand
 				.setName('guild')
 				.setDescription('Info about the guild')
+		)
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('bot')
+				.setDescription('Info about the bot')
 		),
 
 	async execute(interaction) {
@@ -101,10 +106,7 @@ module.exports = {
 						}
 					}
 
-
-
-					// inside a command, event listener, etc.
-					const exampleEmbed = new EmbedBuilder()
+					const infoEmbed = new EmbedBuilder()
 						.setColor(user.hexAccentColor)
 						.setTitle(`__${user.username}#${user.discriminator}__`)
 						.setThumbnail(`${user.avatarURL(true)}?size=4096`)
@@ -121,7 +123,7 @@ module.exports = {
 					//.setTimestamp()
 					//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
 
-					interaction.reply({ embeds: [exampleEmbed] })
+					interaction.reply({ embeds: [infoEmbed] })
 				})
 				break
 			}
@@ -171,12 +173,33 @@ module.exports = {
 				// ${format(guild.widgetChannel, `widgetChannel`)}
 				// ${format(guild.widgetChannelId, `widgetChannelId`)}
 				// ${format(guild.widgetEnabled, `widgetEnabled`)} `
-				await interaction.reply(`An error occurred`)
+				throw ("NotImplementedError")
 
 				//})
 
 				break
 
+
+			}
+			case 'bot': {
+				// const infoEmbed = new EmbedBuilder()
+				// 	.setColor(user.hexAccentColor)
+				// 	.setTitle(`Lily's Bot`)
+				// 	.setThumbnail(`${user.avatarURL(true)}?size=4096`)
+				// 	//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' }).0
+				// 	.setDescription(`${user.username}#${user.discriminator}\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
+				// 	.addFields(
+				// 		{
+				// 			name: '__Profile__', value: `${a}${av}${gav}${b}\n\nShowing ${imagename}:`
+				// 		},
+				// 	)
+
+				// 	.setImage(`${image}?size=4096`)
+
+				// //.setTimestamp()
+				// //.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
+				// interaction.reply({ embeds: [infoEmbed] })
+				throw ("NotImplementedError")
 
 			}
 		}

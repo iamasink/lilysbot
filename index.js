@@ -3,13 +3,13 @@ const path = require('node:path')
 const { Client, Collection, GatewayIntentBits, ActivityType, Partials } = require('discord.js')
 const { token } = require('./config.json') // retrieve token from config
 
+
+
 // Client setup
-const client = new Client({
-	// Fetch the recommended amount of shards from Discord and spawn that amount (idk)
-	"shards": "auto",
+client = new Client({
 	// Status when starting
 	"presence": {
-		"status": "dnd",
+		"status": "online",
 		"afk": true,
 		"activities": [
 			{
@@ -79,6 +79,5 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args))
 	}
 }
-
 
 client.login(token)

@@ -1,3 +1,7 @@
+const { EmbedBuilder } = require('discord.js')
+const embeds = require('../structure/embeds')
+
+
 module.exports = {
 	name: 'interactionCreate',
 	async execute(interaction) {
@@ -14,7 +18,8 @@ module.exports = {
 			await command.execute(interaction) // trys to run the command
 		} catch (error) {
 			console.error(error)
-			await interaction.reply({ content: `There was an error while executing this command!\nError- ${error}`, ephemeral: true })
+			interaction.reply({ embeds: embeds.errorEmbed(`Running command **${interaction.commandName}**`, error), ephemeral: true })
+			//await interaction.reply({ content: `There was an error while executing this command!\nError- ${JSON.stringify(error)}`, ephemeral: true })
 		}
 	},
 }

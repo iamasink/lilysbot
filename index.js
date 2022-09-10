@@ -2,6 +2,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { Client, Collection, GatewayIntentBits, ActivityType, Partials } = require('discord.js')
 const { token } = require('./config.json') // retrieve token from config
+const database = require('./structure/database')
 
 
 
@@ -79,5 +80,7 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args))
 	}
 }
+
+
 
 client.login(token)

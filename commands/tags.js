@@ -100,7 +100,7 @@ module.exports = {
 				if (tag) {
 					// equivalent to: UPDATE tags SET usage_count = usage_count + 1 WHERE name = 'tagName';
 					tag.increment('usage_count')
-					return interaction.reply(tag.get('description'))
+					return interaction.reply({ embeds: embeds.messageEmbed(tag.get('name'), tag.get('description')) })
 				}
 
 				return interaction.reply(`Could not find tag: ${tagName}`)

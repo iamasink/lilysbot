@@ -1,12 +1,15 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
+const database = require('../structure/database')
+const calc = require('../structure/calc')
 
-function fetchPromise(toFetch) {
-	return new Promise((resolve, reject) => {
-		try {
-			resolve(toFetch.fetch(true))
-		} catch { reject() }
-	})
-}
+
+// function fetchPromise(toFetch) {
+// 	return new Promise((resolve, reject) => {
+// 		try {
+// 			resolve(toFetch.fetch(true))
+// 		} catch { reject() }
+// 	})
+// }
 
 
 function format(val, name, append = ``) {
@@ -55,83 +58,82 @@ module.exports = {
 	async execute(interaction) {
 		switch (interaction.options.getSubcommand()) {
 			case 'user': {
-				const user = interaction.options.getUser('target') || interaction.user
-
+				user = interaction.options.getUser('target') || interaction.user
+				user = await user.fetch()
+				xp = await database.get(`guilds`, `.${interaction.guild.id}.users.${user.id}.xp`) || 0
 				console.log(interaction.options.getString('info'))
-				fetchPromise(user).then(user => {
+				if (interaction.guild.members.resolve(user) && interaction.guild.members.resolve(user).avatar != undefined) {
+					gavURL = `https://cdn.discordapp.com/guilds/${interaction.guild.id}/users/${user.id}/avatars/${interaction.guild.members.resolve(user).avatar}.webp`
+				} else { gavURL = undefined }
+				a = format(user.hexAccentColor, `Accent color`)
+				av = format(user.avatarURL(true), `Avatar URL`, `?size=4096`)
+				gav = format(gavURL, `Guild Avatar URL`, `?size=4096`)
+				b = format(user.bannerURL(true), `Banner URL`, `?size=4096`)
 
-					if (interaction.guild.members.resolve(user).avatar != undefined) {
-						gavURL = `https://cdn.discordapp.com/guilds/${interaction.guild.id}/users/${user.id}/avatars/${interaction.guild.members.resolve(user).avatar}.webp`
-					} else { gavURL = undefined }
-					a = format(user.hexAccentColor, `Accent color`)
-					av = format(user.avatarURL(true), `Avatar URL`, `?size=4096`)
-					gav = format(gavURL, `Guild Avatar URL`, `?size=4096`)
-					b = format(user.bannerURL(true), `Banner URL`, `?size=4096`)
 
-					switch (interaction.options.getString('show')) {
-						case 'avatar': {
+				switch (interaction.options.getString('show')) {
+					case 'avatar': {
+						image = user.avatarURL(true)
+						imagename = `avatar`
+						break
+					}
+					case 'banner': {
+						if (b) {
+							image = user.bannerURL(true)
+							imagename = `banner`
+						} else {
 							image = user.avatarURL(true)
 							imagename = `avatar`
-							break
 						}
-						case 'banner': {
-							if (b) {
-								image = user.bannerURL(true)
-								imagename = `banner`
-							} else {
-								image = user.avatarURL(true)
-								imagename = `avatar`
-							}
-							break
-						}
-						case 'guild avatar': {
-							if (gav) {
-								image = gavURL
-								imagename = `guild avatar`
-							} else {
-								image = user.avatarURL(true)
-								imagename = `avatar`
-							}
-							break
-						}
-						default: {
-							if (b) {
-								image = user.bannerURL(true)
-								imagename = `banner`
-							} else {
-								image = user.avatarURL(true)
-								imagename = `avatar`
-							}
-							break
-						}
+						break
 					}
+					case 'guild avatar': {
+						if (gav) {
+							image = gavURL
+							imagename = `guild avatar`
+						} else {
+							image = user.avatarURL(true)
+							imagename = `avatar`
+						}
+						break
+					}
+					default: {
+						if (b) {
+							image = user.bannerURL(true)
+							imagename = `banner`
+						} else {
+							image = user.avatarURL(true)
+							imagename = `avatar`
+						}
+						break
+					}
+				}
 
-					const infoEmbed = new EmbedBuilder()
-						.setColor(user.hexAccentColor)
-						.setTitle(`__${user.username}#${user.discriminator}__`)
-						.setThumbnail(`${user.avatarURL(true)}?size=4096`)
-						//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
-						.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
-						.addFields(
-							{
-								name: '__Profile__', value: `${a}${av}${gav}${b}\n\nShowing ${imagename}:`
-							},
-						)
+				const infoEmbed = new EmbedBuilder()
+					.setColor(user.hexAccentColor)
+					.setTitle(`__${user.username}#${user.discriminator}__`)
+					.setThumbnail(`${user.avatarURL(true)}?size=4096`)
+					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+					.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
+					.addFields(
+						{ name: '__Profile__', value: `${a}${av}${gav}${b}`, },
+						{ name: '__Bot__ (to be removed)', value: `XP: ${xp}\nLevel: ${calc.level(xp)}\n` },
+						{ name: `\u200b`, value: `**Showing ${imagename}:**` }
+					)
 
-						.setImage(`${image}?size=4096`)
+					.setImage(`${image}?size=4096`)
 
-					//.setTimestamp()
-					//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
+				//.setTimestamp()
+				//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
 
-					interaction.reply({ embeds: [infoEmbed] })
-				})
+				interaction.reply({ embeds: [infoEmbed] })
 				break
 			}
 			case 'guild': {
 				console.log(interaction.guild)
 				const guild = interaction.guild
 				//				fetchPromise(guild).then(async guild => {
-				// 					info = `${format(guild.name, `Name`)
+				// 					info = `${ format(guild.name, `Name`)
 				// 						}
 				// ${format(guild.nameAcronym, `nameAcronym`)
 				// 						}
@@ -182,24 +184,25 @@ module.exports = {
 
 			}
 			case 'bot': {
-				// const infoEmbed = new EmbedBuilder()
-				// 	.setColor(user.hexAccentColor)
-				// 	.setTitle(`Lily's Bot`)
-				// 	.setThumbnail(`${user.avatarURL(true)}?size=4096`)
-				// 	//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' }).0
-				// 	.setDescription(`${user.username}#${user.discriminator}\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
-				// 	.addFields(
-				// 		{
-				// 			name: '__Profile__', value: `${a}${av}${gav}${b}\n\nShowing ${imagename}:`
-				// 		},
-				// 	)
+				client = interaction.client
+				user = client.user
+				console.log(client)
+				console.log(client.guilds.size)
 
-				// 	.setImage(`${image}?size=4096`)
 
-				// //.setTimestamp()
-				// //.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
-				// interaction.reply({ embeds: [infoEmbed] })
-				throw ("NotImplementedError")
+				const infoEmbed = new EmbedBuilder()
+					.setColor(`#f9beca`)
+					.setTitle(`__${user.username}#${user.discriminator}__`)
+					.setThumbnail(`${user.avatarURL(true)}?size=4096`)
+					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+					.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
+					.addFields(
+						{
+							name: '__Stats__', value: `**Guilds**: ${client.guilds.cache.size}\n**Total Channels**: ${client.channels.cache.size}\n**Total Members**: ${client.users.cache.size}\n`
+						},
+					)
+				//
+				interaction.reply({ embeds: [infoEmbed] })
 
 			}
 		}

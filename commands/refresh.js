@@ -29,6 +29,7 @@ function runScript(scriptPath, callback) {
 }
 
 module.exports = {
+	permission: `botowner`,
 	data: new SlashCommandBuilder()
 		.setName('refresh')
 		.setDescription('Reloads the bot and commands'),

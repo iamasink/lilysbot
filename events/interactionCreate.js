@@ -1,7 +1,8 @@
 const { EmbedBuilder } = require('discord.js')
 const embeds = require('../structure/embeds')
+const { permissions } = require('../config.json')
 
-
+// Emitted when an interaction is created.
 module.exports = {
 	name: 'interactionCreate',
 	async execute(interaction) {
@@ -15,6 +16,7 @@ module.exports = {
 		if (!command) return
 
 		try {
+			if (command.permission == `botowner` && interaction.user.id != permissions[command.permission]) throw `You don't have permission to perform this command\nRequired permission: *${command.permission}*`
 			await command.execute(interaction) // trys to run the command
 		} catch (error) {
 			console.error(error)

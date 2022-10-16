@@ -14,7 +14,7 @@ client = new Client({
 		"afk": true,
 		"activities": [
 			{
-				"name": "w",
+				"name": "you",
 				"type": ActivityType.Watching
 			}
 		]
@@ -58,7 +58,7 @@ client = new Client({
 
 // dynamically retrieve commands
 client.commands = new Collection() // add commands to a collection so they can be retrieved elsewhere i think
-const commandsPath = path.join(__dirname, 'commands') // path to commands using .join so its not OS dependant. Do I really care about this? No. Should I? Maybe. 
+const commandsPath = path.join(__dirname, 'commands', 'slash') // path to commands using .join so its not OS dependant. Do I really care about this? No. Should I? Maybe. 
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')) // read the ./commands/ files ending in .js
 
 for (const file of commandFiles) {

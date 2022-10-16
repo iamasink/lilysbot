@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
-const database = require('../structure/database')
-const calc = require('../structure/calc')
+const database = require('../../structure/database')
+const calc = require('../../structure/calc')
 
 
 // function fetchPromise(toFetch) {
@@ -12,12 +12,13 @@ const calc = require('../structure/calc')
 // }
 
 
-function format(val, name, append = ``) {
+function format(val, name, append = ``, fallback) {
 	output = `\n**${name}**: `
-	if (val != undefined) {
+	if (val != undefined && val != null) {
 		output += `${val}${append}`
 	} else {
-		output = ``
+		if (fallback) output += `${fallback}${append}`
+		else output = ``
 	}
 	return output
 }
@@ -56,24 +57,45 @@ module.exports = {
 		),
 
 	async execute(interaction) {
+		//console.log(`intercation: ${JSON.stringify(interaction)}`)
 		switch (interaction.options.getSubcommand()) {
 			case 'user': {
+				// get target user, if not, the user that created the interaction (ie called the command)
 				user = interaction.options.getUser('target') || interaction.user
+				// fetches the user so their banner, accent colour is available
 				user = await user.fetch()
-				xp = await database.get(`guilds`, `.${interaction.guild.id}.users.${user.id}.xp`) || 0
+
 				console.log(interaction.options.getString('info'))
+
+				// if they are in this guild and have a guild avatar, set their guild avatar url
 				if (interaction.guild.members.resolve(user) && interaction.guild.members.resolve(user).avatar != undefined) {
 					gavURL = `https://cdn.discordapp.com/guilds/${interaction.guild.id}/users/${user.id}/avatars/${interaction.guild.members.resolve(user).avatar}.webp`
 				} else { gavURL = undefined }
+
+				// format each thing 
 				a = format(user.hexAccentColor, `Accent color`)
-				av = format(user.avatarURL(true), `Avatar URL`, `?size=4096`)
+				av = format(user.avatarURL(true), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`)
 				gav = format(gavURL, `Guild Avatar URL`, `?size=4096`)
 				b = format(user.bannerURL(true), `Banner URL`, `?size=4096`)
+
+				// if user has an avatar, set thumbnail to avatar
+				if (user.avatarURL(true)) {
+					thumb = user.avatarURL(true)
+				} // else set it to default avatar (calculated by discrim modulo 5)
+				else { thumb = `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png` }
+
+				// sets image and image name to whatever was specified
+				if (user.avatarURL(true)) {
+					avatar = user.avatarURL(true)
+				} else {
+					avatar = `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`
+				}
+
 
 
 				switch (interaction.options.getString('show')) {
 					case 'avatar': {
-						image = user.avatarURL(true)
+						image = avatar
 						imagename = `avatar`
 						break
 					}
@@ -82,7 +104,7 @@ module.exports = {
 							image = user.bannerURL(true)
 							imagename = `banner`
 						} else {
-							image = user.avatarURL(true)
+							image = avatar
 							imagename = `avatar`
 						}
 						break
@@ -92,32 +114,35 @@ module.exports = {
 							image = gavURL
 							imagename = `guild avatar`
 						} else {
-							image = user.avatarURL(true)
+							image = avatar
 							imagename = `avatar`
 						}
 						break
 					}
-					default: {
+					default: { // if no option was specified, default to banner || avatar
 						if (b) {
 							image = user.bannerURL(true)
 							imagename = `banner`
-						} else {
-							image = user.avatarURL(true)
+						} else if (av) {
+							image = avatar
 							imagename = `avatar`
+						} else {
+
 						}
 						break
 					}
 				}
+				console.log(`thumb = ${thumb}`)
 
+				// create embed
 				const infoEmbed = new EmbedBuilder()
 					.setColor(user.hexAccentColor)
 					.setTitle(`__${user.username}#${user.discriminator}__`)
-					.setThumbnail(`${user.avatarURL(true)}?size=4096`)
+					.setThumbnail(thumb)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
 					.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
 					.addFields(
-						{ name: '__Profile__', value: `${a}${av}${gav}${b}`, },
-						{ name: '__Bot__ (to be removed)', value: `XP: ${xp}\nLevel: ${calc.level(xp)}\n` },
+						{ name: '__Profile__', value: `${a}${av}${gav}${b}\n`, },
 						{ name: `\u200b`, value: `**Showing ${imagename}:**` }
 					)
 
@@ -126,10 +151,11 @@ module.exports = {
 				//.setTimestamp()
 				//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
 
+				// reply with the embed
 				interaction.reply({ embeds: [infoEmbed] })
 				break
 			}
-			case 'guild': {
+			case 'guild': { // TODO
 				console.log(interaction.guild)
 				const guild = interaction.guild
 				//				fetchPromise(guild).then(async guild => {

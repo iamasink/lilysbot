@@ -1,0 +1,1 @@
+wsl sudo /home/s/redis-stack-server-6.2.4-v1/bin/redis-stack-server --daemonize yes

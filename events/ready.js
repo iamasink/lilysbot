@@ -5,8 +5,8 @@ module.exports = {
 	// should the event only run once?
 	once: true,
 	// event logic, which will be called by the event handler whenever the event emits.
-	execute(client) {
+	async execute(client) {
+		await database.setupDatabases(client)
 		console.log(`Ready! Logged in as ${client.user.tag}`)
-		database.setupDatabases(client)
 	},
 }

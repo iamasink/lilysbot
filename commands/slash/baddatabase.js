@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
-const interactionCreate = require('../events/interactionCreate')
-const database = require('../structure/database')
+const database = require('../../structure/database')
 
 
 function fetchPromise(toFetch) {

@@ -67,6 +67,16 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command) // saves the command to the collection
 }
 
+// retrieve context menu commands
+const contextmenuPath = path.join(__dirname, 'commands', 'contextmenu') // path to context menu commands
+const contextmenuFiles = fs.readdirSync(contextmenuPath).filter(file => file.endsWith('.js'))
+
+for (const file of contextmenuFiles) {
+	const filePath = path.join(contextmenuPath, file)
+	const command = require(filePath)
+	client.commands.set(command.data.name, command)
+}
+
 // dynamically retrieve events
 const eventsPath = path.join(__dirname, 'events')
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))

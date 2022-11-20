@@ -2,6 +2,7 @@ const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const embeds = require('../structure/embeds')
 const { permissions } = require('../config.json')
 const database = require('../structure/database')
+const commands = require('../structure/commands')
 
 
 // Emitted when an interaction is created.
@@ -9,17 +10,17 @@ module.exports = {
 	name: 'interactionCreate',
 	async execute(interaction) {
 		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`)
-		//console.log(interaction.guild.id)
 		guildID = interaction.guild.id
 
 
 		if (interaction.isChatInputCommand()) {
+			console.log("chatinput")
 
 
-			console.log(interaction)
-			console.log(interaction.commandName)
-			console.log(interaction.client)
-			console.log(interaction.client.commands)
+			//console.log(interaction)
+			//console.log(interaction.commandName)
+			//console.log(interaction.client)
+			//console.log(interaction.client.commands)
 			//console.log(interaction.options)
 
 
@@ -30,69 +31,24 @@ module.exports = {
 			//console.log(`aliases: ${JSON.stringify(aliases)}`)
 			const aliasedCommand = aliases[interaction.commandName]
 			//console.log(aliasedCommand)
-			if (aliasedCommand) interaction.commandName = aliasedCommand
+			if (aliasedCommand) {
+				commands.run(interaction, aliasedCommand.commandname, aliasedCommand.group, aliasedCommand.subcommand, aliasedCommand.defaultoptions)
 
+			} else {
+				commands.run(interaction)
+
+			}
+
+		} else if (interaction.isUserContextMenuCommand()) {
 			// gets the (global) command data from the interaction
+			console.log(interaction.commandName)
 			const command = await interaction.client.commands.get(interaction.commandName)
 			console.log(command)
 
-			if (!command && !aliasedCommand) {
+			if (!command) {
 				console.log(`${interaction} not a command.`)
 			}
-
-
-
-			// aliases = await database.get(`guilds`, dbpath) || {}
-			// for (i in aliases) {
-			// 	commandName = i
-			// 	aliasName = aliases[i]
-			// 	console.log(`${ aliasName } => ${ commandName }`)
-
-			try {
-				// handle discord permissions
-				acceptedPermissions = []
-				deniedPermissions = []
-				permissionsText = `Permissions:`
-				permlist = command.discordPermissions || []
-
-				// for every permission set in the command, check it
-				for (var i = 0; i < permlist.length; i++) {
-					console.log(i)
-					if (interaction.member.permissions.has(permlist[i])) {
-						console.log("yes")
-						acceptedPermissions.push(permlist[i])
-					} else {
-						console.log("no")
-						deniedPermissions.push(permlist[i])
-					}
-				}
-				for (var i = 0; i < deniedPermissions.length; i++) {
-					permissionsText += `\n🚫  **${new PermissionsBitField(deniedPermissions[i]).toArray()}**` // get text name for each permission
-				}
-				for (var i = 0; i < acceptedPermissions.length; i++) {
-					permissionsText += `\n✅  **${new PermissionsBitField(acceptedPermissions[i]).toArray()}**`
-				}
-
-				if (deniedPermissions.length > 0) {
-					throw { name: `You don't have permission to perform this command\n${permissionsText}` }
-				}
-
-				if (command.permission == `botowner` && interaction.user.id != permissions[command.permission]) throw { name: `You don't have permission to perform this command\nRequired permission: *${command.permission}*` }
-				console.log("running command")
-				await command.execute(interaction) // trys to run the command
-			} catch (error) {
-				console.error(error)
-				const row = new ActionRowBuilder()
-					.addComponents(
-						new ButtonBuilder()
-							.setCustomId('errorreport')
-							.setLabel('Report Error')
-							.setStyle(ButtonStyle.Danger),
-					)
-				interaction.reply({ embeds: embeds.errorEmbed(`Running command **${interaction.commandName}**`, error), components: [row], ephemeral: true })
-
-			}
-		} else if (interaction.isUserContextMenuCommand()) {
+			commands.run(interaction)
 
 		} else if (interaction.isMessageContextMenuCommand()) {
 

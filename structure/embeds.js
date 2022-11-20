@@ -47,10 +47,6 @@ module.exports = {
 			`An error occurred!`,
 			null,
 			[{
-				name: '__While__',
-				value: `${when}`
-			},
-			{
 				name: '__Error__',
 				value: `${error.name || error}\n${error.message || ''}`
 			}], null, null,

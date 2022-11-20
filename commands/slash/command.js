@@ -16,11 +16,26 @@ module.exports = {
 				.addStringOption(option => option
 					.setName('alias')
 					.setDescription('alias to create')
+					.setRequired(true)
+
+				).addStringOption(option => option
+					.setName("commandname")
+					.setDescription("commandname")
+					.setRequired(true)
 				)
 				.addStringOption(option => option
-					.setName('command')
-					.setDescription('command')
+					.setName("group")
+					.setDescription("group")
 				)
+				.addStringOption(option => option
+					.setName("subcommand")
+					.setDescription("subcommand")
+				)
+				.addStringOption(option => option
+					.setName("defaultoptions")
+					.setDescription("defaultoptions")
+				)
+
 			)
 			.addSubcommand(command => command
 				.setName('remove')
@@ -28,6 +43,7 @@ module.exports = {
 				.addStringOption(option => option
 					.setName('alias')
 					.setDescription('alias to remove')
+					.setRequired(true)
 				)
 			)
 			.addSubcommand(command => command
@@ -44,6 +60,7 @@ module.exports = {
 				.addStringOption(option => option
 					.setName('command')
 					.setDescription('command to enable')
+					.setRequired(true)
 				)
 			)
 			.addSubcommand(command => command
@@ -52,11 +69,21 @@ module.exports = {
 				.addStringOption(option => option
 					.setName('command')
 					.setDescription('command to disable')
+					.setRequired(true)
 				)
 			)
 			.addSubcommand(command => command
 				.setName('list')
 				.setDescription('list all commands')
+			)
+		)
+		.addSubcommand(command => command
+			.setName('run')
+			.setDescription('run a command')
+			.addStringOption(option => option
+				.setName('command')
+				.setDescription('command to run')
+				.setRequired(true)
 			)
 		),
 
@@ -65,7 +92,30 @@ module.exports = {
 			case 'alias': {
 				const alias = interaction.options.getString('alias')
 				console.log('alias: ' + alias)
-				const command = interaction.options.getString('command')
+				// const command = interaction.options.getString('command')
+				// var sub = interaction.options.getString('subcommand')
+				// if (sub) {
+				// 	var sub = sub.split(' ')
+				// 	switch (sub.length) {
+				// 		case 0: {
+
+				// 			break
+				// 		} case 1: {
+				// 			var subcommand = sub[0]
+				// 			break
+				// 		} case 2: {
+				// 			var group = sub[0]
+				// 			var subcommand = sub[1]
+				// 			break
+				// 		} default: {
+				// 			throw new Error('Invalid group / subcommand option')
+				// 		}
+				// 	}
+				// }
+
+
+
+
 				const guildID = interaction.guild.id
 				const path = `.${guildID}.commands.aliases`
 				const aliasPath = path + '.' + alias
@@ -87,7 +137,13 @@ module.exports = {
 						if (exists) throw new Error(`$${aliasPath} already exists`)
 						//interaction.deferReply()
 						try {
-							await database.set(`guilds`, aliasPath, command)
+							command = interaction.options.getString("commandname")
+							group = interaction.options.getString("group")
+							subcommand = interaction.options.getString("subcommand")
+							defaultoptions = JSON.parse(interaction.options.getString("defaultoptions"))
+
+							data = { commandname: command, group: group, subcommand: subcommand, defaultoptions: [], hidedefaults: true }
+							await database.set(`guilds`, aliasPath, data)
 							interaction.reply({ embeds: embeds.successEmbed("Created alias successfully") })
 						}
 						catch (err) {
@@ -127,6 +183,9 @@ module.exports = {
 				interaction.reply({ embeds: embeds.messageEmbed("Command:", JSON.stringify(value)) })
 
 
+				break
+			}
+			case 'run': {
 				break
 			}
 		}

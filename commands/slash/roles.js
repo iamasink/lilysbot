@@ -31,6 +31,7 @@ async function updateMenu(id) {
 
 module.exports = {
 	discordPermissions: [PermissionsBitField.Flags.ManageRoles],
+	tempType: 'old',
 	data: new SlashCommandBuilder()
 		.setName('roles')
 		.setDescription('setup roles')
@@ -517,7 +518,7 @@ module.exports = {
 		}
 	},
 	async menu(interaction) {
-		await interaction.deferReply()
+		//await interaction.deferReply()
 		console.log(interaction.values)
 		console.log(interaction)
 		id = interaction.customId.split(".")
@@ -554,8 +555,8 @@ module.exports = {
 						}
 					}
 				}
-				await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), ephemeral: true }).then(msg =>
-					msg.delete())
+				await interaction.deferUpdate()
+				//await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), ephemeral: true }).then(msg => msg.delete())
 				break
 			}
 		}
@@ -565,7 +566,6 @@ module.exports = {
 		id = interaction.customId.split(".")
 		switch (id[1]) {
 			case 'rolemenu': {
-				await interaction.deferReply()
 				const roleid = id[2]
 				const menuid = interaction.message.id
 				const roleMenu = await database.get(`guilds`, `.${interaction.guild.id}.roles.menus.${menuid}`)

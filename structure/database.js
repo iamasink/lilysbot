@@ -4,17 +4,19 @@ const { spawn } = require('node:child_process')
 async function setupGuilds(client) {
 	guildData = await process.db.json.get(`guilds`)
 
-	client.guilds.cache.each(g => {
-		module.exports.check(`guilds`, `.${g.id}`)
-		module.exports.check(`guilds`, `.${g.id}.commands`)
-		module.exports.check(`guilds`, `.${g.id}.commands.aliases`)
-		module.exports.check(`guilds`, `.${g.id}.users`)
-		module.exports.check(`guilds`, `.${g.id}.roles`)
-		module.exports.check(`guilds`, `.${g.id}.roles.lists`)
-		module.exports.check(`guilds`, `.${g.id}.roles.menus`)
+	client.guilds.cache.each(async g => {
+		await module.exports.check(`guilds`, `.${g.id}`)
+		await module.exports.check(`guilds`, `.${g.id}.commands`)
+		await module.exports.check(`guilds`, `.${g.id}.commands.global`)
+		await module.exports.check(`guilds`, `.${g.id}.commands.aliases`)
+		await module.exports.check(`guilds`, `.${g.id}.users`)
+		await module.exports.check(`guilds`, `.${g.id}.roles`)
+		await module.exports.check(`guilds`, `.${g.id}.roles.lists`)
+		await module.exports.check(`guilds`, `.${g.id}.roles.menus`)
 
-		g.members.cache.each(m => {
-			module.exports.check(`guilds`, `.${g.id}.users.${m.id}`)
+		g.members.cache.each(async m => {
+			await module.exports.check(`guilds`, `.${g.id}.users.${m.id}`)
+			await module.exports.check(`guilds`, `.${g.id}.users.${m.id}.xp`)
 		})
 	})
 }

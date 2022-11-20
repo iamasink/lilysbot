@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 const database = require('../../structure/database')
 const calc = require('../../structure/calc')
+const format = require('../../structure/format')
 
 
 // function fetchPromise(toFetch) {
@@ -12,7 +13,7 @@ const calc = require('../../structure/calc')
 // }
 
 
-function format(val, name, append = ``, fallback) {
+function formattext(val, name, append = ``, fallback) {
 	output = `\n**${name}**: `
 	if (val != undefined && val != null) {
 		output += `${val}${append}`
@@ -35,11 +36,12 @@ module.exports = {
 				.addUserOption(option => option.setName('target').setDescription('A user. Ping or ID').setRequired(true))
 				.addStringOption(option => option
 					.setName('show')
-					.setDescription('Image to show. The main avatar will be shown if selected image is unavailable')
+					.setDescription('Image to show')
 					.addChoices(
 						{ name: 'avatar', value: 'avatar' },
 						{ name: 'guild avatar', value: 'guild avatar' },
-						{ name: 'banner', value: 'banner' }
+						{ name: 'banner', value: 'banner' },
+						{ name: 'hide', value: 'hide' }
 
 					)
 
@@ -60,23 +62,29 @@ module.exports = {
 		//console.log(`intercation: ${JSON.stringify(interaction)}`)
 		switch (interaction.options.getSubcommand()) {
 			case 'user': {
+				console.log(interaction.options)
 				// get target user, if not, the user that created the interaction (ie called the command)
-				user = interaction.options.getUser('target') || interaction.user
+				user = interaction.options.getUser('target')
+				console.log(user)
 				// fetches the user so their banner, accent colour is available
 				user = await user.fetch()
 
 				console.log(interaction.options.getString('info'))
 
+				if (interaction.guild.members.resolve(user)) {
+					member = interaction.guild.members.resolve(user)
+				}
+
 				// if they are in this guild and have a guild avatar, set their guild avatar url
-				if (interaction.guild.members.resolve(user) && interaction.guild.members.resolve(user).avatar != undefined) {
-					gavURL = `https://cdn.discordapp.com/guilds/${interaction.guild.id}/users/${user.id}/avatars/${interaction.guild.members.resolve(user).avatar}.webp`
-				} else { gavURL = undefined }
+				if (member && member.avatar != undefined) {
+					gavURL = `https://cdn.discordapp.com/guilds/${interaction.guild.id}/users/${user.id}/avatars/${member.avatar}.webp`
+				} else { gavURL = null }
 
 				// format each thing 
-				a = format(user.hexAccentColor, `Accent color`)
-				av = format(user.avatarURL(true), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`)
-				gav = format(gavURL, `Guild Avatar URL`, `?size=4096`)
-				b = format(user.bannerURL(true), `Banner URL`, `?size=4096`)
+				a = formattext(user.hexAccentColor, `Accent color`)
+				av = formattext(user.avatarURL(true), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`)
+				gav = formattext(gavURL, `Guild Avatar URL`, `?size=4096`)
+				b = formattext(user.bannerURL(true), `Banner URL`, `?size=4096`)
 
 				// if user has an avatar, set thumbnail to avatar
 				if (user.avatarURL(true)) {
@@ -119,13 +127,18 @@ module.exports = {
 						}
 						break
 					}
+					case 'hide': {
+						image = null
+						imagename = null
+						break
+					}
 					default: { // if no option was specified, default to banner || avatar
 						if (b) {
 							image = user.bannerURL(true)
 							imagename = `banner`
 						} else if (av) {
-							image = avatar
-							imagename = `avatar`
+							image = null
+							imagename = null
 						} else {
 
 						}
@@ -140,16 +153,18 @@ module.exports = {
 					.setTitle(`__${user.username}#${user.discriminator}__`)
 					.setThumbnail(thumb)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
-					.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
-					.addFields(
-						{ name: '__Profile__', value: `${a}${av}${gav}${b}\n`, },
-						{ name: `\u200b`, value: `**Showing ${imagename}:**` }
-					)
+					.setDescription(`<@${user.id}>\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)})`)
 
-					.setImage(`${image}?size=4096`)
+
 
 				//.setTimestamp()
 				//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
+				if (interaction.options.getString('show') != 'hide') {
+					infoEmbed.addFields({ name: '__Profile__', value: `${a}${av}${gav}${b}\n`, })
+					if (member) infoEmbed.addFields({ name: '__Guild__', value: `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - member.joinedTimestamp)}),` })
+					if (image) infoEmbed.addFields({ name: `\u200b`, value: `**Showing ${imagename}:**` })
+					if (image) infoEmbed.setImage(`${image}?size=4096`)
+				}
 
 				// reply with the embed
 				interaction.reply({ embeds: [infoEmbed] })

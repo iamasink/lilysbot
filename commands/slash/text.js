@@ -10,7 +10,6 @@ module.exports = {
 		.addStringOption(option => option
 			.setName('text')
 			.setDescription('a!')
-
 		),
 	async execute(interaction) {
 		parsed = await commands.textParser(interaction.options.getString('text'), interaction.id, interaction.channelId, interaction.guildId, interaction.user)
@@ -19,7 +18,7 @@ module.exports = {
 
 
 		//await interaction.reply(text)
-		command = interaction.client.commands.get(parsed.name)
+		const command = interaction.client.commands.get(parsed.name)
 
 
 		console.log(`aaaa command: ${command}`)

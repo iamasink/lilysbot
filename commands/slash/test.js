@@ -3,6 +3,9 @@ const commands = require('../../structure/commands')
 const GIFEncoder = require('gifencoder')
 const { createCanvas } = require('canvas')
 const fs = require('fs')
+const database = require('../../structure/database')
+
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -16,9 +19,14 @@ module.exports = {
 		console.log(interaction)
 		await interaction.deferReply()
 		if (interaction.user.id !== '303267459824353280') throw new Error
-		let command = require(`./info`).data
-		console.log(command)
-		console.log(this.data)
+		database.set(".test.awawa", { best: "boobs" })
+
+
+
+
+		// let command = require(`./info`).data
+		// console.log(command)
+		// console.log(this.data)
 
 
 

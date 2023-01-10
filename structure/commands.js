@@ -35,7 +35,7 @@ async function refreshGuildCommands(guildId) {
 	const rest = new REST({ version: '10' }).setToken(token)
 	commandList = []
 
-	dbpath = `.${guildId}.commands.aliases`
+	dbpath = `.guilds.${guildId}.commands.aliases`
 	//await database.check(`guilds`, `.${guildId}`.commands)
 	//await database.check(`guilds`, `.${guildId}`.commands.aliases)
 

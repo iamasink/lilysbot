@@ -117,7 +117,7 @@ module.exports = {
 
 
 				const guildID = interaction.guild.id
-				const path = `.${guildID}.commands.aliases`
+				const path = `.guilds.${guildID}.commands.aliases`
 				const aliasPath = path + '.' + alias
 
 				if (alias) {
@@ -155,7 +155,7 @@ module.exports = {
 					case 'remove': {
 						if (!exists) throw new Error(`${aliasPath} does not exist`)
 						try {
-							await database.del(`guilds`, aliasPath)
+							await database.del(aliasPath)
 							interaction.reply({ embeds: embeds.successEmbed("Created removed successfully") })
 						}
 						catch (err) {
@@ -165,7 +165,7 @@ module.exports = {
 					}
 					case 'list': {
 						value = await database.get(path)
-						interaction.reply({ embeds: embeds.messageEmbed("List:", JSON.stringify(value)) })
+						await interaction.reply({ embeds: embeds.messageEmbed("List:", JSON.stringify(value)) })
 						break
 					}
 				}

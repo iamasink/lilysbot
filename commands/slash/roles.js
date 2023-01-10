@@ -111,7 +111,7 @@ module.exports = {
 				switch (interaction.options.getSubcommand()) {
 					case 'create': {
 						// get list of role lists from database
-						rolelists = await database.get(`.${interaction.guild.id}.roles.lists`)
+						rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 						options = []
 						console.log(JSON.stringify(rolelists))
 						roleMenu = {}
@@ -219,7 +219,7 @@ module.exports = {
 
 									i.message.channel.send({ embeds: embeds.messageEmbed(`Roles - ${roleMenu.name}`, roleMenu.description), components: rows }).then(async msg => {
 										roleMenu.id = msg.id
-										await database.set(`.${interaction.guild.id}.roles.menus.${roleMenu.id}`, roleMenu)
+										await database.set(`.guilds.${interaction.guild.id}.roles.menus.${roleMenu.id}`, roleMenu)
 									})
 
 								})
@@ -251,7 +251,7 @@ module.exports = {
 				switch (interaction.options.getSubcommand()) {
 					case 'create': {
 						// check if it already exists
-						lists = await database.get(`.${interaction.guild.id}.roles.lists`)
+						lists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 
 						console.log(`lists = ${JSON.stringify(lists)}`)
 						if (lists.hasOwnProperty(interaction.options.getString('name'))) {
@@ -448,7 +448,7 @@ module.exports = {
 									interaction.followUp({ embeds: embeds.messageEmbed(`Roles in list ${roleList.name}:`, `${roleList.roles.map(r => `<@&${r.id}>`).join('\n')}`) })
 
 									try {
-										path = `.${interaction.guild.id}.roles.lists`
+										path = `.guilds.${interaction.guild.id}.roles.lists`
 										database.set(path + `.${roleList.name}`, roleList)
 									} catch (error) {
 										throw new Error(`Could not create role menu, does one by this name already exist?`)
@@ -461,7 +461,7 @@ module.exports = {
 						break
 					}
 					case 'get': {
-						rolelists = await database.get(`.${interaction.guild.id}.roles.lists`)
+						rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 						if (!interaction.options.getString('name') || interaction.options.getString('name') == 'all') {
 							roles = await getRoles(interaction)
 							//options = roles.map(r => r = { label: r.name, value: r.id })
@@ -500,7 +500,7 @@ module.exports = {
 						break
 					}
 					case 'delete': {
-						rolelists = await database.get(`.${interaction.guild.id}.roles.lists`)
+						rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 						rolelist = interaction.options.getString('name')
 						try {
 							await database.del(`guilds`, `.${interaction.guild.id}.roles.lists.${rolelist}`)
@@ -525,8 +525,8 @@ module.exports = {
 		switch (id[1]) {
 			case 'rolemenu': {
 				const menuid = interaction.message.id
-				const roleMenu = await database.get(`.${interaction.guild.id}.roles.menus.${menuid}`)
-				const roleList = await database.get(`.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
+				const roleMenu = await database.get(`.guilds.${interaction.guild.id}.roles.menus.${menuid}`)
+				const roleList = await database.get(`.guilds.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
 				const user = await interaction.user.fetch()
 				const member = await interaction.guild.members.resolve(user)
 				const roles = await member.roles.cache // members roles
@@ -568,8 +568,8 @@ module.exports = {
 			case 'rolemenu': {
 				const roleid = id[2]
 				const menuid = interaction.message.id
-				const roleMenu = await database.get(`.${interaction.guild.id}.roles.menus.${menuid}`)
-				const roleList = await database.get(`.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
+				const roleMenu = await database.get(`.guilds.${interaction.guild.id}.roles.menus.${menuid}`)
+				const roleList = await database.get(`.guilds.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
 				console.log(roleMenu)
 				console.log(roleList)
 				const role = await interaction.guild.roles.fetch(roleid)

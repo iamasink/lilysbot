@@ -1,5 +1,3 @@
-// TODO: backport new database.js to lilysbot etc
-
 const redis = require("redis")
 const key = "lilybot"
 

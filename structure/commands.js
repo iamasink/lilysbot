@@ -248,9 +248,9 @@ module.exports = {
 			console.log("merged	")
 			console.log(interaction.options._hoistedOptions)
 		}
-
 		console.log("commandName: " + commandName)
 		const command = await interaction.client.commands.get(commandName)
+
 
 		try {
 			// handle discord permissions

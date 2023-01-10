@@ -170,6 +170,7 @@ module.exports = {
 					}
 				}
 				await commands.refreshGuild(guildID)
+				break
 			}
 			case 'command': {
 				const command = interaction.options.getString('command')

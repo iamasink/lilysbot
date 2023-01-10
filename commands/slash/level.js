@@ -22,9 +22,11 @@ module.exports = {
 		),
 
 	async execute(interaction) {
-
+		// YOOO THIS CODE IS UNREADABLE
+		// todo: take drugs and comment this :)
 		const user = interaction.options.getUser('target') || interaction.user
-		xp = await database.get(`.${interaction.guild.id}.users.${user.id}.xp`)
+		const guild = interaction.guild
+		xp = await database.get(`.users.${user.id}.guilds.${guild.id}.xp`)
 		console.log(xp)
 		progress = calc.levelProgress(xp)
 		level = calc.level(xp)

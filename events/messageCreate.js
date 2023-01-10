@@ -14,8 +14,8 @@ module.exports = {
 
 		curXp = await database.get(path + `.xp`) || 0
 		//console.log(`c: ${JSON.stringify(curXp)}`)
+		// newXp is random between +5 and +14
 		newXp = Math.floor(curXp + 5 + Math.random() * 10)
-
 		path = `.${message.guild.id}.users.${message.author.id}`
 
 		await database.set(`.users.${user.id}.guilds.${guild.id}.xp`, newXp)

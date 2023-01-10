@@ -179,8 +179,6 @@ module.exports = {
 				const commandPath = path + '.' + command
 				value = await database.get(commandPath)
 				interaction.reply({ embeds: embeds.messageEmbed("Command:", JSON.stringify(value)) })
-
-
 				break
 			}
 			case 'run': {

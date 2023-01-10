@@ -1,27 +1,11 @@
+// TODO: backport new database.js to lilysbot etc
+
 const redis = require("redis")
-const { spawn } = require('node:child_process')
+const key = "lilybot"
 
-async function setupGuilds(client) {
-	guildData = await process.db.json.get(`guilds`)
 
-	client.guilds.cache.each(async g => {
-		await module.exports.check(`guilds`, `.${g.id}`)
-		await module.exports.check(`guilds`, `.${g.id}.commands`)
-		await module.exports.check(`guilds`, `.${g.id}.commands.global`)
-		await module.exports.check(`guilds`, `.${g.id}.commands.aliases`)
-		await module.exports.check(`guilds`, `.${g.id}.users`)
-		await module.exports.check(`guilds`, `.${g.id}.roles`)
-		await module.exports.check(`guilds`, `.${g.id}.roles.lists`)
-		await module.exports.check(`guilds`, `.${g.id}.roles.menus`)
-
-		g.members.cache.each(async m => {
-			await module.exports.check(`guilds`, `.${g.id}.users.${m.id}`)
-			await module.exports.check(`guilds`, `.${g.id}.users.${m.id}.xp`)
-		})
-	})
-}
 async function connect() {
-	errcount = 0
+	console.log("connecting to database...")
 	process.db = redis.createClient({ url: "redis://localhost:6379" })
 	process.db.on("error", async (err) => {
 		console.log(`Redis error: ${err}`)
@@ -32,61 +16,57 @@ async function connect() {
 }
 
 
+async function check(path) {
+
+}
+
+
 
 
 
 module.exports = {
-	async setupDatabases(client) {
+	async connect() {
 		connect()
+	},
+	/**
+	 * Set data in the redis database
+	 *
+	 * @param {string} path The path to the data in JSON Path format (start with .)
+	 * @param {*} data The data to be stored
+	 */
+	async set(path, data) {
+		console.log(`path = ${path}`)
 
-		setupGuilds(client, process.db)
-
-	},
-	async refreshDatabases(client) {
-		setupGuilds(client, process.db)
-	},
-	async reset(key, path = `$`) {
-		await process.db.json.set(key, path, {})
-	},
-	async set(key, path, data) {
+		// try and set the data.
 		try {
 			await process.db.json.set(key, path, data)
-		}
-		catch (e) {
-			console.log(e)
-			throw new Error(`Could not set ${key}: $.${path} to ${data}.\n${e}`)
-		}
-	},
-	async get(key, path) {
-		// console.log(`path: ${path}`)
-		try {
-			return await process.db.json.get(key, { path: path })
-		}
-		catch (e) {
-			console.log(e)
-			throw new Error(`Could not retrieve ${key}: $.${path}.\n${e}`)
-		}
-	},
-	async check(key, path) {
-		//console.log(`checking ${key}, ${path}`)
-		// check if it exists yet
-		try {
-			v = await module.exports.get(key, path)
 			//console.log(`check success: ${path}`)
 		}
 		catch (e) {
-			await module.exports.set(key, path, {})
-			//console.log(`check failure: ${path}`)
+			console.log(e)
+			console.log(JSON.stringify(e))
+			newpath = path.split()
+			module.exports.set(``)
 		}
 
-		// if (await module.exports.get(key, path)) {
-		// 	//console.log(`ya`)
-		// } else { // if it doesnt, create it
-		// 	//console.log(`na`)
-		// 	await module.exports.set(key, path, {})
-		// }
+
 	},
-	async del(key, path) {
+	/**
+	 * Get data from the redis database
+	 *
+	 * @param {string} path The path to the data in JSON Path format (start with .)
+	 * @return {*} Returns data from the path
+	 */
+	async get(path) {
+		console.log(`get path: ${path}`)
+		return await process.db.json.get(key, { path: path })
+	},
+	/**
+	 * Delete data from the redis database
+	 *
+	 * @param {string} path The path to the data in JSON Path format (start with .)
+	 */
+	async del(path) {
 		// console.log(`path: ${path}`)
 		try {
 			await process.db.json.del(key, path)
@@ -96,24 +76,24 @@ module.exports = {
 			throw new Error(`Could not delete ${key}: $.${path}.\n${e}`)
 		}
 	},
-
-	async checks(key, paths) {
-		// eg paths = ["645053287208452106", "commands", "aliases"]
-		console.log(`checks ${key}, ${paths}`)
-		path = '.'
-		for (i = 0; i < paths.length; i++) {
-			if (i == 0) {
-				path += paths[i]
-			} else {
-				path += '.' + paths[i]
-			}
-			console.log(`path: ${path}`)
-			try {
-				await module.exports.check(key, path)
-			} catch (e) {
-				console.log(e)
-				throw new Error(`Could not check ${key}: $.${path}.\n${e}`)
-			}
+	/**
+	 * Check if item exists in database
+	 *
+	 * @param {string} path The path to the data in JSON Path format (start with .)
+	 */
+	async check(path) {
+		console.log(`check path: ${path}`)
+		try {
+			value = await process.db.json.get(key, { path: path })
 		}
+		catch (e) {
+			console.log("error")
+			console.log(e)
+			return false
+		}
+
+
+		console.log("exists")
+		return true
 	}
 }

@@ -24,7 +24,7 @@ module.exports = {
 	async execute(interaction) {
 
 		const user = interaction.options.getUser('target') || interaction.user
-		xp = await database.get(`guilds`, `.${interaction.guild.id}.users.${user.id}.xp`)
+		xp = await database.get(`.${interaction.guild.id}.users.${user.id}.xp`)
 		console.log(xp)
 		progress = calc.levelProgress(xp)
 		level = calc.level(xp)

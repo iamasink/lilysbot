@@ -36,7 +36,7 @@ commands.deploy()
 
 // 	aliases = await process.db.get(`guilds`, path) || {}
 // 	console.log(`aliases: ${JSON.stringify(aliases)}`)
-// 	//database.set(`guilds`, path + `.xp`, newXp)
+// 	//database.set(path + `.xp`, newXp)
 
 // 	// try {
 // 	// 	console.log(`Finished refreshing ${commandList.length} guild application (/) commands.`)

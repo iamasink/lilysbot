@@ -41,7 +41,7 @@ async function refreshGuildCommands(guildId) {
 
 	//aliases = await process.db.json.get(`guilds`, dbpath) || {}
 
-	aliases = await database.get(`guilds`, dbpath) || {}
+	aliases = await database.get(dbpath) || {}
 	commands = []
 	for (i in aliases) {
 		console.log(`i = ${i}`)

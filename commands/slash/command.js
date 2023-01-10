@@ -119,11 +119,10 @@ module.exports = {
 				const guildID = interaction.guild.id
 				const path = `.${guildID}.commands.aliases`
 				const aliasPath = path + '.' + alias
-				await database.checks(`guilds`, [`${guildID}`, "commands", "aliases"])
 
 				if (alias) {
 					try {
-						value = await database.get(`guilds`, aliasPath)
+						value = await database.get(aliasPath)
 					} catch (e) {
 						value = undefined
 					}
@@ -143,7 +142,7 @@ module.exports = {
 							defaultoptions = JSON.parse(interaction.options.getString("defaultoptions"))
 
 							data = { commandname: command, group: group, subcommand: subcommand, defaultoptions: [], hidedefaults: true }
-							await database.set(`guilds`, aliasPath, data)
+							await database.set(aliasPath, data)
 							interaction.reply({ embeds: embeds.successEmbed("Created alias successfully") })
 						}
 						catch (err) {
@@ -165,7 +164,7 @@ module.exports = {
 						break
 					}
 					case 'list': {
-						value = await database.get(`guilds`, path)
+						value = await database.get(path)
 						interaction.reply({ embeds: embeds.messageEmbed("List:", JSON.stringify(value)) })
 						break
 					}
@@ -178,8 +177,7 @@ module.exports = {
 				const guildID = interaction.guild.id
 				const path = `.${guildID}.commands.global`
 				const commandPath = path + '.' + command
-				await database.checks(`guilds`, [`${guildID}`, "commands", "global"])
-				value = await database.get(`guilds`, commandPath)
+				value = await database.get(commandPath)
 				interaction.reply({ embeds: embeds.messageEmbed("Command:", JSON.stringify(value)) })
 
 

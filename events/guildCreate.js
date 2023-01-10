@@ -7,7 +7,7 @@ module.exports = {
 	name: "guildCreate",
 	async execute(guild) {
 		console.log(`a guild was joined: ${guild}`)
-		database.refreshDatabases()
+		database.set(`.guilds.${guild.id}.joinedAt`)
 
 	},
 }

@@ -1,4 +1,5 @@
 {
+  "__message__": "this is the example config file, rename to config.json. (actual config.json is .gitignore as it contains secrets)"
   "clientId": "",
   "guildId": "",
   "token": "",

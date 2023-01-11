@@ -17,10 +17,10 @@ module.exports = {
 		),
 	async execute(interaction) {
 		console.log(interaction)
-		await interaction.deferReply()
+		//await interaction.deferReply()
 		if (interaction.user.id !== '303267459824353280') throw new Error
-		database.set(".test.awawa", { best: "boobs" })
 
+		commands.textToCommandParser()
 
 
 

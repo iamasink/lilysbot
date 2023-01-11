@@ -2,7 +2,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { clientId, token } = require('../config.json')
 const { REST } = require('@discordjs/rest')
-const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Routes, SlashCommandBuilder } = require('discord.js')
+const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Routes, SlashCommandBuilder, CommandInteractionOptionResolver } = require('discord.js')
 const embeds = require('./embeds')
 const { permissions } = require('../config.json')
 const database = require('./database')
@@ -232,16 +232,20 @@ module.exports = {
 	 * @param {{name: string, type: number, value: *}[]} options
 	 */
 	async run(interaction, commandName = interaction.commandName, group, subcommand, options) {
-		if (group) {
+		// if theres no options present, create a new options resolver
+		if (!interaction.options) interaction.options = new CommandInteractionOptionResolver(client, [])
+
+		if (group != null) {
 			console.log(`group = ${group}`)
 			interaction.options._group = group
 		}
-		if (subcommand) {
+		if (subcommand != null) {
 			console.log(`subcommand = ${subcommand}`)
 			interaction.options._subcommand = subcommand
 		}
-		if (options) {
+		if (options != null) {
 			console.log("balls")
+			//if (!interaction.options._hoistedOptions) interaction.options = new CommandInteractionOptionResolver(client, )
 
 			// merge options with interaction's options, new options will overwrite 
 			interaction.options._hoistedOptions = merge(interaction.options._hoistedOptions, options, "name")
@@ -295,7 +299,7 @@ module.exports = {
 						.setLabel('Report Error')
 						.setStyle(ButtonStyle.Danger),
 				)
-			interaction.reply({ embeds: embeds.errorEmbed(`Running command **${interaction.commandName}**`, error), components: [row], ephemeral: true })
+			interaction.channel.send({ embeds: embeds.errorEmbed(`Running command **${interaction.commandName}**`, error), components: [row], ephemeral: true })
 
 		}
 	},

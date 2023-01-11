@@ -69,8 +69,8 @@ module.exports = {
 					.setImage(image.url)
 					.setFooter({ text: 'Image from nekos.life', iconURL: 'https://avatars.githubusercontent.com/u/34457007?s=200&v=4' })
 
-				if (i == 0) interaction.reply({ embeds: [embed] })
-				else interaction.followUp({ embeds: [embed] })
+				if (i == 0) await interaction.reply({ embeds: [embed] })
+				else await interaction.followUp({ embeds: [embed] })
 			}, i * interaction.options.getInteger('delay') * 1000)
 		}
 	},

@@ -60,8 +60,8 @@ module.exports = {
 	 * @param {*} title
 	 * @return {*} 
 	 */
-	successEmbed(title) {
-		return embed(`#00ff00`, title)
+	successEmbed(title, description) {
+		return embed(`#00ff00`, title, description)
 	},
 
 	/**

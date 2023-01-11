@@ -24,6 +24,7 @@ module.exports = {
 		newXp = Math.floor(curXp + 5 + Math.random() * 10)
 
 		await database.set(path2, newXp)
+
 		//console.log(`i would have set database here: ${newXp} at ${path2}`)
 	},
 }

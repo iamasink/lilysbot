@@ -11,6 +11,17 @@ async function connect() {
 	await process.db.connect()
 	// console.log((await db.json.get(`test`)))
 
+	client.guilds.cache.each(async g => {
+		await module.exports.check(`.guilds.${g.id}`)
+		await module.exports.check(`.guilds.${g.id}.commands`)
+		await module.exports.check(`.guilds.${g.id}.commands.global`)
+		await module.exports.check(`.guilds.${g.id}.commands.aliases`)
+		await module.exports.check(`.guilds.${g.id}.users`)
+		await module.exports.check(`.guilds.${g.id}.roles`)
+		await module.exports.check(`.guilds.${g.id}.roles.lists`)
+		await module.exports.check(`.guilds.${g.id}.roles.menus`)
+	})
+
 }
 
 
@@ -33,11 +44,12 @@ module.exports = {
 	 * @param {*} data The data to be stored
 	 */
 	async set(path, data) {
-		console.log(`Setting "${data}" at "${path}"`)
+		console.log(`Setting "${JSON.stringify(data)}" at "${path}"`)
 
 		// try and set the data.
 		try {
 			res = await process.db.json.set(key, path, data)
+			console.log(`redis response: ${res}`)
 			if (!res) throw new Error("null")
 			//console.log(`success: ${path}`)
 		}
@@ -48,18 +60,18 @@ module.exports = {
 			// console.log("c" + e.cause)
 			switch (e.message) {
 				case 'ERR new objects must be created at the root': {
-					console.log("b")
+					console.log("error root")
 					newpath = path.split(".")
 					newpath.pop()
-					module.exports.set("." + newpath, {})
+					await module.exports.set("." + newpath, {})
 					break
 				}
 				case 'null': { // if it failed to set the value, fix it idk
-					console.log("c")
+					console.log("error null")
 					newpath = path.split(".")
 					newpath.pop()
-					module.exports.set(newpath.join("."), {}) // go up one layer and set the json stuffs
-					module.exports.set(path, data) // try again so its recursive ?? it seemed to work so idk
+					await module.exports.set(newpath.join("."), {}) // go up one layer and set the json stuffs
+					await module.exports.set(path, data) // try again so its recursive ?? it seemed to work so idk
 					break
 				}
 				default: {
@@ -81,7 +93,9 @@ module.exports = {
 	async get(path) {
 		try {
 			console.log(`get path: ${path}`)
-			return await process.db.json.get(key, { path: path })
+			data = await process.db.json.get(key, { path: path })
+			console.log(`retrieved data ${data} from path ${path}`)
+			return data
 		}
 		catch (e) {
 			return
@@ -110,18 +124,13 @@ module.exports = {
 	 */
 	async check(path) {
 		console.log(`check path: ${path}`)
-		try {
-			value = await process.db.json.get(key, { path: path })
-		}
-		catch (e) {
+		value = await module.exports.get(path)
+		console.log(`value = ${JSON.stringify(value)}`)
+		if (!value) {
 			console.log("error")
-			console.log("m" + e.message)
-			if (e.message.substring(e.message.length - 14) == "does not exist") {
-				console.log("awawa")
-			}
+			await module.exports.set(path, {})
 			return false
 		}
-
 
 		console.log("exists")
 		return true

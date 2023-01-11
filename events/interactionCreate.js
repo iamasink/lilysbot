@@ -27,8 +27,8 @@ module.exports = {
 
 			// checks if the command is an aliased (guild) command
 			dbpath = `.guilds.${guildID}.commands.aliases`
-			aliases = await database.get(dbpath)
-			//console.log(`aliases: ${JSON.stringify(aliases)}`)
+			aliases = await database.get(dbpath) || {}
+			console.log(`aliases: ${JSON.stringify(aliases)}`)
 			const aliasedCommand = aliases[interaction.commandName]
 			//console.log(aliasedCommand)
 			if (aliasedCommand) {
@@ -37,7 +37,24 @@ module.exports = {
 				commands.run(interaction)
 			}
 
-		} else if (interaction.isUserContextMenuCommand()) {
+		}
+
+		else if (interaction.isAutocomplete()) {
+			const command = interaction.client.commands.get(interaction.commandName)
+
+			if (!command) {
+				console.error(`No command matching ${interaction.commandName} was found.`)
+				return
+			}
+
+			try {
+				await command.autocomplete(interaction)
+			} catch (error) {
+				console.error(error)
+			}
+		}
+
+		else if (interaction.isUserContextMenuCommand()) {
 			// gets the (global) command data from the interaction
 			console.log(interaction.commandName)
 			const command = await interaction.client.commands.get(interaction.commandName)

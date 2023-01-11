@@ -127,13 +127,15 @@ module.exports = {
 							options.push({ label: rolelists[i].name, value: rolelists[i].name })
 						}
 						console.log(options)
+						if (options.length == 0) {
+							throw new Error("No role lists exist. Create one.")
+						}
 						const row = new ActionRowBuilder()
 							.addComponents(
 								new SelectMenuBuilder()
 									.setCustomId('select')
 									.setPlaceholder('Choose a role list')
 									.addOptions(options)
-
 							)
 						// ball fondle emoji 🫴🫴🫴
 						interaction.reply({ embeds: embeds.messageEmbed(`Creating role menu '${roleMenu.name}'`, `Choose a role list to assign the menu to. You can create one using /roles lists create.`), components: [row] }).then(msg => {
@@ -267,7 +269,11 @@ module.exports = {
 						roleList = {}
 						roleList.roles = []
 						roleList.name = interaction.options.getString('name')
-						interaction.reply({ embeds: embeds.messageEmbed(`Enter roles for the list: ${roleList.name}. `, `Type role name or id, type 'done' when finished, or 'cancel' to cancel!\nOptionally add a role description on a new line.\nYou can also type '+rolename' to quickly create a new role by that name`), })
+						messagesToDelete = []
+						await interaction.reply({ embeds: embeds.messageEmbed(`Enter roles for the list: ${roleList.name}. `, `Type role name or id, type 'done' when finished, or 'cancel' to cancel!\nOptionally add a role description on a new line.\nYou can also type '+rolename' to quickly create a new role by that name`), })
+							.then((message) => messagesToDelete.push(message))
+
+						console.log(`awawawa msg: ${await (messagesToDelete[0])}`)
 
 						// `m` is a message object that will be passed through the filter function
 						const filter = m => m.author.id === interaction.user.id
@@ -308,6 +314,7 @@ module.exports = {
 											)
 
 										await interaction.followUp({ embeds: embeds.messageEmbed(null, `**<@&${roleid}>**\n(*new role*).`), components: [row] }).then(msg => {
+											messagesToDelete.push(msg)
 											const filter = i => i.customId === 'roleslist-remove2'
 											const collector = msg.createMessageComponentCollector({ filter, time: 120000 })
 
@@ -341,6 +348,7 @@ module.exports = {
 									roleid = id
 								} else {
 									interaction.followUp({ embeds: embeds.messageEmbed("Bot roles cannot be used.", null, null, '#ff0000') })
+										.then((message) => messagesToDelete.push(message))
 								}
 							} else {
 								// fetch from name or id
@@ -374,6 +382,7 @@ module.exports = {
 							if (roleid) {
 								if (roleList.roles.find(r => r.id === roleid)) {
 									interaction.followUp({ embeds: embeds.messageEmbed("This role has already been added.", null, null, '#ff0000') })
+										.then((message) => messagesToDelete.push(message))
 								} else {
 									console.log("Yeah.")
 									role = await interaction.guild.roles.fetch(roleid)
@@ -390,6 +399,7 @@ module.exports = {
 											)
 
 										interaction.followUp({ embeds: embeds.messageEmbed(null, `**<@&${roleid}>**\n(*from '${text.split('\n')[0]}'*).`), components: [row] }).then(msg => {
+											messagesToDelete.push(msg)
 											const filter = i => i.customId === 'roleslist-remove'
 											const collector = msg.createMessageComponentCollector({ filter, time: 120000 })
 
@@ -429,11 +439,13 @@ module.exports = {
 								}
 							} else {
 								interaction.followUp({ embeds: embeds.messageEmbed(`Role '${text}' not found.`, `Type "done" to finish or "cancel" to cancel`, null, '#ff0000') })
+									.then((message) => messagesToDelete.push(message))
 							}
 						})
 						collector.on('end', async (collected, reason) => {
 							if (reason == 'cancel') {
 								interaction.followUp({ embeds: embeds.messageEmbed("Cancelled", null, null, '#ff0000') })
+									.then((message) => messagesToDelete.push(message))
 								console.log(newroles)
 								for (let i = 0; i < newroles.length; i++) {
 									role = await interaction.guild.roles.fetch(newroles[i])
@@ -443,13 +455,24 @@ module.exports = {
 								}
 							} else {
 								console.log(`Saved ${roleList.roles.length} roles`)
+								console.log(`rolelist: ${JSON.stringify(roleList)}`)
 								if (roleList.roles.length > 0) {
 									interaction.followUp({ embeds: embeds.successEmbed(`Saved ${roleList.roles.length} roles`) })
+
+									// cleanup messages
+									// for (let i = 0; i < messagesToDelete.length; i++) {
+									// 	//message = await interaction.channel.messages.fetch({ message: messagesToDelete[i] })
+									// 	//interaction.channel.messages.delete(messagesToDelete[i])
+									// 	console.log(messagesToDelete[i].id)
+									// }
+									interaction.channel.bulkDelete(messagesToDelete.map(m => m.id))
+
+
 									interaction.followUp({ embeds: embeds.messageEmbed(`Roles in list ${roleList.name}:`, `${roleList.roles.map(r => `<@&${r.id}>`).join('\n')}`) })
 
 									try {
 										path = `.guilds.${interaction.guild.id}.roles.lists`
-										database.set(path + `.${roleList.name}`, roleList)
+										await database.set(path + `.${roleList.name}`, roleList)
 									} catch (error) {
 										throw new Error(`Could not create role menu, does one by this name already exist?`)
 									}

@@ -1,8 +1,10 @@
 const database = require("../structure/database")
+const log = require("../structure/log")
 
 module.exports = {
 	name: "messageCreate",
 	async execute(message) {
+		console.log(message)
 		console.log(`a message was created: ${message} by ${message.author} in ${message.guild}`)
 		guild = message.guild
 		user = message.author

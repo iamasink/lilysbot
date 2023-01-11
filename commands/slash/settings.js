@@ -49,12 +49,16 @@ module.exports = {
 			case 'set': {
 				const option = settings[settings.findIndex(e => e.value == setting)]
 				console.log(JSON.stringify(option))
+				value = ""
 				switch (option.type) {
 					case 'channel': {
 						channel = await channelSelector(interaction)
 						console.log(channel.name)
+						value = channel.id
 					}
 				}
+				database.set(`.guilds.${interaction.guild.id}.settings.${option.value}`, value)
+
 				break
 			}
 			case 'list': {

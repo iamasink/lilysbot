@@ -210,6 +210,11 @@ function typeResolver(string) {
 
 
 module.exports = {
+	/**
+	 * Get all commands
+	 *
+	 * @return {*} 
+	 */
 	get() {
 		return getCommands()
 	},
@@ -304,22 +309,80 @@ module.exports = {
 		}
 	},
 	async textToCommandParser(text = "") {
+		console.log(text)
+
 		// split text by spaces
 		words = text.split(' ')
-		for (let i = 0, len = words.length; i < len; i++) {
-			console.log(words[i])
-			switch (i) {
-				case 0: {
-					commandName = words[i]
-					break
-				}
-				case 1: {
+		if (words[0].startsWith("/")) words[0] = words[0].substring(1)
+		commandName = words[0]
+		commands = await module.exports.get()
 
-					break
+		options = {}
+		if (!words[1]) words[1] = ""
+		if (!words[2]) words[2] = ""
+
+		// parse group and subcommand
+		// if words[1] and words[2] aren't options
+		if (!words[1].endsWith(":") && !words[2].endsWith(":")) {
+			group = words[1]
+			subcommand = words[2]
+			optionsStart = 3
+		}
+		// if only words[1] isn't an option
+		else if (!words[1].endsWith(":") && words[2].endsWith(":")) {
+			group = null
+			subcommand = words[1]
+			optionsStart = 2
+		}
+		// if both are options
+		else {
+			group = null
+			subcommand = null
+			optionsStart = 1
+		}
+
+		for (let i = 0, len = commands.length; i < len; i++) {
+			console.log(commands[i].name)
+		}
+
+		// get command
+		console.log(`commandName = ${commandName}`)
+		command = await commands.find(e => e.name == commandName)
+		console.log(`command found: ${JSON.stringify(command)}`)
+
+		if (!command) throw new Error("Command not found")
+
+		console.log("so far..")
+		console.log(`group = ${group}`)
+		console.log(`subcommand = ${subcommand}`)
+		console.log(`optionsStart = ${optionsStart}`)
+
+		// find group
+		let commandgroup = await command.options.find(e => e.name == group && e.type == 2) || command
+		console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
+		let commandsubcommand = await commandgroup.options.find(e => e.name == subcommand && e.type == 1) || commandgroup
+		console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
+
+		let foundoptions = []
+		// parse options
+		// for each word from optionsStart to end
+		for (let i = optionsStart, len = words.length; i < len; i++) {
+			if (words[i].endsWith(":")) {
+				// remove colon
+				let option = words[i].substring(0, words[i].length - 1)
+				console.log(`option = ${option}`)
+				// type 1 is an subcommand (not group)
+
+				// if it hasn't been chosen yet
+				if (!foundoptions.find(e => e.name == option)) {
+					// if it exists in the command
+					if (await commandsubcommand.options.find(e => e.name == option && e.type == 3)) {
+						console.log(`option found ${words[i]}, ${i}`)
+						foundoptions.push({ name: option, position: i })
+					}
 				}
 			}
 		}
-
 
 
 	},

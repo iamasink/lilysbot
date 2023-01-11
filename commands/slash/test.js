@@ -20,7 +20,7 @@ module.exports = {
 		//await interaction.deferReply()
 		if (interaction.user.id !== '303267459824353280') throw new Error
 
-		commands.textToCommandParser()
+		commands.textToCommandParser(await interaction.options.getString("text"))
 
 
 

@@ -4,7 +4,7 @@ const log = require("../structure/log")
 module.exports = {
 	name: "messageCreate",
 	async execute(message) {
-		console.log(message)
+		//console.log(message)
 		console.log(`a message was created: ${message} by ${message.author} in ${message.guild}`)
 		guild = message.guild
 		user = message.author
@@ -23,7 +23,7 @@ module.exports = {
 		// newXp is random between +5 and +14
 		newXp = Math.floor(curXp + 5 + Math.random() * 10)
 
-		//await database.set(path2, newXp)
-		console.log(`i would have set database here: ${newXp} at ${path2}`)
+		await database.set(path2, newXp)
+		//console.log(`i would have set database here: ${newXp} at ${path2}`)
 	},
 }

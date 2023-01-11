@@ -383,7 +383,7 @@ module.exports = {
 				}
 			}
 		}
-
+		return (commandName, group, subcommand, options)
 
 	},
 }

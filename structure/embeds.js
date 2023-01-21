@@ -43,7 +43,7 @@ module.exports = {
 	 */
 	errorEmbed(when, error,) {
 		return embed(
-			`#ff0000`,
+			`#d02721`,
 			`An error occurred!`,
 			null,
 			[{
@@ -74,6 +74,15 @@ module.exports = {
 	 * @return {*} 
 	 */
 	messageEmbed(title, description, fields, color = '#f9beca') {
+		return embed(
+			color,
+			title,
+			description,
+			fields
+		)
+	},
+
+	warningEmbed(title, description, fields, color = '#f2bb05') {
 		return embed(
 			color,
 			title,

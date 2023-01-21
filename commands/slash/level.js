@@ -18,7 +18,10 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('level')
 		.setDescription('Retrieves level...')
-		.addUserOption(option => option.setName('target').setDescription('A user. Ping or ID').setRequired(true)
+		.addUserOption(option => option
+			.setName('target')
+			.setDescription('A user. Ping or ID')
+			.setRequired(true)
 		),
 
 	async execute(interaction) {

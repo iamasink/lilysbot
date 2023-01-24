@@ -10,6 +10,7 @@ module.exports = {
 	async execute(member) {
 
 		console.log(`${member.id} has joined guild ${member.guild}`)
+		console.log(member)
 		log.log(member.guild, `${member.id}, ${member.tag} has joined guild ${member.guild}`)
 			.then(async msg => {
 				await commands.run(msg, "info", null, "user", [

@@ -290,11 +290,11 @@ module.exports = {
 				interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`You don't have permission to perform this command`, `${permissionsText}`) })
 				return
 			}
-
 			if (command.permission == `botowner` && interaction.user.id != permissions[command.permission]) {
 				interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`You don't have permission to perform this command!`, `Required Permission: **botowner**`) })
 				return
 			}
+
 			console.log(interaction.options)
 			console.log("running command")
 			await command.execute(interaction) // trys to run the command

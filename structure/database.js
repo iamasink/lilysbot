@@ -44,12 +44,12 @@ module.exports = {
 	 * @param {*} data The data to be stored
 	 */
 	async set(path, data) {
-		console.log(`Setting "${JSON.stringify(data)}" at "${path}"`)
+		//console.log(`Setting "${JSON.stringify(data)}" at "${path}"`)
 
 		// try and set the data.
 		try {
 			res = await process.db.json.set(key, path, data)
-			console.log(`redis response: ${res}`)
+			//console.log(`redis response: ${res}`)
 			if (!res) throw new Error("null")
 			//console.log(`success: ${path}`)
 		}
@@ -92,9 +92,9 @@ module.exports = {
 	 */
 	async get(path) {
 		try {
-			console.log(`get path: ${path}`)
+			//console.log(`get path: ${path}`)
 			data = await process.db.json.get(key, { path: path })
-			console.log(`retrieved data ${data} from path ${path}`)
+			//console.log(`retrieved data ${data} from path ${path}`)
 			return data
 		}
 		catch (e) {
@@ -123,16 +123,16 @@ module.exports = {
 	 * @param {string} path The path to the data in JSON Path format (start with .)
 	 */
 	async check(path) {
-		console.log(`check path: ${path}`)
+		//console.log(`check path: ${path}`)
 		value = await module.exports.get(path)
-		console.log(`value = ${JSON.stringify(value)}`)
+		//console.log(`value = ${JSON.stringify(value)}`)
 		if (!value) {
 			console.log("error")
 			await module.exports.set(path, {})
 			return false
 		}
 
-		console.log("exists")
+		//console.log("exists")
 		return true
 	}
 }

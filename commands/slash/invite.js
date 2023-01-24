@@ -28,8 +28,9 @@ module.exports = {
 					const code = e.code
 					const inviter = await interaction.client.users.fetch(e.inviterId)
 					const createdTimestamp = `<t:${e.createdTimestamp.toString().slice(0, -3)}>`
+					let expiresTimestamp = ``
 					if (e._expiresTimestamp) {
-						expiresTimestamp = `<t:${e._expiresTimestamp.toString().slice(0, -3)}>`
+						expiresTimestamp = `<t:${await e._expiresTimestamp.toString().slice(0, -3)}>`
 					} else {
 						expiresTimestamp = `never`
 					}

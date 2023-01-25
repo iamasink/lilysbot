@@ -14,9 +14,15 @@ const log = require('../structure/log')
 module.exports = {
 	name: "guildMemberRemove",
 	async execute(member) {
+		if (member.pending) {
+			log.log(member.guild, `${member.id} has left guild ${member.guild}, but never passed rules screening`)
+			return
+		}
+		log.log(member.guild, `${member.id} has left guild ${member.guild}`)
+
+
 		console.log(member)
 		console.log(`${member.id} has left guild ${member.guild}`)
-		log.log(member.guild, `${member.id} has left guild ${member.guild}`)
 
 		const embed = new EmbedBuilder()
 			.setColor('#ff0000')

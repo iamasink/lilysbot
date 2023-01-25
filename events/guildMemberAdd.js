@@ -24,6 +24,15 @@ module.exports = {
 				])
 			})
 
+		// To compare, we need to load the current invite list.
+		const newInvites = await member.guild.invites.fetch()
+		// This is the *existing* invites for the guild.
+		const oldInvites = await database.get(`.guilds.${member.guild.id}.invites`)
+		// Look through the invites, find the one for which the uses went up.
+		const invite = newInvites.find(i => i.uses > oldInvites[i.code].uses)
+		// This is just to simplify the message being sent below (inviter doesn't have a tag property)
+		const inviter = await client.users.fetch(invite.inviterId)
+		console.log(`inviter: ${inviter.id}`)
 
 		//await database.check(`guilds`, `.${member.guild.id}.users.${member.id}`)
 	},

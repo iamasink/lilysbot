@@ -60,7 +60,7 @@ module.exports = {
 	async execute(interaction) {
 		switch (interaction.options.getSubcommand()) {
 			case 'list': {
-				await interaction.reply("nya")
+				await interaction.reply({ ephemeral: true, embeds: embeds.messageEmbed("listing invites...") })
 				const invitelist = await database.get(`.guilds.${interaction.guild.id}.invites`)
 				console.log(invitelist)
 				var output = ""
@@ -107,7 +107,7 @@ module.exports = {
 				//output += `\nInvites marked as [-] have expired.`
 				messages = format.splitMessage(output, 1900, "\n")
 				for (let i = 0, len = messages.length; i < len; i++) {
-					interaction.followUp(messages[i])
+					interaction.followUp({ ephemeral: true, content: messages[i] })
 				}
 
 				break
@@ -122,7 +122,7 @@ module.exports = {
 					return
 				}
 				database.set(`.guilds.${guild.id}.invites.${code}.name`, name)
-				interaction.reply({ embeds: embeds.successEmbed(`Invite Renamed`, `Invite \`${code}\` renamed to \`${name}\``) })
+				interaction.reply({ ephemeral: true, embeds: embeds.successEmbed(`Invite Renamed`, `Invite \`${code}\` renamed to \`${name}\``) })
 
 				break
 			}
@@ -136,12 +136,13 @@ module.exports = {
 						console.log(`Created an invite with a code of ${invite.code}`)
 						console.log(invite)
 						if (name) {
-							database.set(`.guilds.${interaction.guild.id}.invites.${invite.code}.name`, name)
-							await interaction.reply({ embeds: embeds.successEmbed(`Created Invite`, `Created Invite with name \`${name}\`, to channel ${channel}.`) })
+							// the database entry will be created because the event inviteCreate is emitted
+							await database.set(`.guilds.${interaction.guild.id}.invites.${invite.code}.name`, name)
+							await interaction.reply({ ephemeral: true, embeds: embeds.successEmbed(`Created Invite`, `Created Invite with name \`${name}\`, to channel ${channel}.`) })
 						} else {
-							await interaction.reply({ embeds: embeds.successEmbed(`Created Invite`, `Created Invite to channel ${channel}.`) })
+							await interaction.reply({ ephemeral: true, embeds: embeds.successEmbed(`Created Invite`, `Created Invite to channel ${channel}.`) })
 						}
-						await interaction.followUp(`https://discord.gg/${invite.code}`)
+						await interaction.followUp({ ephemeral: true, content: `https://discord.gg/${invite.code}` })
 					})
 				break
 			}
@@ -153,15 +154,35 @@ module.exports = {
 	async autocomplete(interaction) {
 		const focusedValue = interaction.options.getFocused()
 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
-		choices = []
-		for (i in invites) {
-			console.log(i)
-			choices.push(`${i}`)
-		}
-		console.log(choices)
+
+		//convert to array of objects (from object of objects)
+		var invites2 = Object.keys(invites).map(key => {
+			return data[key]
+		})
+		invites2.sort((a, b) => {
+			var keyA = a.expired
+			var keyB = b.expired
+			// if a is less than b by some ordering criterion
+			if (keyA == true && keyB == false) return -1
+			// a is greater than b by the ordering criterion
+			if (keyA == false && keyB == true) return 1
+			// a must be equal to b
+			return 0
+		})
+		const choices = invites2.map(e => `${e}`)
+
+
 		const filtered = choices.filter(choice => choice.startsWith(focusedValue))
+
+
+		var shortfiltered = filtered
+		if (filtered.length > 25) {
+			shortfiltered = filtered.slice(0, 24)
+		}
+
+
 		await interaction.respond(
-			filtered.map(choice => ({ name: choice, value: choice })),
+			shortfiltered.map(choice => ({ name: choice, value: choice })),
 		)
 	}
 }

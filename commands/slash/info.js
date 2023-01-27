@@ -161,7 +161,15 @@ module.exports = {
 				//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
 				if (interaction.options.getString('show') != 'hide') {
 					infoEmbed.addFields({ name: '__Profile__', value: `${a}${av}${gav}${b}\n`, })
-					if (member) infoEmbed.addFields({ name: '__Guild__', value: `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - member.joinedTimestamp)}),` })
+
+					const invitedLink = await database.get(`.guilds.${member.guild.id}.users.${member.id}.invitedLink`)
+					const invited = invitedLink ? `${invitedLink}` : `*Unknown*`
+
+					var guildtext = `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f> (${format.time(Date.now() - member.joinedTimestamp)} ago)`
+					guildtext += `\n**Invited by:** ${invited}`
+
+
+					if (member) infoEmbed.addFields({ name: '__Guild__', value: guildtext })
 					if (image) infoEmbed.addFields({ name: `\u200b`, value: `**Showing ${imagename}:**` })
 					if (image) infoEmbed.setImage(`${image}?size=4096`)
 				}

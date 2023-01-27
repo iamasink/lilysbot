@@ -298,6 +298,7 @@ module.exports = {
 			console.log(interaction.options)
 			console.log("running command")
 			await command.execute(interaction) // trys to run the command
+			return await interaction
 		} catch (error) {
 			console.error(error)
 			const row = new ActionRowBuilder()

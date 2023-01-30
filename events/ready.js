@@ -28,6 +28,7 @@ module.exports = {
 				database.set(`.guilds.${guild.id}.invites.${code}.inviterId`, inviterId)
 				database.set(`.guilds.${guild.id}.invites.${code}.uses`, uses)
 				database.set(`.guilds.${guild.id}.invites.${code}.expired`, false)
+				database.set(`.guilds.${guild.id}.invites.${code}.code`, code)
 			})
 			for (i in oldinvites) {
 				if (guildinvites.has(i)) {

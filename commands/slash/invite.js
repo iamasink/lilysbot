@@ -152,37 +152,46 @@ module.exports = {
 		}
 	},
 	async autocomplete(interaction) {
-		const focusedValue = interaction.options.getFocused()
+		const focusedOption = interaction.options.getFocused(true)
+		console.log(focusedOption)
+		switch (focusedOption.name) {
+			case 'code': {
+
+				break
+			}
+			default: {
+				console.log("uh oh stinky")
+				throw new Error("homosexual behaviour detected")
+			}
+		}
+
+
 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
 
 		//convert to array of objects (from object of objects)
-		var invites2 = Object.keys(invites).map(key => {
+		var choices = Object.keys(invites).map(key => {
 			return data[key]
 		})
-		invites2.sort((a, b) => {
-			var keyA = a.expired
-			var keyB = b.expired
-			// if a is less than b by some ordering criterion
-			if (keyA == true && keyB == false) return -1
-			// a is greater than b by the ordering criterion
-			if (keyA == false && keyB == true) return 1
-			// a must be equal to b
-			return 0
-		})
-		const choices = invites2.map(e => `${e}`)
 
-
-		const filtered = choices.filter(choice => choice.startsWith(focusedValue))
-
+		const filtered = choices.filter(choice => choice.code.startsWith(focusedOption.value))
 
 		var shortfiltered = filtered
 		if (filtered.length > 25) {
 			shortfiltered = filtered.slice(0, 24)
 		}
+		var response = shortfiltered.map(choice => {
+			console.log(choice)
+			var name = `${choice.code}`
+			if (choice.name) {
+				name += ` - ${choice.name}`
+			}
+			//name += ` - by ${(interaction.client.users.fetch(choice.inviterId)).username}`
 
-
-		await interaction.respond(
-			shortfiltered.map(choice => ({ name: choice, value: choice })),
-		)
+			console.log(choice.code)
+			console.log({ name: name, value: choice.code })
+			return { name: name, value: choice.code }
+		})
+		console.log(response)
+		await interaction.respond(response)
 	}
 }

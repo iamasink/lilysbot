@@ -27,7 +27,9 @@
     "redis": "^4.5.1",
     "snoowrap": "^1.23.0",
     "string-similarity": "^4.0.4",
-    "gifencoder": "^2.0.1"
+    "gifencoder": "^2.0.1",
+    "parse-torrent": "^9.0.0",
+    "bl": "^6.0.0"
   },
   "devDependencies": {
     "eslint": "^8.23.0"

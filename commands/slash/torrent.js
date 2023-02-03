@@ -25,6 +25,8 @@ module.exports = {
 		)
 	,
 	async execute(interaction) {
+		console.log(interaction)
+
 		switch (interaction.options.getSubcommand()) {
 			case 'get': {
 				await interaction.deferReply()

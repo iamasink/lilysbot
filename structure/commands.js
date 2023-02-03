@@ -51,6 +51,7 @@ async function refreshGuildCommands(guildId) {
 		defaultoptions = aliases[i].defaultoptions
 		group = aliases[i].group
 		subcommand = aliases[i].subcommand
+		description = aliases[i].description
 		aliasName = i
 		//console.log(`${aliasName} => ${commandName}`)
 		let command = new SlashCommandBuilder()
@@ -83,6 +84,13 @@ async function refreshGuildCommands(guildId) {
 		console.log(a)
 		console.log("b")
 		console.log(b)
+		if (Array.isArray(b)) {
+			console.log("booobs")
+		} else {
+			console.log("no lol")
+			b = [b]
+		}
+
 		// 	remove item from a if it exists in b
 		var reduced = a.filter(aitem => !b.find(bitem => aitem["name"] === bitem["name"]))
 		newcommanddata.options = reduced
@@ -107,6 +115,15 @@ async function refreshGuildCommands(guildId) {
 		// command.data.options = reduced
 		// console.log("merged")
 		// console.log(reduced)
+		if (aliases[i].hidedefaults) {
+			console.log("hide options set")
+			//newcommanddata.options = newcommanddata.options.filter(e => e.name !== "")
+
+		}
+		if (aliases[i].hidealloptions) {
+			console.log("hide all options")
+			newcommanddata.options = []
+		}
 
 
 		newcommand = newcommanddata
@@ -252,7 +269,9 @@ module.exports = {
 			console.log("balls")
 			//if (!interaction.options._hoistedOptions) interaction.options = new CommandInteractionOptionResolver(client, )
 
-			// merge options with interaction's options, new options will overwrite 
+			// merge options with interaction's options, new options should overwrite
+			console.log(interaction.options._hoistedOptions)
+			console.log(options)
 			interaction.options._hoistedOptions = merge(interaction.options._hoistedOptions, options, "name")
 			console.log("merged	")
 			console.log(interaction.options._hoistedOptions)

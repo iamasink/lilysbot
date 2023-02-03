@@ -1,6 +1,22 @@
 const { SlashCommandBuilder } = require('discord.js')
+const http = require('http')
+const https = require('https')
+
+
 const database = require('../../structure/database')
 const format = require('../../structure/format')
+const commands = require('../../structure/commands')
+const calc = require('../../structure/calc')
+const colour = require('../../structure/colour')
+const log = require('../../structure/log')
+const buttons = require('../../structure/buttons')
+
+
+
+
+
+
+
 
 // This function cleans up and prepares the
 // result of our eval command input for sending

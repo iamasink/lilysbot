@@ -35,7 +35,13 @@ module.exports = {
 					.setName("defaultoptions")
 					.setDescription("defaultoptions")
 				)
-
+				.addBooleanOption(option => option
+					.setName('hidealloptions')
+					.setDescription('hide options?')
+				)
+				.addStringOption(option => option
+					.setName('description')
+					.setDescription('override description'))
 			)
 			.addSubcommand(command => command
 				.setName('remove')
@@ -140,8 +146,16 @@ module.exports = {
 							group = interaction.options.getString("group")
 							subcommand = interaction.options.getString("subcommand")
 							defaultoptions = JSON.parse(interaction.options.getString("defaultoptions"))
+<<<<<<< HEAD
 
 							data = { commandname: command, group: group, subcommand: subcommand, defaultoptions: [], hidedefaults: true }
+=======
+							hidealloptions = interaction.options.getBoolean('hidealloptions')
+							description = interaction.options.getString('description')
+							console.log(defaultoptions)
+
+							data = { commandname: command, group: group, subcommand: subcommand, defaultoptions: defaultoptions || [], hidedefaults: true, hidealloptions: hidealloptions, description: description }
+>>>>>>> master-holder
 							await database.set(aliasPath, data)
 							interaction.reply({ embeds: embeds.successEmbed("Created alias successfully") })
 						}

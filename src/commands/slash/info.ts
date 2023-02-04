@@ -13,8 +13,8 @@ const format = require('../../structure/format')
 // }
 
 
-function formattext(val, name, append = ``, fallback) {
-	output = `\n**${name}**: `
+function formattext(val: any, name: string, append = ``, fallback?: string) {
+	var output = `\n**${name}**: `
 	if (val != undefined && val != null) {
 		output += `${val}${append}`
 	} else {
@@ -29,33 +29,30 @@ export default {
 	data: new SlashCommandBuilder()
 		.setName('info')
 		.setDescription('Retrieves info...')
-		.addSubcommand(subcommand =>
-			subcommand
-				.setName('user')
-				.setDescription('Info about a user')
-				.addUserOption((option: any) => option.setName('target').setDescription('A user. Ping or ID').setRequired(true))
-				.addStringOption((option: any) => option
-					.setName('show')
-					.setDescription('Image to show')
-					.addChoices(
-						{ name: 'avatar', value: 'avatar' },
-						{ name: 'guild avatar', value: 'guild avatar' },
-						{ name: 'banner', value: 'banner' },
-						{ name: 'hide', value: 'hide' }
-
-					)
+		.addSubcommand((subcommand: any) => subcommand
+			.setName('user')
+			.setDescription('Info about a user')
+			.addUserOption((option: any) => option.setName('target').setDescription('A user. Ping or ID').setRequired(true))
+			.addStringOption((option: any) => option
+				.setName('show')
+				.setDescription('Image to show')
+				.addChoices(
+					{ name: 'avatar', value: 'avatar' },
+					{ name: 'guild avatar', value: 'guild avatar' },
+					{ name: 'banner', value: 'banner' },
+					{ name: 'hide', value: 'hide' }
 
 				)
+
+			)
 		)
-		.addSubcommand(subcommand =>
-			subcommand
-				.setName('guild')
-				.setDescription('Info about the guild')
+		.addSubcommand((subcommand: any) => subcommand
+			.setName('guild')
+			.setDescription('Info about the guild')
 		)
-		.addSubcommand(subcommand =>
-			subcommand
-				.setName('bot')
-				.setDescription('Info about the bot')
+		.addSubcommand((subcommand: any) => subcommand
+			.setName('bot')
+			.setDescription('Info about the bot')
 		),
 
 	async execute(interaction: any) {
@@ -64,12 +61,18 @@ export default {
 			case 'user': {
 				console.log(interaction.options)
 				// get target user, if not, the user that created the interaction (ie called the command)
-				user = interaction.options.getUser('target')
+				let user = interaction.options.getUser('target')
 				console.log(user)
 				// fetches the user so their banner, accent colour is available
 				user = await user.fetch()
 
 				console.log(interaction.options.getString('info'))
+				let member
+				let gavURL
+				let thumb
+				let avatar
+				let image
+				let imagename
 
 				if (interaction.guild.members.resolve(user)) {
 					member = interaction.guild.members.resolve(user)
@@ -81,10 +84,10 @@ export default {
 				} else { gavURL = null }
 
 				// format each thing 
-				a = formattext(user.hexAccentColor, `Accent color`)
-				av = formattext(user.avatarURL(true), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`)
-				gav = formattext(gavURL, `Guild Avatar URL`, `?size=4096`)
-				b = formattext(user.bannerURL(true), `Banner URL`, `?size=4096`)
+				const a = formattext(user.hexAccentColor, `Accent color`)
+				const av = formattext(user.avatarURL(true), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${user.discriminator % 5}.png`)
+				const gav = formattext(gavURL, `Guild Avatar URL`, `?size=4096`)
+				const b = formattext(user.bannerURL(true), `Banner URL`, `?size=4096`)
 
 				// if user has an avatar, set thumbnail to avatar
 				if (user.avatarURL(true)) {
@@ -233,8 +236,8 @@ export default {
 
 			}
 			case 'bot': {
-				client = interaction.client
-				user = client.user
+				const client = interaction.client
+				const user = client.user
 				console.log(client)
 				console.log(client.guilds.size)
 

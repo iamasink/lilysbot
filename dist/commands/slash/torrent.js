@@ -1,3 +1,4 @@
+"use strict";
 // import { SlashCommandBuilder } from 'discord.js'
 // //import embeds from '../../structure/embeds'
 // //import commands from '../../structure/commands'
@@ -7,7 +8,6 @@
 // import https from 'https' // or 'https' for https:// URLs
 // import bl from 'bl'
 // import embeds from '../../structure/embeds'
-
 // export default {
 // 	data: new SlashCommandBuilder()
 // 		.setName('torrent')
@@ -27,11 +27,9 @@
 // 	,
 // 	async execute(interaction: any) {
 // 		console.log(interaction)
-
 // 		switch (interaction.options.getSubcommand()) {
 // 			case 'get': {
 // 				await interaction.deferReply()
-
 // 				const attachment = interaction.options.getAttachment('torrent')
 // 				console.log(attachment)
 // 				const text = interaction.options.getString('magnet')
@@ -44,25 +42,19 @@
 // 							if (err)
 // 								return console.error(err)
 // 							console.log(data.toString().length)
-
 // 							try {
 // 								torrent = parseTorrent(data)
 // 								console.log(torrent)
-
 // 								var extrainfo = ``
 // 								if (torrent.comment)
 // 									extrainfo += `\n**Comment:** ${torrent.comment}`
-
-
 // 								await interaction.editReply({
 // 									embeds: embeds.messageEmbed("Parsed torrent!",
 // 										`**Name:** ${torrent.name}
 // 								**Created At:** ${torrent.created}
 // 								**Created By:** ${torrent.createdBy}
 // 								**Private:** ${torrent.private || "false"}
-	
 // 								**Announce:** ${torrent.announce.join("\n")}
-		
 // 								**Total Length:** ${torrent.length}b
 // 								**Files:**
 // 								${torrent.files.map((e: { name: any; length: any; offset: any }) => [e.name, e.length, e.offset]).join("\n")}
@@ -77,12 +69,10 @@
 // 										`Are you sure \n*${attachment.name}*\nis a .torrent file?`)
 // 								})
 // 							}
-
 // 						}))
 // 					})
 // 				} else if (text) {
 // 					try {
-
 // 						const torrent = parseTorrent(text)
 // 						console.log(torrent)
 // 						var extrainfo = ``
@@ -94,21 +84,16 @@
 // 						if (torrent.kt) extrainfo += `\n**Keyword Topic:** ${torrent.kt}`
 // 						if (torrent.mt) extrainfo += `\n**Manifest Topic:** ${torrent.mt}`
 // 						if (torrent.so) extrainfo += `\n**Select Only:** ${torrent.so}`
-
-
 // 						await interaction.editReply({
 // 							embeds: embeds.messageEmbed("Parsed magnet!",
 // 								`**Name:** ${torrent.dn}
 // 							**File Size (Length):** ${torrent.xl || "Unknown"}
 // 							${extrainfo}
-
 // 							**Trackers:**
 // 							${torrent.tr.join("\n")}
-
 // 							**Info Hash:** ${torrent.infoHash}
 // 							`)
 // 						})
-
 // 					} catch {
 // 						interaction.editReply({
 // 							embeds: embeds.warningEmbed(
@@ -116,24 +101,14 @@
 // 								`Are you sure \n*${text}*\nis a magnet link?`)
 // 						})
 // 					}
-
-
 // 				} else {
 // 					return interaction.editReply({ embeds: embeds.warningEmbed("No Torrent Selected", "You must add an attachment to a .torrent file or a magnet link") })
 // 				}
-
-
-
-
-
-
 // 				break
 // 			}
-
 // 			default: {
 // 				throw new Error("invalid subcommand")
 // 			}
 // 		}
-
 // 	},
 // }

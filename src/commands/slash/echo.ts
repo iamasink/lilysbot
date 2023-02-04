@@ -1,4 +1,4 @@
-//const { SlashCommandBuilder } = require('discord.js')
+import { SlashCommandBuilder } from 'discord.js'
 
 export default {
 	data: new SlashCommandBuilder()

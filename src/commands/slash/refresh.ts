@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
-const embeds = require('../../structure/embeds.js')
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js'
+import embeds from '../../structure/embeds'
 
-const childProcess = require('child_process')
-const commands = require('../../structure/commands.js')
+import childProcess from 'child_process'
+import commands from '../../structure/commands'
 
 // function runScript(scriptPath, callback) {
 // 	// keep track of whether callback has been invoked to prevent multiple invocations

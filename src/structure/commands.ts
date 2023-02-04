@@ -167,7 +167,7 @@ async function getCommands() {
 	const commands = []
 	// reads files from files directory
 	const commandsPath = path.join(__dirname, '..', 'commands', 'slash')
-	const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.js'))
+	const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.ts'))
 
 	for (const file of commandFiles) {
 		const command = require(`../commands/slash/${file}`)
@@ -195,7 +195,7 @@ async function getContextMenuCommands() {
 	const commands = []
 
 	const commandsPath = path.join(__dirname, '..', 'commands', 'contextmenu')
-	const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.js'))
+	const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.ts'))
 
 	for (const file of commandFiles) {
 		const command = require(`../commands/contextmenu/${file}`)

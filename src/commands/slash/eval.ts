@@ -1,15 +1,14 @@
-const { SlashCommandBuilder } = require('discord.js')
-const http = require('http')
-const https = require('https')
+import { SlashCommandBuilder } from 'discord.js'
+import http from 'http'
+import https from 'https'
 
 
-const database = require('../../structure/database')
-const format = require('../../structure/format')
-const commands = require('../../structure/commands')
-const calc = require('../../structure/calc')
-const colour = require('../../structure/colour')
-const log = require('../../structure/log')
-const buttons = require('../../structure/buttons')
+import database from '../../structure/database'
+import format from '../../structure/format'
+import commands from '../../structure/commands'
+import calc from '../../structure/calc'
+import colour from '../../structure/colour'
+import log from '../../structure/log'
 
 
 
@@ -21,7 +20,7 @@ const buttons = require('../../structure/buttons')
 // This function cleans up and prepares the
 // result of our eval command input for sending
 // to the channel
-const clean = async (text) => {
+const clean = async (text: any) => {
 	// If our input is a promise, await it before continuing
 	if (text && text.constructor.name == "Promise")
 		text = await text
@@ -65,7 +64,7 @@ export default {
 			const cleaned = await clean(evaled)
 			console.log(cleaned)
 			// Reply in the channel with our result
-			messages = format.splitMessage("```js\n" + cleaned + "\n```", 2000, '\n', '```js\n', '\n```')
+			const messages = format.splitMessage("```js\n" + cleaned + "\n```", 2000, '\n', '```js\n', '\n```')
 			await interaction.editReply("evaled")
 			for (let i = 0, len = messages.length; i < len; i++) {
 				await interaction.followUp(messages[i])

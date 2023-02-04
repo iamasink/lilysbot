@@ -1,3 +1,4 @@
+"use strict";
 // const { PermissionsBitField, SlashCommandBuilder, ActionRowBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js')
 // const embeds = require('../../structure/embeds')
 // const buttons = require('../../structure/buttons')
@@ -5,17 +6,12 @@
 // const database = require('../../structure/database')
 // var stringSimilarity = require("string-similarity")
 // const { messageEmbed } = require('../../structure/embeds')
-
-
-
 // async function getRoles(interaction: any) {
 // 	//await interaction.reply(interaction.options.getString('input'))
 // 	const roles = interaction.guild.roles.cache
-
 // 	const filteredroles = roles.filter((r: any) => r.managed != true)
 // 	return filteredroles.sort((a: any, b: any) => b.rawPosition - a.rawPosition)
 // }
-
 // async function createMenu(guild: any, rolelist: any) {
 // 	var output = ""
 // 	for (let i = 0; i < rolelist.length; i++) {
@@ -24,7 +20,6 @@
 // 	}
 // 	return `breuh\n` + output
 // }
-
 // export default {
 // 	discordPermissions: [PermissionsBitField.Flags.ManageRoles],
 // 	tempType: 'old',
@@ -61,7 +56,6 @@
 // 					.setName('maximum')
 // 					.setDescription('maximum number of roles in this list a user can have. No limit by default. No effect with Buttons')
 // 				)
-
 // 			)
 // 			.addSubcommand((command: any) => command
 // 				.setName('update')
@@ -110,7 +104,6 @@
 // 						const rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 // 						const options = []
 // 						console.log(JSON.stringify(rolelists))
-
 // 						interface RoleMenu { name: string, minimum: number, maximum: number, type: string, description: string, list: any, id: string }
 // 						let roleMenu: RoleMenu = {
 // 							name: interaction.options.getString('name'),
@@ -126,7 +119,6 @@
 // 						// roleMenu.maximum = interaction.options.getInteger('maximum') || 25
 // 						// roleMenu.type = interaction.options.getString('type') || "menu"
 // 						// roleMenu.description = interaction.options.getString('description')
-
 // 						// create options for select menu from role list list
 // 						for (const i in rolelists) {
 // 							console.log(rolelists[i].name)
@@ -156,10 +148,8 @@
 // 									console.log(`list: ${JSON.stringify(list)}`)
 // 									interaction.deleteReply()
 // 									//list = await database.get(`.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
-
 // 									const menu = await createMenu(interaction.guild, list)
 // 									const num = list.length
-
 // 									switch (roleMenu.type) {
 // 										case 'menu': {
 // 											// maximum can't be more than the list size. handle it
@@ -168,35 +158,29 @@
 // 											} else {
 // 												const maximum = roleMenu.maximum
 // 											}
-
 // 											const menu = new SelectMenuBuilder()
 // 												.setCustomId(`roles.rolemenu`)
 // 												.setPlaceholder('Choose roles')
 // 												.setMinValues(roleMenu.minimum)
 // 												.setMaxValues(maximum)
-
 // 											const options = []
 // 											for (let i = 0; i < num; i++) {
 // 												const push: any = {
 // 													label: `${interaction.guild.roles.resolve(list[i].id).name}`,
 // 													value: `${list[i].id}`
 // 												}
-
 // 												if (list[i].description) {
 // 													push.description = list[i].description
 // 													console.log(`desc: ${push.description}`)
-
 // 												}
 // 												if (list[i])
 // 													options.push(push)
 // 											}
 // 											menu.addOptions(options)
-
 // 											const row = new ActionRowBuilder()
 // 												.addComponents(menu)
 // 											console.log(`menu: ${JSON.stringify(menu)}`)
 // 											const rows = [row]
-
 // 											break
 // 										}
 // 										case 'buttons': {
@@ -204,7 +188,6 @@
 // 											const rows: any = []
 // 											const buttonsOnLastRow: number = num - (rows * 5)
 // 											let buttonscount: number
-
 // 											for (let x = 0; x < rowcount; x++) {
 // 												rows[x] = new ActionRowBuilder()
 // 												if (x == rowcount - 1) {
@@ -225,20 +208,13 @@
 // 											break
 // 										}
 // 									}
-
-
-
-
 // 									i.message.channel.send({ embeds: embeds.messageEmbed(`Roles - ${roleMenu.name}`, roleMenu.description), components: rows }).then(async msg => {
 // 										roleMenu.id = msg.id
 // 										await database.set(`.guilds.${interaction.guild.id}.roles.menus.${roleMenu.id}`, roleMenu)
 // 									})
-
 // 								})
 // 								.catch(err => console.log(`No interactions were collected.\n`, err))
 // 						})
-
-
 // 						// interaction.guild.channels.cache.get(interaction.channelId).send('__Roles__').then(msg => {
 // 						// 	const id = msg.id
 // 						// 	roleMenu.id = id
@@ -250,11 +226,9 @@
 // 						// 		throw new Error(`Could not create role menu, does one by this name already exist?`)
 // 						// 	}
 // 						// })
-
 // 						break
 // 					}
 // 					case 'update': {
-
 // 					}
 // 				}
 // 				break
@@ -264,7 +238,6 @@
 // 					case 'create': {
 // 						// check if it already exists
 // 						const lists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
-
 // 						console.log(`lists = ${JSON.stringify(lists)}`)
 // 						if (lists.hasOwnProperty(interaction.options.getString('name'))) {
 // 							throw new Error(`Could not create role menu, one by this name already exists.`)
@@ -273,8 +246,6 @@
 // 							// if too many rolelists for a select menu
 // 							throw new Error("You have too many rolelists. If you have this many you're probably using it wrong lol.")
 // 						}
-
-
 // 						const newroles = []
 // 						const roleList = {}
 // 						roleList.roles = []
@@ -282,9 +253,7 @@
 // 						const messagesToDelete = []
 // 						await interaction.reply({ embeds: embeds.messageEmbed(`Enter roles for the list: ${roleList.name}. `, `Type role name or id, type 'done' when finished, or 'cancel' to cancel!\nOptionally add a role description on a new line.\nYou can also type '+rolename' to quickly create a new role by that name`), })
 // 							.then((message) => messagesToDelete.push(message))
-
 // 						console.log(`awawawa msg: ${await (messagesToDelete[0])}`)
-
 // 						// `m` is a message object that will be passed through the filter function
 // 						const filter = m => m.author.id === interaction.user.id
 // 						// collect messages
@@ -322,12 +291,10 @@
 // 													.setLabel('Remove')
 // 													.setStyle(ButtonStyle.Danger),
 // 											)
-
 // 										await interaction.followUp({ embeds: embeds.messageEmbed(null, `**<@&${roleid}>**\n(*new role*).`), components: [row] }).then(msg => {
 // 											messagesToDelete.push(msg)
 // 											const filter = i => i.customId === 'roleslist-remove2'
 // 											const collector = msg.createMessageComponentCollector({ filter, time: 120000 })
-
 // 											// collect button press to remove role
 // 											collector.on('collect', i => {
 // 												if (i.user.id === interaction.user.id) {
@@ -338,12 +305,10 @@
 // 														.catch(console.error)
 // 													collector.stop()
 // 													msg.delete()
-
 // 												} else {
 // 													i.reply({ content: `These buttons aren't for you!`, ephemeral: true })
 // 												}
 // 											})
-
 // 											collector.on('end', collected => {
 // 												console.log(`Collected ${collected.size} interactions.`)
 // 											})
@@ -385,10 +350,7 @@
 // 										roleid = roleidlist[index]
 // 									}
 // 								}
-
 // 							}
-
-
 // 							if (roleid) {
 // 								if (roleList.roles.find(r => r.id === roleid)) {
 // 									interaction.followUp({ embeds: embeds.messageEmbed("This role has already been added.", null, null, '#ff0000') })
@@ -397,7 +359,6 @@
 // 									console.log("Yeah.")
 // 									const role = await interaction.guild.roles.fetch(roleid)
 // 									roleList.roles.push({ id: role.id, description: text.split('\n')[1] })
-
 // 									if (!isnew) {
 // 										// handle remove button
 // 										const row = new ActionRowBuilder()
@@ -407,12 +368,10 @@
 // 													.setLabel('Remove')
 // 													.setStyle(ButtonStyle.Danger),
 // 											)
-
 // 										interaction.followUp({ embeds: embeds.messageEmbed(null, `**<@&${roleid}>**\n(*from '${text.split('\n')[0]}'*).`), components: [row] }).then(msg => {
 // 											messagesToDelete.push(msg)
 // 											const filter = i => i.customId === 'roleslist-remove'
 // 											const collector = msg.createMessageComponentCollector({ filter, time: 120000 })
-
 // 											// collect button press to remove role
 // 											collector.on('collect', i => {
 // 												if (i.user.id === interaction.user.id) {
@@ -420,32 +379,25 @@
 // 													roleList.roles.splice(index, 1)
 // 													collector.stop()
 // 													msg.delete()
-
 // 												} else {
 // 													i.reply({ content: `These buttons aren't for you!`, ephemeral: true })
 // 												}
 // 											})
-
 // 											collector.on('end', collected => {
 // 												console.log(`Collected ${collected.size} interactions.`)
 // 											})
 // 											const reactioncollector = message.createReactionCollector({ filter, time: 15000 })
-
 // 											reactioncollector.on('collect', (reaction, user) => {
 // 												console.log(`Collected ${reaction.emoji.name} from ${user.tag}`)
 // 												if (user == interaction.user) {
-
 // 												} else {
-
 // 												}
 // 											})
-
 // 											reactioncollector.on('end', collected => {
 // 												console.log(`Collected ${collected.size} items`)
 // 											})
 // 										})
 // 									}
-
 // 								}
 // 							} else {
 // 								interaction.followUp({ embeds: embeds.messageEmbed(`Role '${text}' not found.`, `Type "done" to finish or "cancel" to cancel`, null, '#ff0000') })
@@ -468,7 +420,6 @@
 // 								console.log(`rolelist: ${JSON.stringify(roleList)}`)
 // 								if (roleList.roles.length > 0) {
 // 									interaction.followUp({ embeds: embeds.successEmbed(`Saved ${roleList.roles.length} roles`) })
-
 // 									// cleanup messages
 // 									// for (let i = 0; i < messagesToDelete.length; i++) {
 // 									// 	//message = await interaction.channel.messages.fetch({ message: messagesToDelete[i] })
@@ -476,10 +427,7 @@
 // 									// 	console.log(messagesToDelete[i].id)
 // 									// }
 // 									interaction.channel.bulkDelete(messagesToDelete.map(m => m.id))
-
-
 // 									interaction.followUp({ embeds: embeds.messageEmbed(`Roles in list ${roleList.name}:`, `${roleList.roles.map(r => `<@&${r.id}>`).join('\n')}`) })
-
 // 									try {
 // 										const path = `.guilds.${interaction.guild.id}.roles.lists`
 // 										await database.set(path + `.${roleList.name}`, roleList)
@@ -512,13 +460,10 @@
 // 								roleliststext += `${rolelists[i].name} - ${rolelists[i].roles.length}\n`
 // 								count++
 // 							}
-
 // 							console.log(tagList)
 // 							await interaction.reply({ embeds: embeds.messageEmbed(`Roles - ${tagList.length}`, tagList.join('\n')) })
 // 							await interaction.followUp({ embeds: embeds.messageEmbed(`Role Lists - ${count}`, roleliststext) })
 // 							// todo add rolelists
-
-
 // 						} else {
 // 							console.log(JSON.stringify(rolelists))
 // 							for (const i in rolelists) {
@@ -527,9 +472,7 @@
 // 									interaction.reply({ embeds: embeds.messageEmbed(`Roles List - ${rolelists[i].name} - ${rolelists[i].roles.length}`, roles.join('\n')) })
 // 								}
 // 							}
-
 // 						}
-
 // 						break
 // 					}
 // 					case 'delete': {
@@ -541,12 +484,10 @@
 // 						} catch (e) {
 // 							throw new Error(`Couldn't delete rolelist\n${e}`)
 // 						}
-
 // 						break
 // 					}
 // 				}
 // 				break
-
 // 			}
 // 		}
 // 	},
@@ -564,7 +505,6 @@
 // 				const member = await interaction.guild.members.resolve(user)
 // 				const roles = await member.roles.cache // members roles
 // 				const roleids = roleList.roles.map((r: any) => r.id) // list of ids on the role list
-
 // 				// for every role on the role list
 // 				for (let i = 0; i < roleList.roles.length; i++) {
 // 					console.log(i)
@@ -611,7 +551,6 @@
 // 				const roles = await member.roles.cache // members roles
 // 				// list of role ids from the list
 // 				const roleids = roleList.roles.map((r: any) => r.id)
-
 // 				// this is the list of roles the user has that are also in the role list
 // 				const rolesinlist = roles.filter((r: any) => {
 // 					// if its in the roleList, add it
@@ -619,7 +558,6 @@
 // 						return r.id
 // 					}
 // 				})
-
 // 				//count roles the user has in the list
 // 				let rolecount = 0
 // 				// for (var i = 0; i < roles.size; i++) {
@@ -637,13 +575,9 @@
 // 						rolecount++
 // 					}
 // 				}
-
-
 // 				console.log(`roleids: ${JSON.stringify(roleids)}`)
 // 				console.log(`rolesinlist: ${JSON.stringify(rolesinlist)}`)
 // 				console.log(`roles: ${JSON.stringify(roles)}`)
-
-
 // 				// for every role on the role list
 // 				for (let i = 0; i < roleList.roles.length; i++) {
 // 					console.log(i)
@@ -667,10 +601,7 @@
 // 						}
 // 					}
 // 				}
-
 // 				await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), ephemeral: true }).then((msg: any) => msg.delete())
-
-
 // 				// // does the user already have the role?
 // 				// if (roles.find(r => r.id === roleid)) {
 // 				// 	if (rolecount >= maxroles) {
@@ -678,31 +609,21 @@
 // 				// 	} else {
 // 				// 		interaction.reply({ embeds: embeds.messageEmbed(`You have too few roles in list ${roleMenu.name}!`, `${rolecount} / ${minroles}. `), ephemeral: true })
 // 				// 	}
-
 // 				// } else {
 // 				// 	if (rolecount <= minroles) {
-
 // 				// 		interaction.guild.members.addRole({ user: user, role: roleid, reason: `rolemenu ${roleMenu.name}` })
 // 				// 		interaction.reply({ embeds: embeds.messageEmbed(`Added role ${role.name}`), ephemeral: true })
 // 				// 	} else {
 // 				// 		interaction.reply({ embeds: embeds.messageEmbed(`You have too many roles in list ${roleMenu.name}!`, `${rolecount} / ${maxroles}. `), ephemeral: true })
-
-
 // 				// 	}
-
-
 // 				// }
 // 				//interaction.reply(rolename)
-
-
 // 				break
 // 			}
 // 		}
-
 // 		for (var i = 0; i < id.length; i++) {
 // 			console.log(id[i])
 // 		}
-
 // 		//throw new Error("not implemented")
 // 	}
 // }

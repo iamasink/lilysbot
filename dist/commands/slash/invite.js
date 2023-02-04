@@ -1,12 +1,10 @@
+"use strict";
 // const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 // const embeds = require('../../structure/embeds')
 // const format = require('../../structure/format')
 // const database = require('../../structure/database')
 // const calc = require('../../structure/calc')
 // const invites = require('../../structure/invites')
-
-
-
 // export default {
 // 	data: new SlashCommandBuilder()
 // 		.setName('invite')
@@ -64,7 +62,6 @@
 // 				const invitelist = await database.get(`.guilds.${interaction.guild.id}.invites`)
 // 				console.log(invitelist)
 // 				var output = ""
-
 // 				for (let i in invitelist) {
 // 					console.log(i)
 // 					const invite = invitelist[i]
@@ -76,10 +73,7 @@
 // 					console.log(invite.inviterId)
 // 					const inviter = await interaction.client.users.fetch(invite.inviterId)
 // 					var tempoutput = ``
-
-
 // 					tempoutput += `${name}\`${code}\`, by ${await inviter.tag},`
-
 // 					if (!hasExpired) {
 // 						let guildinvite = await interaction.guild.invites.fetch(code)
 // 						const createdTimestamp = `<t:${guildinvite.createdTimestamp.toString().slice(0, -3)}>`
@@ -91,7 +85,6 @@
 // 						}
 // 						tempoutput += `at ${createdTimestamp}, till ${expiresTimestamp}, to <#${guildinvite.channelId}>,`
 // 					}
-
 // 					tempoutput += `uses: ${uses}`
 // 					if (!hasExpired) {
 // 						let guildinvite = await interaction.guild.invites.fetch(code)
@@ -100,30 +93,25 @@
 // 						if (maxUses === 0) maxUses = `∞`
 // 						tempoutput += `/${maxUses}`
 // 					}
-
 // 					output += `\n${tempoutput}`
 // 				}
-
 // 				//output += `\nInvites marked as [-] have expired.`
 // 				const messages = format.splitMessage(output, 1900, "\n")
 // 				for (let i = 0, len = messages.length; i < len; i++) {
 // 					interaction.followUp({ ephemeral: true, content: messages[i] })
 // 				}
-
 // 				break
 // 			}
 // 			case 'name': {
 // 				const guild = interaction.guild
 // 				const code = interaction.options.getString('code')
 // 				const name = interaction.options.getString('name')
-
 // 				if (!await database.get(`.guilds.${guild.id}.invites.${code}`)) {
 // 					interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite`) })
 // 					return
 // 				}
 // 				database.set(`.guilds.${guild.id}.invites.${code}.name`, name)
 // 				interaction.reply({ ephemeral: true, embeds: embeds.successEmbed(`Invite Renamed`, `Invite \`${code}\` renamed to \`${name}\``) })
-
 // 				break
 // 			}
 // 			case 'create': {
@@ -156,7 +144,6 @@
 // 		console.log(focusedOption)
 // 		switch (focusedOption.name) {
 // 			case 'code': {
-
 // 				break
 // 			}
 // 			default: {
@@ -164,18 +151,13 @@
 // 				throw new Error("homosexual behaviour detected")
 // 			}
 // 		}
-
-
 // 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
-
 // 		// //convert to array of objects (from object of objects)
 // 		// var choices = Object.keys(invites).map(key => {
 // 		// 	return data[key]
 // 		// })
 // 		var choices
-
 // 		const filtered = choices.filter(choice => choice.code.startsWith(focusedOption.value))
-
 // 		var shortfiltered = filtered
 // 		if (filtered.length > 25) {
 // 			shortfiltered = filtered.slice(0, 24)
@@ -187,7 +169,6 @@
 // 				name += ` - ${choice.name}`
 // 			}
 // 			//name += ` - by ${(interaction.client.users.fetch(choice.inviterId)).username}`
-
 // 			console.log(choice.code)
 // 			console.log({ name: name, value: choice.code })
 // 			return { name: name, value: choice.code }

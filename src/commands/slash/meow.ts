@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 const { request } = require('undici')
 
 
-async function getJSONResponse(body) {
+async function getJSONResponse(body: any) {
 	let fullBody = ''
 
 	for await (const data of body) {

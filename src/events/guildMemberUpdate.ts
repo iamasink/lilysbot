@@ -13,8 +13,10 @@ const log = require('../structure/log')
 
 export default {
 	name: "guildMemberUpdate",
-	async execute(member) {
+	async execute(member: any) {
 		console.log(member)
+		let info: string
+
 		if (member.pending) {
 			info = `\nthey are pending.`
 		} else {

@@ -5,7 +5,7 @@ const database = require("../structure/database")
 
 export default {
 	name: "inviteCreate",
-	async execute(invite) {
+	async execute(invite: any) {
 		console.log(`a invite was created: ${invite}`)
 		console.log(invite)
 		database.set(`.guilds.${invite.guild.id}.invites.${invite.code}`, {

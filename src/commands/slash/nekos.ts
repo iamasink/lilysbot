@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 const { request } = require('undici')
 
 
-async function getJSONResponse(body) {
+async function getJSONResponse(body: any) {
 	let fullBody = ''
 
 	for await (const data of body) {
@@ -56,8 +56,8 @@ export default {
 		),
 
 	async execute(interaction: any) {
-		type = interaction.options.getString('image')
-		number = interaction.options.getInteger('number') || 1
+		const type = interaction.options.getString('image')
+		const number = interaction.options.getInteger('number') || 1
 		for (let i = 0; i < number; i++) {
 			setTimeout(async function () {
 				const result = await request(`https://nekos.life/api/v2/img/${type}`)

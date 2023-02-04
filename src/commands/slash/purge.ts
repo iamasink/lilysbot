@@ -18,7 +18,7 @@ export default {
 	async execute(interaction: any) {
 		console.log(interaction)
 		await interaction.channel.bulkDelete(interaction.options.getString("amount"))
-			.then(async messages => {
+			.then(async (messages: any) => {
 				await interaction.reply(`Bulk deleted ${messages.size} messages`)
 				log.log(interaction.guild, `${interaction.user} bulkdeleted ${messages.size} messages in ${interaction.channel}`)
 				setTimeout(() => interaction.deleteReply(), 2000)

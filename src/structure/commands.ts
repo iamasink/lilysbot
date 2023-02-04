@@ -6,6 +6,7 @@ const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const embeds = require('./embeds')
 const { permissions } = require('../config.json')
 const database = require('./database')
+import { client } from '../index'
 
 function merge(a: any, b: any, prop: any) {
 	var reduced = a.filter((aitem: any) => !b.find((bitem: any) => aitem[prop] === bitem[prop]))
@@ -206,24 +207,24 @@ async function getContextMenuCommands() {
 }
 
 
-function typeResolver(string: string) {
-	const types = {
-		"SUB_COMMAND": 1,
-		"SUB_COMMAND_GROUP": 2,
-		"STRING": 3,
-		"INTEGER": 4,	//Any integer between - 2 ^ 53 and 2 ^ 53
-		"BOOLEAN": 5,
-		"USER": 6,
-		"CHANNEL": 7,	//Includes all channel types + categories
-		"ROLE": 8,
-		"MENTIONABLE": 9,	//Includes users and roles
-		"NUMBER": 10,	//Any double between - 2 ^ 53 and 2 ^ 53
-		"ATTACHMENT": 11,	//attachment object
-	}
-	console.log(string.toUpperCase())
-	const type = types[string.toUpperCase()]
-	return type
-}
+// function typeResolver(string: string) {
+// 	const types = {
+// 		"SUB_COMMAND": 1,
+// 		"SUB_COMMAND_GROUP": 2,
+// 		"STRING": 3,
+// 		"INTEGER": 4,	//Any integer between - 2 ^ 53 and 2 ^ 53
+// 		"BOOLEAN": 5,
+// 		"USER": 6,
+// 		"CHANNEL": 7,	//Includes all channel types + categories
+// 		"ROLE": 8,
+// 		"MENTIONABLE": 9,	//Includes users and roles
+// 		"NUMBER": 10,	//Any double between - 2 ^ 53 and 2 ^ 53
+// 		"ATTACHMENT": 11,	//attachment object
+// 	}
+// 	console.log(string.toUpperCase())
+// 	const type = types[string.toUpperCase()]
+// 	return type
+// }
 
 
 export default {
@@ -241,9 +242,9 @@ export default {
 	refreshGuild(guildID: string) {
 		refreshGuildCommands(guildID)
 	},
-	typeResolver(string: string) {
-		typeResolver(string)
-	},
+	// typeResolver(string: string) {
+	// 	typeResolver(string)
+	// },
 	/**
 	 *Runs a command, optionally with altered interaction group, subcommand, options
 	 *
@@ -384,9 +385,9 @@ export default {
 		console.log(`optionsStart = ${optionsStart}`)
 
 		// find group
-		let commandgroup = await command.options.find(e => e.name == group && e.type == 2) || command
+		let commandgroup = await command.options.find((e: any) => e.name == group && e.type == 2) || command
 		console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
-		let commandsubcommand = await commandgroup.options.find(e => e.name == subcommand && e.type == 1) || commandgroup
+		let commandsubcommand = await commandgroup.options.find((e: any) => e.name == subcommand && e.type == 1) || commandgroup
 		console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
 
 		let foundoptions: any = []
@@ -402,7 +403,7 @@ export default {
 				// if it hasn't been chosen yet
 				if (!foundoptions.find((e: any) => e.name == option)) {
 					// if it exists in the command
-					if (await commandsubcommand.options.find(e => e.name == option && e.type == 3)) {
+					if (await commandsubcommand.options.find((e: { name: string; type: number }) => e.name == option && e.type == 3)) {
 						console.log(`option found ${words[i]}, ${i}`)
 						foundoptions.push({ name: option, position: i })
 					}

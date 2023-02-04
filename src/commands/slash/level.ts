@@ -1,8 +1,8 @@
-//const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
-//const embeds = require('../../structure/embeds')
-//const format = require('../../structure/format')
-//const database = require('../../structure/database')
-//const calc = require('../../structure/calc')
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js'
+import embeds from '../../structure/embeds'
+import format from '../../structure/format'
+import database from '../../structure/database'
+import calc from '../../structure/calc'
 
 
 
@@ -14,7 +14,7 @@ function fetchPromise(toFetch: any) {
 	})
 }
 
-export default {
+module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('level')
 		.setDescription('Retrieves level...')

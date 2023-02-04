@@ -1,17 +1,17 @@
 export default {
-	bar(min, current, max, length = 10, chars = [`#`, `.`]) {
-		progress = (current - min) / (max - min)
+	bar(min: number, current: number, max: number, length = 10, chars = [`#`, `.`]) {
+		const progress = (current - min) / (max - min)
 
-		count = Math.floor(progress * length)
+		const count = Math.floor(progress * length)
 		console.log(progress)
 		console.log(length)
 		console.log(`min: ${min}, current: ${current}, max: ${max}, length: ${length}, chars: ${chars}, progress: ${progress}, count: ${count}`)
 		return `${chars[0].repeat(count)}${chars[1].repeat(length - count)}`
 	},
-	numberCommas(n) {
+	numberCommas(n: { toString: () => string }) {
 		return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	},
-	async getJSONResponse(body) {
+	async getJSONResponse(body: any) {
 		let fullBody = ''
 
 		for await (const data of body) {
@@ -20,7 +20,7 @@ export default {
 
 		return JSON.parse(fullBody)
 	},
-	time(ms) {
+	time(ms: number) {
 		const years = Math.floor(ms / 31556952000)
 		const yearsms = ms % 31556952000
 		const months = Math.floor(yearsms / 2629800000)
@@ -32,7 +32,7 @@ export default {
 		const minutes = Math.floor(hoursms / (60 * 1000))
 		const minutesms = ms % (60 * 1000)
 		const sec = Math.floor(minutesms / 1000)
-		output = ``
+		let output = ``
 		if (years) output += `${years} years, `
 		if (months) output += `${months} months, `
 		if (days) output += `${days} days, `
@@ -40,24 +40,24 @@ export default {
 		output += `${minutes} minutes`
 		return output
 	},
-	splitMessage(text, maxLength = 2000, char = '\n', prepend = '', append = '') {
+	splitMessage(text: string, maxLength = 2000, char = '\n', prepend = '', append = '') {
 
 
 		if (text.length <= maxLength) return [text]
-		let splitText = [text]
+		let splitText: any = [text]
 		if (Array.isArray(char)) {
-			while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
+			while (char.length > 0 && splitText.some((elem: any) => elem.length > maxLength)) {
 				const currentChar = char.shift()
 				if (currentChar instanceof RegExp) {
-					splitText = splitText.flatMap(chunk => chunk.match(currentChar))
+					splitText = splitText.flatMap((chunk: string) => chunk.match(currentChar))
 				} else {
-					splitText = splitText.flatMap(chunk => chunk.split(currentChar))
+					splitText = splitText.flatMap((chunk: string) => chunk.split(currentChar))
 				}
 			}
 		} else {
 			splitText = text.split(char)
 		}
-		if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN')
+		if (splitText.some((elem: string | any[]) => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN')
 		const messages = []
 		let msg = ''
 		for (const chunk of splitText) {

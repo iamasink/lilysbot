@@ -51,32 +51,34 @@ export default {
 	async execute(interaction: any) {
 		const onlyImages = interaction.options.getBoolean('images') || true
 		await interaction.deferReply()
-		subreddit = interaction.options.getString('subreddit')
+		let subreddit = interaction.options.getString('subreddit')
 		if (subreddit[1] === `/`) subreddit = subreddit.slice(2)
-		number = interaction.options.getInteger('number') || 1
+		const number = interaction.options.getInteger('number') || 1
 		for (let i = 0; i < number; i++) {
-			url = ``
-			link = ``
-			count = 0
+			let url = ``
+			let link = ``
+			let count = 0
 			setTimeout(async function () {
+				let res
+
 				while (onlyImages && url == link && count < 15) {
-					sub = await reddit.getSubreddit(subreddit)
+					let sub = await reddit.getSubreddit(subreddit)
 					res = await sub.getRandomSubmission()
 					console.log(`reddit: ${JSON.stringify(res)}`)
 					console.log(`sub: ${JSON.stringify(sub)}`)
 					console.log(res.url)
 					link = `https://www.reddit.com${res.permalink}`
 					url = res.url
-					if (url != link) {
-						i = `\nImage: ${res.url}`
-					}
+					// if (url != link) {
+					// 	i = `\nImage: ${res.url}`
+					// }
 					count++
 
 				}
 				const result = await request(`https://www.reddit.com/r/${subreddit}/about.json`)
 				//const image = await getJSONResponse(result.body)
-				body = await format.getJSONResponse(result.body)
-				image = body.data.icon_img || `https://www.redditinc.com/assets/images/site/reddit-logo.png`
+				const body = await format.getJSONResponse(result.body)
+				const image = body.data.icon_img || `https://www.redditinc.com/assets/images/site/reddit-logo.png`
 
 				const embed = new EmbedBuilder()
 					.setTitle(`image!`)

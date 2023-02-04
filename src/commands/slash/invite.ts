@@ -65,7 +65,7 @@ export default {
 				console.log(invitelist)
 				var output = ""
 
-				for (i in invitelist) {
+				for (let i in invitelist) {
 					console.log(i)
 					const invite = invitelist[i]
 					const code = i
@@ -81,7 +81,7 @@ export default {
 					tempoutput += `${name}\`${code}\`, by ${await inviter.tag},`
 
 					if (!hasExpired) {
-						guildinvite = await interaction.guild.invites.fetch(code)
+						let guildinvite = await interaction.guild.invites.fetch(code)
 						const createdTimestamp = `<t:${guildinvite.createdTimestamp.toString().slice(0, -3)}>`
 						let expiresTimestamp = ``
 						if (guildinvite._expiresTimestamp) {
@@ -94,7 +94,7 @@ export default {
 
 					tempoutput += `uses: ${uses}`
 					if (!hasExpired) {
-						guildinvite = await interaction.guild.invites.fetch(code)
+						let guildinvite = await interaction.guild.invites.fetch(code)
 						console.log(guildinvite)
 						var maxUses = guildinvite.maxUses
 						if (maxUses === 0) maxUses = `∞`
@@ -105,7 +105,7 @@ export default {
 				}
 
 				//output += `\nInvites marked as [-] have expired.`
-				messages = format.splitMessage(output, 1900, "\n")
+				const messages = format.splitMessage(output, 1900, "\n")
 				for (let i = 0, len = messages.length; i < len; i++) {
 					interaction.followUp({ ephemeral: true, content: messages[i] })
 				}
@@ -132,7 +132,7 @@ export default {
 				const length = interaction.options.getInteger('length') || 0
 				const maxuses = interaction.options.getInteger('maxuses') || 0
 				channel.createInvite({ unique: true, maxAge: length, maxUses: maxuses, reason: "invite create command" })
-					.then(async invite => {
+					.then(async (invite: any) => {
 						console.log(`Created an invite with a code of ${invite.code}`)
 						console.log(invite)
 						if (name) {
@@ -151,7 +151,7 @@ export default {
 			}
 		}
 	},
-	async autocomplete(interaction) {
+	async autocomplete(interaction: any) {
 		const focusedOption = interaction.options.getFocused(true)
 		console.log(focusedOption)
 		switch (focusedOption.name) {
@@ -168,10 +168,11 @@ export default {
 
 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
 
-		//convert to array of objects (from object of objects)
-		var choices = Object.keys(invites).map(key => {
-			return data[key]
-		})
+		// //convert to array of objects (from object of objects)
+		// var choices = Object.keys(invites).map(key => {
+		// 	return data[key]
+		// })
+		var choices
 
 		const filtered = choices.filter(choice => choice.code.startsWith(focusedOption.value))
 

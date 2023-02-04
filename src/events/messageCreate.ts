@@ -3,11 +3,11 @@ const log = require("../structure/log")
 
 export default {
 	name: "messageCreate",
-	async execute(message) {
+	async execute(message: any) {
 		//console.log(message)
 		//console.log(`a message was created: ${message} by ${message.author} in ${message.guild}`)
-		guild = message.guild
-		user = message.author
+		const guild = message.guild
+		const user = message.author
 		//console.log(`guild: ${guild}`)
 		//console.log(`user: ${user}`)
 		//console.log(message)
@@ -16,12 +16,12 @@ export default {
 
 		//await database.check(`.${message.guild.id}.users.${message.author.id}`)
 
-		path2 = `.users.${user.id}.guilds.${guild.id}.xp`
-		curXp = await database.get(path2) || 0
+		const path2 = `.users.${user.id}.guilds.${guild.id}.xp`
+		const curXp = await database.get(path2) || 0
 		//console.log(`xp: c: ${JSON.stringify(curXp)}`)
 
 		// newXp is random between +5 and +14
-		newXp = Math.floor(curXp + 5 + Math.random() * 10)
+		const newXp = Math.floor(curXp + 5 + Math.random() * 10)
 
 		await database.set(path2, newXp)
 

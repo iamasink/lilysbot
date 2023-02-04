@@ -1,7 +1,8 @@
-// const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
-// const commands = require('../../structure/commands')
-// const database = require('../../structure/database')
-// const embeds = require('../../structure/embeds')
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js'
+import commands from '../../structure/commands'
+import database from '../../structure/database'
+import embeds from '../../structure/embeds'
+
 
 export default {
 	data: new SlashCommandBuilder()

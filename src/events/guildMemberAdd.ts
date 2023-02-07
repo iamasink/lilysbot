@@ -1,7 +1,6 @@
 const database = require('../structure/database')
 const commands = require('../structure/commands')
 const log = require('../structure/log')
-import { client } from '../index'
 
 
 // Emitted whenever a user joins a guild.

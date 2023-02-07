@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder, StringSelectMenuBuilder, ActionRowBuilder, ChannelSelectMenuBuilder, ComponentType } = require('discord.js');
 const commands = require('../../structure/commands');
 const database = require('../../structure/database');
@@ -19,7 +17,7 @@ const settings = [
 const choices = settings.map(setting => {
     return { name: setting.name, value: setting.value };
 });
-exports.default = {
+export default {
     data: new SlashCommandBuilder()
         .setName('settings')
         .setDescription('Configure stuff')

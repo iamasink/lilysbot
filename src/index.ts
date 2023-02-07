@@ -1,107 +1,61 @@
-const fs = require('node:fs')
-const path = require('node:path')
-const { Client, Collection, GatewayIntentBits, ActivityType, Partials } = require('discord.js')
-//const { token } = require('./config.json') // retrieve token from config
-const database = require('./structure/database')
-import { token } from './config.json'
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import 'dotenv/config'
+
+import { Client, GatewayIntentBits, Collection, Partials } from 'discord.js'
+import { readdirSync } from 'fs'
+const { TOKEN } = process.env
+import type ApplicationCommand from './templates/ApplicationCommand.js'
+import type Event from './templates/Event.js'
+import type MessageCommand from './templates/MessageCommand.js'
 
 
-// Client setup
-export const client = new Client({
-	// Status when starting
-	"presence": {
-		"status": "online",
-		"afk": true,
-		"activities": [
-			{
-				"type": ActivityType.Watching,
-				"name": "you"
-			}
-		]
-	},
-	// ? The enumeration for partials.
-	// https://discord.js.org/#/docs/discord.js/14.0.3/typedef/Partials
-	"partials": [
-		Partials.User,
-		Partials.Channel,
-		Partials.GuildMember,
-		Partials.Message,
-		Partials.Reaction,
-		Partials.GuildScheduledEvent,
-		Partials.ThreadMember
-	],
-	// ! Required in Discord.js v14
-	// https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayIntentBits
-	"intents": [
-		GatewayIntentBits.DirectMessageReactions,
-		GatewayIntentBits.DirectMessageTyping,
-		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.GuildBans,
-		GatewayIntentBits.GuildEmojisAndStickers,
-		GatewayIntentBits.GuildIntegrations,
-		GatewayIntentBits.GuildInvites,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildMessageTyping,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.GuildScheduledEvents,
-		GatewayIntentBits.GuildVoiceStates,
-		GatewayIntentBits.GuildWebhooks,
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.MessageContent
-	]
-})
-
-async function retrieveCommands() {
-	// dynamically retrieve commands
-	client.commands = new Collection() // add commands to a collection so they can be retrieved elsewhere i think
-	const commandsPath: string = path.join(__dirname, 'commands', 'slash') // path to commands using .join for Some Reason.
-	const commandFiles: string[] = fs.readdirSync(commandsPath).filter((file: string) => file.endsWith('.ts')) // read the ./commands/ files ending in .ts
-
-	for (const file of commandFiles) {
-		try {
-			console.log(file)
-			const filePath = path.join(commandsPath, file)
-			const command = await import(filePath)
-			//console.log(command.default)
-			client.commands.set(command.default.data.name, command) // saves the command to the collection
-		} catch (error: any) {
-			console.log(error)
-		}
-
+// Discord client object
+global.client = Object.assign(
+	new Client({
+		intents: [
+			GatewayIntentBits.Guilds,
+			GatewayIntentBits.GuildMessages,
+			GatewayIntentBits.DirectMessages,
+		],
+		partials: [Partials.Channel],
+	}),
+	{
+		commands: new Collection<string, ApplicationCommand>(),
+		msgCommands: new Collection<string, MessageCommand>(),
 	}
+)
 
-	// retrieve context menu commands
-	const contextmenuPath: string = path.join(__dirname, 'commands', 'contextmenu') // path to context menu commands
-	const contextmenuFiles: string[] = fs.readdirSync(contextmenuPath).filter((file: string) => file.endsWith('.ts'))
+// Set each command in the commands folder as a command in the client.commands collection
+const commandFiles: string[] = readdirSync('./commands').filter(
+	(file) => file.endsWith('.js') || file.endsWith('.ts')
+)
+for (const file of commandFiles) {
+	const command: ApplicationCommand = (await import(`./commands/${file}`))
+		.default as ApplicationCommand
+	client.commands.set(command.data.name, command)
+}
 
-	for (const file of contextmenuFiles) {
-		const filePath = path.join(contextmenuPath, file)
-		const command = await import(filePath)
-		client.commands.set(command.default.data.name, command)
+const msgCommandFiles: string[] = readdirSync('./messageCommands').filter(
+	(file) => file.endsWith('.js') || file.endsWith('.ts')
+)
+for (const file of msgCommandFiles) {
+	const command: MessageCommand = (await import(`./messageCommands/${file}`))
+		.default as MessageCommand
+	client.msgCommands.set(command.name, command)
+}
+
+// Event handling
+const eventFiles: string[] = readdirSync('./events').filter(
+	(file) => file.endsWith('.js') || file.endsWith('.ts')
+)
+
+for (const file of eventFiles) {
+	const event: Event = (await import(`./events/${file}`)).default as Event
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args))
+	} else {
+		client.on(event.name, (...args) => event.execute(...args))
 	}
 }
 
-async function retrieveEvents() {
-	// dynamically retrieve events
-	const eventsPath: string = path.join(__dirname, 'events')
-	const eventFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.ts'))
-
-	for (const file of eventFiles) {
-		const filePath = path.join(eventsPath, file)
-		const event = await import(filePath)
-		if (event.once) {
-			client.once(event.name, (...args: any) => event.execute(...args))
-		} else {
-			client.on(event.name, (...args: any) => event.execute(...args))
-		}
-	}
-}
-
-
-
-
-retrieveCommands()
-retrieveEvents()
-client.login(token)
+await client.login(TOKEN)

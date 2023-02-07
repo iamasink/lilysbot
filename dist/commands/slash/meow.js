@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { request } = require('undici');
 async function getJSONResponse(body) {
@@ -9,7 +7,7 @@ async function getJSONResponse(body) {
     }
     return JSON.parse(fullBody);
 }
-exports.default = {
+export default {
     data: new SlashCommandBuilder()
         .setName('meow')
         .setDescription('gets a random cat image!!!!'),

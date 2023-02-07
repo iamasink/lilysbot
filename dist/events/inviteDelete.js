@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const database = require("../structure/database");
 // Emitted whenever an invite is created
-exports.default = {
+export default {
     name: "inviteDelete",
     async execute(invite) {
         console.log(`a invite was deleted: ${invite}`);

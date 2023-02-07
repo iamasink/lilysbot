@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const database = require("../structure/database");
 const log = require("../structure/log");
-exports.default = {
+export default {
     name: "messageCreate",
     async execute(message) {
         //console.log(message)

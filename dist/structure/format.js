@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+export default {
     bar(min, current, max, length = 10, chars = [`#`, `.`]) {
         const progress = (current - min) / (max - min);
         const count = Math.floor(progress * length);

@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const database = require('../structure/database');
 const commands = require('../structure/commands');
 const embeds = require('../structure/embeds');
@@ -7,7 +5,7 @@ const format = require('../structure/format');
 const { EmbedBuilder } = require('discord.js');
 const log = require('../structure/log');
 // Emitted whenever a user is 'updated' in a guild.
-exports.default = {
+export default {
     name: "guildMemberUpdate",
     async execute(member) {
         console.log(member);

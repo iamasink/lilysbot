@@ -1,6 +1,5 @@
 const redis = require("redis")
 const key = "lilybot"
-import { client } from '../index'
 var db: any // idk what im doing but hopefully this makes the client available everywhere??!!!
 
 async function connect() {

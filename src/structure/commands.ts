@@ -6,7 +6,6 @@ const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const embeds = require('./embeds')
 const { permissions } = require('../config.json')
 const database = require('./database')
-import { client } from '../index'
 
 function merge(a: any, b: any, prop: any) {
 	var reduced = a.filter((aitem: any) => !b.find((bitem: any) => aitem[prop] === bitem[prop]))

@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder } = require('discord.js');
 const embeds = require('../../structure/embeds');
 const commands = require('../../structure/commands');
-exports.default = {
+export default {
     data: new SlashCommandBuilder()
         .setName('text')
         .setDescription('a!')

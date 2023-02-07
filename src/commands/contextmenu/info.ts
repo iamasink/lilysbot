@@ -1,6 +1,5 @@
 import { ContextMenuCommandBuilder, ApplicationCommandType } from 'discord.js'
 import commands from '../../structure/commands'
-import { client } from '../../index'
 
 export default {
 	data: new ContextMenuCommandBuilder()

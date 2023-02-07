@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js');
 const Parser = require('rss-parser');
 const embeds = require('../../structure/embeds');
 let parser = new Parser();
-exports.default = {
+export default {
     data: new SlashCommandBuilder()
         .setName('rss')
         .setDescription('Setup rss feeds and stuff')

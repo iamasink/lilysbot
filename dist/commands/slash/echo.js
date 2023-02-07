@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const discord_js_1 = require("discord.js");
-exports.default = {
-    data: new discord_js_1.SlashCommandBuilder()
+import { SlashCommandBuilder } from 'discord.js';
+export default {
+    data: new SlashCommandBuilder()
         .setName('echo')
         .setDescription('Echos you')
         .addStringOption((option) => option.setName('input')

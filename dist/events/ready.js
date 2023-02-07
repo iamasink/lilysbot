@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const database = require("../structure/database");
 // A pretty useful method to create a delay without blocking the whole script.
 const wait = require("timers/promises").setTimeout;
-exports.default = {
+export default {
     name: 'ready',
     // should the event only run once?
     once: true,

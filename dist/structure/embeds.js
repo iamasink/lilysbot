@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { footer } = require('../config.json');
 function embed(color, title, description, fields, image, thumbnail, footer) {
@@ -25,7 +23,7 @@ function embed(color, title, description, fields, image, thumbnail, footer) {
     return [embed];
 }
 //
-exports.default = {
+export default {
     errorEmbed(when, error) {
         return embed(`#d02721`, `An error occurred!`, undefined, [{
                 name: '__Error__',

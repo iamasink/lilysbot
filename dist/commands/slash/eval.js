@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const discord_js_1 = require("discord.js");
-const format_1 = tslib_1.__importDefault(require("../../structure/format"));
+import { SlashCommandBuilder } from 'discord.js';
+import format from '../../structure/format';
 // This function cleans up and prepares the
 // result of our eval command input for sending
 // to the channel
@@ -23,9 +20,9 @@ const clean = async (text) => {
     // Send off the cleaned up result
     return text;
 };
-exports.default = {
+export default {
     permission: `botowner`,
-    data: new discord_js_1.SlashCommandBuilder()
+    data: new SlashCommandBuilder()
         .setName('eval')
         .setDescription('eval')
         .addStringOption((option) => option
@@ -45,7 +42,7 @@ exports.default = {
             const cleaned = await clean(evaled);
             console.log(cleaned);
             // Reply in the channel with our result
-            const messages = format_1.default.splitMessage("```js\n" + cleaned + "\n```", 2000, '\n', '```js\n', '\n```');
+            const messages = format.splitMessage("```js\n" + cleaned + "\n```", 2000, '\n', '```js\n', '\n```');
             await interaction.editReply("evaled");
             for (let i = 0, len = messages.length; i < len; i++) {
                 await interaction.followUp(messages[i]);

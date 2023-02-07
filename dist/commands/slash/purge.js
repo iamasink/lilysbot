@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const embeds = require('../../structure/embeds');
 const commands = require('../../structure/commands');
 const log = require('../../structure/log');
-exports.default = {
+export default {
     discordPermissions: [PermissionsBitField.Flags.ManageMessages],
     data: new SlashCommandBuilder()
         .setName('purge')

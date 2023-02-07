@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+export default {
     name: "messageReactionAdd",
     async execute(reaction, user) {
         // When a reaction is received, check if the structure is partial

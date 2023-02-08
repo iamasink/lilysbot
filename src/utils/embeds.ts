@@ -1,14 +1,14 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
-const { footer } = require("../config.json")
+import { SlashCommandBuilder, EmbedBuilder, ColorResolvable, APIEmbedField, EmbedFooterOptions } from "discord.js"
+import { footer } from "../config.json"
 
 function embed(
-	color: string,
+	color: ColorResolvable,
 	title: string,
 	description?: string,
-	fields?: any,
+	fields?: APIEmbedField[],
 	image?: string,
 	thumbnail?: string,
-	footer?: object,
+	footer?: EmbedFooterOptions
 ): object {
 	const embed = new EmbedBuilder()
 	if (color) embed.setColor(color)
@@ -29,8 +29,8 @@ function embed(
 export default {
 	errorEmbed(when: string, error: any): object {
 		return embed(
-			`#d02721`,
-			`An error occurred!`,
+			"#d02721",
+			"An error occurred!",
 			undefined,
 			[
 				{
@@ -45,14 +45,14 @@ export default {
 	},
 
 	successEmbed(title: string, description?: string): any {
-		return embed(`#00ff00`, title, description)
+		return embed("#00ff00", title, description)
 	},
 
 	messageEmbed(
 		title: string,
 		description?: string,
 		fields?: any,
-		color: string = "#f9beca",
+		color: ColorResolvable = "#f9beca",
 	): any {
 		return embed(color, title, description, fields)
 	},
@@ -61,7 +61,7 @@ export default {
 		title: string,
 		description?: string,
 		fields?: any,
-		color = "#f2bb05",
+		color: ColorResolvable = "#f2bb05",
 	) {
 		return embed(color, title, description, fields)
 	},
@@ -86,20 +86,18 @@ export default {
 		guild: any,
 	): Promise<any> {
 		user = await user.fetch()
-		var thumbnail: string
-		var color: number | string
+		let thumbnail: string
 
 		if (
 			guild.members.resolve(user) &&
 			guild.members.resolve(user).avatar != undefined
 		) {
-			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${
-				user.id
-			}/avatars/${guild.members.resolve(user).avatar}.webp`
+			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${user.id}/avatars/${guild.members.resolve(user).avatar}.webp`
 		} else {
 			thumbnail = user.avatarURL(true)
 		}
-		color = user.hexAccentColor || `#f9beca`
+
+		const color = user.hexAccentColor || "#f9beca"
 		return embed(
 			color.toString(),
 			title,

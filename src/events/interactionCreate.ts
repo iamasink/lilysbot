@@ -1,7 +1,7 @@
-import { Events, Message } from 'discord.js'
-import Event from '../types/Event'
+import { Events, Message } from "discord.js"
+import Event from "../types/Event"
 import { client } from "../index"
-import commands from '../utils/commands'
+import commands from "../utils/commands"
 
 
 // Emitted when an interaction is created.
@@ -64,9 +64,8 @@ export default new Event({
 			}
 			commands.run(interaction)
 
-		} else if (interaction.isMessageContextMenuCommand()) {
+		} else if (interaction.isMessageContextMenuCommand()) { /* empty */ }
 
-		}
 		// if interaction is from a message (ie buttons, select menu, etc)
 		else {
 			const id = interaction.customId.split(".")
@@ -108,7 +107,7 @@ export default new Event({
 				if (interaction.customId === "errorreport") {
 					console.log(interaction.message)
 					interaction.update({ components: [] })
-					client.channels.fetch('767026023387758612').then((channel: any) => {
+					client.channels.fetch("767026023387758612").then((channel: any) => {
 						console.log(channel.name)
 						channel.send("error: " + JSON.stringify(interaction.message, null, 2))
 						return

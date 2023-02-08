@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from 'discord.js'
-import ApplicationCommand from '../types/ApplicationCommand'
-import commands from '../utils/commands'
+import { SlashCommandBuilder } from "discord.js"
+import ApplicationCommand from "../types/ApplicationCommand"
+import commands from "../utils/commands"
 
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
-		.setName('refresh')
-		.setDescription('Reloads the bot and commands'),
+		.setName("refresh")
+		.setDescription("Reloads the bot and commands"),
 	async execute(interaction): Promise<void> {
 		await interaction.deferReply()
 		const res = await commands.deploy()

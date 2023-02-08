@@ -26,17 +26,14 @@ async function refreshGlobalCommands() {
 	const commandList = await getCommands() //.concat(await getContextMenuCommands())
 	console.log(commandList)
 	try {
-		console.log(
-			`Started refreshing ${commandList.length} global application (/) commands.`,
-		)
+		console.log(`Started refreshing ${commandList.length} global application (/) commands.`,)
+
 
 		const data: any = await rest.put(Routes.applicationCommands(clientId), {
 			body: commandList.map((e) => e.data),
 		})
 
-		console.log(
-			`Successfully reloaded ${data.length} global application (/) commands.`,
-		)
+		console.log(`Successfully reloaded ${data.length} global application (/) commands.`,)
 		return data.length
 	} catch (error) {
 		console.error(error)
@@ -188,15 +185,13 @@ async function getCommands(): Promise<ApplicationCommand[]> {
 
 	const commandfilepath = path.join(__dirname, "..", "commands")
 	console.log(commandfilepath)
-	const commandFiles: string[] = fs
-		.readdirSync(commandfilepath)
-		.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
+
+	const commandFiles: string[] = fs.readdirSync(commandfilepath).filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
+
 	console.log(commandFiles)
 	for (let i = 0, len = commandFiles.length; i < len; i++) {
 		const file = commandFiles[i]
-		const command: ApplicationCommand = (
-			await import(`../commands/${file}`)
-		).default as ApplicationCommand
+		const command: ApplicationCommand = (await import(`../commands/${file}`)).default as ApplicationCommand
 		console.log("awa" + file)
 		commands.push(command)
 	}
@@ -232,16 +227,7 @@ export default {
 	},
 	// refreshGuild(guildID: string) {
 	// 	refreshGuildCommands(guildID)
-	// },
-	/**
-	 *Runs a command, optionally with altered interaction group, subcommand, options
-	 *
-	 * @param {*} interaction 	command interaction
-	 * @param {*} [commandName=interaction.commandName]
-	 * @param {string} group
-	 * @param {string} subcommand
-	 * @param {{name: string, type: number, value: *}[]} options
-	 */
+
 	async run(
 		interaction: any,
 		commandName = interaction.commandName,
@@ -282,7 +268,7 @@ export default {
 			const acceptedPermissions = []
 			const deniedPermissions = []
 			const permlist = command.discordPermissions || []
-			let permissionsText = `Permissions:`
+			let permissionsText = "Permissions:"
 
 			// for every permission set in the command, check it
 			for (let i = 0; i < permlist.length; i++) {
@@ -296,23 +282,16 @@ export default {
 				}
 			}
 			for (let i = 0; i < deniedPermissions.length; i++) {
-				permissionsText += `\n🚫  **${new PermissionsBitField(
-					deniedPermissions[i],
-				).toArray()}**` // get text name for each permission
+				permissionsText += `\n🚫  **${new PermissionsBitField(deniedPermissions[i],).toArray()}**` // get text name for each permission
 			}
 			for (let i = 0; i < acceptedPermissions.length; i++) {
-				permissionsText += `\n✅  **${new PermissionsBitField(
-					acceptedPermissions[i],
-				).toArray()}**`
+				permissionsText += `\n✅  **${new PermissionsBitField(acceptedPermissions[i],).toArray()}**`
 			}
 
 			if (deniedPermissions.length > 0) {
 				interaction.reply({
 					ephemeral: true,
-					embeds: embeds.warningEmbed(
-						`You don't have permission to perform this command`,
-						`${permissionsText}`,
-					),
+					embeds: embeds.warningEmbed("You don't have permission to perform this command", `${permissionsText}`,),
 				})
 				return
 			}

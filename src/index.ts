@@ -14,8 +14,8 @@ export const client = new Client({
 		"afk": true,
 		"activities": [
 			{
-				"type": ActivityType.Watching,
-				"name": "you"
+				"name": "you",
+				"type": ActivityType.Watching
 			}
 		]
 	},
@@ -53,55 +53,44 @@ export const client = new Client({
 	]
 })
 
-async function retrieveCommands() {
-	// dynamically retrieve commands
-	client.commands = new Collection() // add commands to a collection so they can be retrieved elsewhere i think
-	const commandsPath: string = path.join(__dirname, 'commands', 'slash') // path to commands using .join for Some Reason.
-	const commandFiles: string[] = fs.readdirSync(commandsPath).filter((file: string) => file.endsWith('.ts')) // read the ./commands/ files ending in .ts
 
-	for (const file of commandFiles) {
-		try {
-			console.log(file)
-			const filePath = path.join(commandsPath, file)
-			const command = await import(filePath)
-			//console.log(command.default)
-			client.commands.set(command.default.data.name, command) // saves the command to the collection
-		} catch (error: any) {
-			console.log(error)
-		}
 
-	}
 
-	// retrieve context menu commands
-	const contextmenuPath: string = path.join(__dirname, 'commands', 'contextmenu') // path to context menu commands
-	const contextmenuFiles: string[] = fs.readdirSync(contextmenuPath).filter((file: string) => file.endsWith('.ts'))
+// dynamically retrieve commands
+client.commands = new Collection() // add commands to a collection so they can be retrieved elsewhere i think
+const commandsPath = path.join(__dirname, 'commands', 'slash') // path to commands using .join so its not OS dependant. Do I really care about this? No. Should I? Maybe. 
+const commandFiles = fs.readdirSync(commandsPath).filter((file: string) => file.endsWith('.js')) // read the ./commands/ files ending in .js
 
-	for (const file of contextmenuFiles) {
-		const filePath = path.join(contextmenuPath, file)
-		const command = await import(filePath)
-		client.commands.set(command.default.data.name, command)
-	}
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file)
+	const command = require(filePath)
+	client.commands.set(command.data.name, command) // saves the command to the collection
 }
 
-async function retrieveEvents() {
-	// dynamically retrieve events
-	const eventsPath: string = path.join(__dirname, 'events')
-	const eventFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.ts'))
+// retrieve context menu commands
+const contextmenuPath = path.join(__dirname, 'commands', 'contextmenu') // path to context menu commands
+const contextmenuFiles = fs.readdirSync(contextmenuPath).filter((file: string) => file.endsWith('.js'))
 
-	for (const file of eventFiles) {
-		const filePath = path.join(eventsPath, file)
-		const event = await import(filePath)
-		if (event.once) {
-			client.once(event.name, (...args: any) => event.execute(...args))
-		} else {
-			client.on(event.name, (...args: any) => event.execute(...args))
-		}
+for (const file of contextmenuFiles) {
+	const filePath = path.join(contextmenuPath, file)
+	const command = require(filePath)
+	client.commands.set(command.data.name, command)
+}
+
+// dynamically retrieve events
+const eventsPath = path.join(__dirname, 'events')
+const eventFiles = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.js'))
+
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file)
+	const event = require(filePath)
+	if (event.once) {
+		client.once(event.name, (...args: any) => event.execute(...args))
+	} else {
+		client.on(event.name, (...args: any) => event.execute(...args))
 	}
 }
 
 
 
-
-retrieveCommands()
-retrieveEvents()
 client.login(token)

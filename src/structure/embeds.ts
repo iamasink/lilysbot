@@ -23,7 +23,7 @@ function embed(color: string, title: string, description?: string, fields?: any,
 
 
 export default {
-	errorEmbed(when: string, error: any,): object {
+	errorEmbed(when: string, error: Error,): object {
 
 		return embed(
 			`#d02721`,

@@ -1,6 +1,5 @@
-import { ContextMenuCommandBuilder, ApplicationCommandType } from 'discord.js'
-import commands from '../../structure/commands'
-import { client } from '../../index'
+const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js')
+const commands = require('../../structure/commands')
 
 export default {
 	data: new ContextMenuCommandBuilder()

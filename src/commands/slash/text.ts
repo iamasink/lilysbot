@@ -12,8 +12,8 @@ export default {
 			.setDescription('a!')
 		),
 	async execute(interaction: any) {
-		const parsed = await commands.textParser(interaction.options.getString('text'), interaction.id, interaction.channelId, interaction.guildId, interaction.user)
-		const text = JSON.stringify(parsed)
+		parsed = await commands.textParser(interaction.options.getString('text'), interaction.id, interaction.channelId, interaction.guildId, interaction.user)
+		text = JSON.stringify(parsed)
 		console.log(parsed)
 
 

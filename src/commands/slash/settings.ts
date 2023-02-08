@@ -49,12 +49,12 @@ export default {
 			case 'set': {
 				const option = settings[settings.findIndex(e => e.value == setting)]
 				console.log(JSON.stringify(option))
-				const value = ""
+				value = ""
 				switch (option.type) {
 					case 'channel': {
-						const channel: any = await channelSelector(interaction)
+						channel = await channelSelector(interaction)
 						console.log(channel.name)
-						const value = channel.id
+						value = channel.id
 					}
 				}
 				database.set(`.guilds.${interaction.guild.id}.settings.${option.value}`, value)
@@ -79,7 +79,7 @@ export default {
 	// }
 }
 
-async function channelSelector(interaction: any) {
+async function channelSelector(interaction) {
 	return new Promise(async (resolve, reject) => {
 
 		const row = new ActionRowBuilder()
@@ -88,14 +88,14 @@ async function channelSelector(interaction: any) {
 					.setCustomId('select')
 					.setPlaceholder('Nothing selected')
 			)
-		const filter = (i: any) => {
+		const filter = i => {
 			return i.user.id === interaction.user.id
 		}
-		await interaction.reply({ embeds: embeds.messageEmbed("Choose a channel.."), components: [row] }).then((message: any) => {
+		await interaction.reply({ embeds: embeds.messageEmbed("Choose a channel.."), components: [row] }).then((message) => {
 			message
 				.awaitMessageComponent({ filter, componentType: ComponentType.ChannelSelect, time: 60000 })
-				.then(async (i: any) => {
-					const channel = await interaction.guild.channels.fetch(i.values[0])
+				.then(async (i) => {
+					channel = await interaction.guild.channels.fetch(i.values[0])
 					console.log(channel)
 					if (channel.type == 0) {
 						interaction.editReply({ embeds: embeds.successEmbed(`Choose a channel..`, `You selected <#${channel.id}>`), components: [] })
@@ -106,7 +106,7 @@ async function channelSelector(interaction: any) {
 						reject(new Error("Invalid channel selected"))
 					}
 				})
-				.catch((err: Error) => {
+				.catch(err => {
 					interaction.editReply({ embeds: embeds.messageEmbed(`Choose a channel..`, `No channel selected`, null, "#ff0000"), components: [] })
 					reject(new Error("No channel selected"))
 

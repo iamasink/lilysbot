@@ -9,9 +9,9 @@ export default {
 		return Math.floor(module.exports.exactLevel(xp))
 	},
 	levelProgress(xp = 0) {
-		const level = module.exports.exactLevel(xp)
+		level = module.exports.exactLevel(xp)
 		console.log(`levelaaa: ${level}`)
-		const output = level - Math.floor(level)
+		output = level - Math.floor(level)
 		console.log(`output: ${output}`)
 		return (output)
 	},

@@ -3,14 +3,14 @@ const embeds = require('../structure/embeds')
 const { permissions } = require('../config.json')
 const database = require('../structure/database')
 const commands = require('../structure/commands')
-import { client } from '../index'
+
 
 // Emitted when an interaction is created.
 export default {
 	name: 'interactionCreate',
 	async execute(interaction: any) {
 		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`)
-		const guildID = interaction.guild.id
+		guildID = interaction.guild.id
 
 
 		if (interaction.isChatInputCommand()) {
@@ -26,8 +26,8 @@ export default {
 
 
 			// checks if the command is an aliased (guild) command
-			const dbpath = `.guilds.${guildID}.commands.aliases`
-			const aliases = await database.get(dbpath) || {}
+			dbpath = `.guilds.${guildID}.commands.aliases`
+			aliases = await database.get(dbpath) || {}
 			console.log(`aliases: ${JSON.stringify(aliases)}`)
 			const aliasedCommand = aliases[interaction.commandName]
 			//console.log(aliasedCommand)
@@ -70,7 +70,7 @@ export default {
 		}
 		// if interaction is from a message (ie buttons, select menu, etc)
 		else {
-			const id = interaction.customId.split(".")
+			id = interaction.customId.split(".")
 			const command = interaction.client.commands.get(id[0])
 			console.log(command)
 			if (interaction.isSelectMenu()) {
@@ -109,7 +109,7 @@ export default {
 				if (interaction.customId === "errorreport") {
 					console.log(interaction.message)
 					interaction.update({ components: [] })
-					client.channels.fetch('767026023387758612').then((channel: any) => {
+					client.channels.fetch('767026023387758612').then(channel => {
 						console.log(channel.name)
 						channel.send("error: " + JSON.stringify(interaction.message, null, 2))
 						return

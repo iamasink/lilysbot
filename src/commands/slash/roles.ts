@@ -8,21 +8,25 @@ const { messageEmbed } = require('../../structure/embeds')
 
 
 
-async function getRoles(interaction: any) {
+async function getRoles(interaction) {
 	//await interaction.reply(interaction.options.getString('input'))
-	const roles = interaction.guild.roles.cache
+	roles = interaction.guild.roles.cache
 
-	const filteredroles = roles.filter((r: any) => r.managed != true)
-	return filteredroles.sort((a: any, b: any) => b.rawPosition - a.rawPosition)
+	roles = roles.filter(r => r.managed != true)
+	return roles.sort((a, b) => b.rawPosition - a.rawPosition)
 }
 
-async function createMenu(guild: any, rolelist: any) {
+async function createMenu(guild, rolelist) {
 	var output = ""
-	for (let i = 0; i < rolelist.length; i++) {
-		const role = await guild.roles.fetch(rolelist[i].id)
+	for (i = 0; i < rolelist.length; i++) {
+		role = await guild.roles.fetch(rolelist[i].id)
 		output += `\n${role.name}`
 	}
 	return `breuh\n` + output
+}
+
+async function updateMenu(id) {
+
 }
 
 export default {
@@ -107,28 +111,18 @@ export default {
 				switch (interaction.options.getSubcommand()) {
 					case 'create': {
 						// get list of role lists from database
-						const rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
-						const options = []
+						rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
+						options = []
 						console.log(JSON.stringify(rolelists))
-
-						interface RoleMenu { name: string, minimum: number, maximum: number, type: string, description: string, list: any, id: string }
-						let roleMenu: RoleMenu = {
-							name: interaction.options.getString('name'),
-							minimum: interaction.options.getInteger('minimum') || 0,
-							maximum: interaction.options.getInteger('maximum') || 25,
-							type: interaction.options.getString('type') || "menu",
-							description: interaction.options.getString('description'),
-							list: undefined,
-							id: ""
-						}
-						// roleMenu.name = interaction.options.getString('name')
-						// roleMenu.minimum = interaction.options.getInteger('minimum') || 0
-						// roleMenu.maximum = interaction.options.getInteger('maximum') || 25
-						// roleMenu.type = interaction.options.getString('type') || "menu"
-						// roleMenu.description = interaction.options.getString('description')
+						roleMenu = {}
+						roleMenu.name = interaction.options.getString('name')
+						roleMenu.minimum = interaction.options.getInteger('minimum') || 0
+						roleMenu.maximum = interaction.options.getInteger('maximum') || 25
+						roleMenu.type = interaction.options.getString('type') || "menu"
+						roleMenu.description = interaction.options.getString('description')
 
 						// create options for select menu from role list list
-						for (const i in rolelists) {
+						for (i in rolelists) {
 							console.log(rolelists[i].name)
 							options.push({ label: rolelists[i].name, value: rolelists[i].name })
 						}
@@ -145,28 +139,28 @@ export default {
 							)
 						// ball fondle emoji 🫴🫴🫴
 						interaction.reply({ embeds: embeds.messageEmbed(`Creating role menu '${roleMenu.name}'`, `Choose a role list to assign the menu to. You can create one using /roles lists create.`), components: [row] }).then(msg => {
-							const filter = (i: any) => i.user.id === interaction.user.id
+							const filter = i => i.user.id === interaction.user.id
 							// await user to interact with the menu
 							msg.awaitMessageComponent({ filter, componentType: ComponentType.SelectMenu, time: 120000 })
-								.then(async (i: any) => {
+								.then(async i => {
 									//await i.reply(`You selected ${i.values[0]}!`)
 									roleMenu.list = i.values[0]
 									//i.followUp(JSON.stringify(rolelists[roleMenu.list]))
-									const list = rolelists[roleMenu.list].roles
+									list = rolelists[roleMenu.list].roles
 									console.log(`list: ${JSON.stringify(list)}`)
 									interaction.deleteReply()
 									//list = await database.get(`.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
 
-									const menu = await createMenu(interaction.guild, list)
-									const num = list.length
+									menu = await createMenu(interaction.guild, list)
+									num = list.length
 
 									switch (roleMenu.type) {
 										case 'menu': {
 											// maximum can't be more than the list size. handle it
 											if (roleMenu.maximum > list.length) {
-												const maximum = list.length
+												maximum = list.length
 											} else {
-												const maximum = roleMenu.maximum
+												maximum = roleMenu.maximum
 											}
 
 											const menu = new SelectMenuBuilder()
@@ -175,13 +169,11 @@ export default {
 												.setMinValues(roleMenu.minimum)
 												.setMaxValues(maximum)
 
-											const options = []
+											options = []
 											for (let i = 0; i < num; i++) {
-												const push: any = {
-													label: `${interaction.guild.roles.resolve(list[i].id).name}`,
-													value: `${list[i].id}`
-												}
-
+												push = {}
+												push.label = `${interaction.guild.roles.resolve(list[i].id).name}`
+												push.value = `${list[i].id}`
 												if (list[i].description) {
 													push.description = list[i].description
 													console.log(`desc: ${push.description}`)
@@ -195,17 +187,15 @@ export default {
 											const row = new ActionRowBuilder()
 												.addComponents(menu)
 											console.log(`menu: ${JSON.stringify(menu)}`)
-											const rows = [row]
+											rows = [row]
 
 											break
 										}
 										case 'buttons': {
-											const rowcount = Math.floor(1 + (num / 5))
-											const rows: any = []
-											const buttonsOnLastRow: number = num - (rows * 5)
-											let buttonscount: number
-
-											for (let x = 0; x < rowcount; x++) {
+											rowcount = Math.floor(1 + (num / 5))
+											rows = []
+											buttonsOnLastRow = num - (rows * 5)
+											for (x = 0; x < rowcount; x++) {
 												rows[x] = new ActionRowBuilder()
 												if (x == rowcount - 1) {
 													buttonscount = buttonsOnLastRow
@@ -263,7 +253,7 @@ export default {
 				switch (interaction.options.getSubcommand()) {
 					case 'create': {
 						// check if it already exists
-						const lists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
+						lists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 
 						console.log(`lists = ${JSON.stringify(lists)}`)
 						if (lists.hasOwnProperty(interaction.options.getString('name'))) {
@@ -275,11 +265,11 @@ export default {
 						}
 
 
-						const newroles = []
-						const roleList = {}
+						newroles = []
+						roleList = {}
 						roleList.roles = []
 						roleList.name = interaction.options.getString('name')
-						const messagesToDelete = []
+						messagesToDelete = []
 						await interaction.reply({ embeds: embeds.messageEmbed(`Enter roles for the list: ${roleList.name}. `, `Type role name or id, type 'done' when finished, or 'cancel' to cancel!\nOptionally add a role description on a new line.\nYou can also type '+rolename' to quickly create a new role by that name`), })
 							.then((message) => messagesToDelete.push(message))
 
@@ -291,12 +281,12 @@ export default {
 						const collector = interaction.channel.createMessageCollector({ filter, time: 120000 })
 						collector.on('collect', async m => {
 							var roleid
-							const isnew = false
+							isnew = false
 							// delete the collected message
 							m.delete()
 							collector.resetTimer()
 							console.log(m)
-							const text = m.content.trim()
+							text = m.content.trim()
 							console.log(`Collected ${m.content}`)
 							if (text.toLowerCase() == 'done') {
 								collector.stop()
@@ -306,14 +296,14 @@ export default {
 								return
 							} else if (text[0] === '+') {
 								// get name
-								const rolename = text.split('\n')[0].slice(1)
+								rolename = text.split('\n')[0].slice(1)
 								// create new role by name with no permissions
 								await interaction.guild.roles.create({ name: rolename, permissions: new PermissionsBitField(0n), reason: "Creating new role for role list" })
 									.then(async newrole => {
 										roleid = newrole.id
 										console.log(`roleid = ${roleid}`)
 										newroles.push(roleid)
-										const isnew = true
+										isnew = true
 										// handle remove button
 										const row = new ActionRowBuilder()
 											.addComponents(
@@ -331,7 +321,7 @@ export default {
 											// collect button press to remove role
 											collector.on('collect', i => {
 												if (i.user.id === interaction.user.id) {
-													const index = roleList.roles.findIndex(r => r.id === roleid)
+													index = roleList.roles.findIndex(r => r.id === roleid)
 													roleList.roles.splice(index, 1)
 													interaction.guild.roles.delete(roleid, 'The role needed to go')
 														.then(() => console.log('Deleted the role'))
@@ -351,26 +341,26 @@ export default {
 									})
 									.catch(console.error)
 							} else if (text[0] === '<') { // if user pinged a role, extract id
-								const id = text.split('\n')[0].slice(3, -1)
-								const role = await interaction.guild.roles.fetch(id)
+								id = text.split('\n')[0].slice(3, -1)
+								role = await interaction.guild.roles.fetch(id)
 								console.log(role)
 								if (!role.managed) {
-									roleid = const id
+									roleid = id
 								} else {
 									interaction.followUp({ embeds: embeds.messageEmbed("Bot roles cannot be used.", null, null, '#ff0000') })
 										.then((message) => messagesToDelete.push(message))
 								}
 							} else {
 								// fetch from name or id
-								const role = await interaction.guild.roles.fetch(text.split('\n')[0])
+								role = await interaction.guild.roles.fetch(text.split('\n')[0])
 								roleid = ""
 								console.log(`role = ${role}`)
 								if (!role) { // if no role was found from id, search with the text
-									const fetchedroles = await interaction.guild.roles.fetch()
+									fetchedroles = await interaction.guild.roles.fetch()
 									console.log(`fetchedroles = ${JSON.stringify(fetchedroles)}`)
-									const rolelist = []
-									const roleidlist = []
-									for (const [key, value] of fetchedroles) {
+									rolelist = []
+									roleidlist = []
+									for ([key, value] of fetchedroles) {
 										console.log(`key= ${key}, value= ${value}`)
 										if (!value.managed) {
 											rolelist.push(value.name.toLowerCase())
@@ -378,8 +368,8 @@ export default {
 										}
 									}
 									console.log(rolelist)
-									const matches = stringSimilarity.findBestMatch(text, rolelist)
-									const index = matches.bestMatchIndex
+									matches = stringSimilarity.findBestMatch(text, rolelist)
+									index = matches.bestMatchIndex
 									if (index != 0) {
 										console.log(roleidlist[index])
 										roleid = roleidlist[index]
@@ -395,7 +385,7 @@ export default {
 										.then((message) => messagesToDelete.push(message))
 								} else {
 									console.log("Yeah.")
-									const role = await interaction.guild.roles.fetch(roleid)
+									role = await interaction.guild.roles.fetch(roleid)
 									roleList.roles.push({ id: role.id, description: text.split('\n')[1] })
 
 									if (!isnew) {
@@ -416,7 +406,7 @@ export default {
 											// collect button press to remove role
 											collector.on('collect', i => {
 												if (i.user.id === interaction.user.id) {
-													const index = roleList.roles.findIndex(r => r.id === roleid)
+													index = roleList.roles.findIndex(r => r.id === roleid)
 													roleList.roles.splice(index, 1)
 													collector.stop()
 													msg.delete()
@@ -458,7 +448,7 @@ export default {
 									.then((message) => messagesToDelete.push(message))
 								console.log(newroles)
 								for (let i = 0; i < newroles.length; i++) {
-									const role = await interaction.guild.roles.fetch(newroles[i])
+									role = await interaction.guild.roles.fetch(newroles[i])
 									interaction.guild.roles.delete(role)
 										.then(() => console.log('Deleted the role'))
 										.catch(console.error)
@@ -481,7 +471,7 @@ export default {
 									interaction.followUp({ embeds: embeds.messageEmbed(`Roles in list ${roleList.name}:`, `${roleList.roles.map(r => `<@&${r.id}>`).join('\n')}`) })
 
 									try {
-										const path = `.guilds.${interaction.guild.id}.roles.lists`
+										path = `.guilds.${interaction.guild.id}.roles.lists`
 										await database.set(path + `.${roleList.name}`, roleList)
 									} catch (error) {
 										throw new Error(`Could not create role menu, does one by this name already exist?`)
@@ -494,21 +484,21 @@ export default {
 						break
 					}
 					case 'get': {
-						const rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
+						rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 						if (!interaction.options.getString('name') || interaction.options.getString('name') == 'all') {
-							const roles = await getRoles(interaction)
+							roles = await getRoles(interaction)
 							//options = roles.map(r => r = { label: r.name, value: r.id })
 							//console.log("options: ", options)
-							const tagList = []
+							tagList = []
 							for (const [key, value] of roles) {
 								console.log(`${key} goes ${value}`)
 								console.log(`${value.name}`)
 								if (value.name != `@everyone`) tagList.push(`<@&${value.id}>`)
 								else tagList.push(`@everyone`)
 							}
-							let roleliststext = ""
-							let count = 0
-							for (const i in rolelists) {
+							roleliststext = ""
+							count = 0
+							for (i in rolelists) {
 								roleliststext += `${rolelists[i].name} - ${rolelists[i].roles.length}\n`
 								count++
 							}
@@ -521,8 +511,8 @@ export default {
 
 						} else {
 							console.log(JSON.stringify(rolelists))
-							for (const i in rolelists) {
-								const roles = rolelists[i].roles.map((r: any) => `<@&${r.id}>`)
+							for (i in rolelists) {
+								roles = rolelists[i].roles.map(r => `<@&${r.id}>`)
 								if (rolelists[i].name == interaction.options.getString('name')) {
 									interaction.reply({ embeds: embeds.messageEmbed(`Roles List - ${rolelists[i].name} - ${rolelists[i].roles.length}`, roles.join('\n')) })
 								}
@@ -533,8 +523,8 @@ export default {
 						break
 					}
 					case 'delete': {
-						const rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
-						const rolelist = interaction.options.getString('name')
+						rolelists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
+						rolelist = interaction.options.getString('name')
 						try {
 							await database.del(`guilds`, `.${interaction.guild.id}.roles.lists.${rolelist}`)
 							interaction.reply({ embeds: embeds.successEmbed(`Successfully deleted ${rolelist}`) })
@@ -550,11 +540,11 @@ export default {
 			}
 		}
 	},
-	async menu(interaction: any) {
+	async menu(interaction) {
 		//await interaction.deferReply()
 		console.log(interaction.values)
 		console.log(interaction)
-		const id = interaction.customId.split(".")
+		id = interaction.customId.split(".")
 		switch (id[1]) {
 			case 'rolemenu': {
 				const menuid = interaction.message.id
@@ -563,14 +553,14 @@ export default {
 				const user = await interaction.user.fetch()
 				const member = await interaction.guild.members.resolve(user)
 				const roles = await member.roles.cache // members roles
-				const roleids = roleList.roles.map((r: any) => r.id) // list of ids on the role list
+				const roleids = roleList.roles.map(r => r.id) // list of ids on the role list
 
 				// for every role on the role list
 				for (let i = 0; i < roleList.roles.length; i++) {
 					console.log(i)
 					console.log(roleList.roles[i])
 					// if the user has it:
-					if (roles.find((r: any) => r.id === roleList.roles[i].id)) {
+					if (roles.find(r => r.id === roleList.roles[i].id)) {
 						console.log("user has it")
 						// if its not selected on the list
 						if (!interaction.values.includes(roleList.roles[i].id)) {
@@ -594,9 +584,9 @@ export default {
 			}
 		}
 	},
-	async button(interaction: any) {
+	async button(interaction) {
 		console.log(interaction)
-		const id = interaction.customId.split(".")
+		id = interaction.customId.split(".")
 		switch (id[1]) {
 			case 'rolemenu': {
 				const roleid = id[2]
@@ -610,10 +600,10 @@ export default {
 				const member = await interaction.guild.members.resolve(user)
 				const roles = await member.roles.cache // members roles
 				// list of role ids from the list
-				const roleids = roleList.roles.map((r: any) => r.id)
+				const roleids = roleList.roles.map(r => r.id)
 
 				// this is the list of roles the user has that are also in the role list
-				const rolesinlist = roles.filter((r: any) => {
+				rolesinlist = roles.filter(r => {
 					// if its in the roleList, add it
 					if (roleids.includes(r.id)) {
 						return r.id
@@ -621,7 +611,7 @@ export default {
 				})
 
 				//count roles the user has in the list
-				let rolecount = 0
+				rolecount = 0
 				// for (var i = 0; i < roles.size; i++) {
 				// 	// for each role the user has
 				// 	console.log(i)
@@ -630,7 +620,7 @@ export default {
 				// 		rolecount++
 				// 	}
 				// }
-				for (const [key, value] of roles) {
+				for ([key, value] of roles) {
 					console.log(`key: ${key}`)
 					console.log(`value: ${value}`)
 					if (roleids.includes(value.id)) {
@@ -649,7 +639,7 @@ export default {
 					console.log(i)
 					console.log(roleList.roles[i])
 					// if the user has it:
-					if (roles.find((r: any) => r.id === roleList.roles[i].id)) {
+					if (roles.find(r => r.id === roleList.roles[i].id)) {
 						console.log("user has it")
 						// if its not selected on the list
 						if (roleid != roleList.roles[i].id) {
@@ -668,7 +658,7 @@ export default {
 					}
 				}
 
-				await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), ephemeral: true }).then((msg: any) => msg.delete())
+				await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), ephemeral: true }).then(msg => msg.delete())
 
 
 				// // does the user already have the role?

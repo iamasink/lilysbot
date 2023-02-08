@@ -8,19 +8,19 @@ export default {
 	// should the event only run once?
 	once: true,
 	// event logic, which will be called by the event handler whenever the event emits.
-	async execute(client: any) {
+	async execute(client) {
 		await database.connect()
 		console.log(`Ready! Logged in as ${client.user.tag}`)
 
 		await wait(1000)
 
 		// Loop over all the guilds
-		client.guilds.cache.forEach(async (guild: any) => {
+		client.guilds.cache.forEach(async (guild) => {
 			// Fetch all Guild Invites
 			const oldinvites = await database.get(`.guilds.${guild.id}.invites`)
 			const guildinvites = await guild.invites.fetch()
 
-			guildinvites.map(async (invite: any) => {
+			guildinvites.map(async invite => {
 
 				const code = invite.code
 				const inviterId = invite.inviterId
@@ -30,7 +30,7 @@ export default {
 				database.set(`.guilds.${guild.id}.invites.${code}.expired`, false)
 				database.set(`.guilds.${guild.id}.invites.${code}.code`, code)
 			})
-			for (const i in oldinvites) {
+			for (i in oldinvites) {
 				if (guildinvites.has(i)) {
 					console.log(`sex ${i}`)
 				} else {

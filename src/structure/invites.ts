@@ -1,5 +1,5 @@
 export default {
-	update(guild: any) {
+	update(guild) {
 		console.log(guild.invites)
 	},
 }

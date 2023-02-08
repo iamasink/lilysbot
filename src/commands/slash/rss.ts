@@ -38,7 +38,7 @@ export default {
 				await interaction.reply({ embeds: embeds.messageEmbed("Retrieving RSS Feed...", `**URL:** \`${url}\`\n**Title:** \` \``) })
 
 
-				var limit: number = await interaction.options.getNumber('limit') || 1
+				var limit = await interaction.options.getNumber('limit') || 1
 				if (limit > 5 || limit < 1) limit = 1
 
 
@@ -46,7 +46,6 @@ export default {
 
 				await interaction.editReply({ embeds: embeds.successEmbed("Retrieving RSS Feed", `**URL:** \`${url}\`\n**Title:** \`${feed.title}\``) })
 
-				let len: number
 				if (feed.items.length > limit) len = limit
 				else len = feed.items.length
 

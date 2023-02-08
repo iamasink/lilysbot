@@ -37,7 +37,7 @@ export default {
 		)
 	},
 
-	successEmbed(title: string, description?: string): any {
+	successEmbed(title: string, description: string): any {
 		return embed(`#00ff00`, title, description)
 	},
 

@@ -1,30 +1,42 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import { clientId, token } from '../config.json'
-import { REST } from '@discordjs/rest'
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteractionOptionResolver, PermissionsBitField, Routes } from 'discord.js'
-import ApplicationCommand from '../types/ApplicationCommand'
-import { client } from '../index'
-import embeds from './embeds'
+import fs from "node:fs"
+import path from "node:path"
+import { clientId, token } from "../config.json"
+import { REST } from "@discordjs/rest"
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	CommandInteractionOptionResolver,
+	PermissionsBitField,
+	Routes,
+} from "discord.js"
+import ApplicationCommand from "../types/ApplicationCommand"
+import { client } from "../index"
+import embeds from "./embeds"
 
 function merge(a: any, b: any, prop: any) {
-	var reduced = a.filter((aitem: any) => !b.find((bitem: any) => aitem[prop] === bitem[prop]))
+	const reduced = a.filter(
+		(aitem: any) => !b.find((bitem: any) => aitem[prop] === bitem[prop]),
+	)
 	return reduced.concat(b)
 }
 
 async function refreshGlobalCommands() {
-	const rest = new REST({ version: '10' }).setToken(token)
-	let commandList = await getCommands() //.concat(await getContextMenuCommands())
+	const rest = new REST({ version: "10" }).setToken(token)
+	const commandList = await getCommands() //.concat(await getContextMenuCommands())
 	console.log(commandList)
 	try {
-		console.log(`Started refreshing ${commandList.length} global application (/) commands.`)
-
-		const data: any = await rest.put(
-			Routes.applicationCommands(clientId),
-			{ body: commandList.map(e => e.data) },
+		console.log(
+			`Started refreshing ${commandList.length} global application (/) commands.`,
 		)
 
-		console.log(`Successfully reloaded ${data.length} global application (/) commands.`)
+		const data: any = await rest.put(Routes.applicationCommands(clientId), {
+			body: commandList.map((e) => e.data),
+		})
+
+		console.log(
+			`Successfully reloaded ${data.length} global application (/) commands.`,
+		)
 		return data.length
 	} catch (error) {
 		console.error(error)
@@ -99,11 +111,7 @@ async function refreshGlobalCommands() {
 // 		console.log(newcommanddata.options)
 // 		console.log(newcommanddata)
 
-
-
-
-
-// 		// adjust guild command 
+// 		// adjust guild command
 // 		// 	change name to alias name
 // 		newcommanddata.name = aliasName
 // 		// 	remove options set in defaultoptions from the command
@@ -125,9 +133,7 @@ async function refreshGlobalCommands() {
 // 			newcommanddata.options = []
 // 		}
 
-
 // 		const newcommand = newcommanddata
-
 
 // 		//console.log(`${i}: ${JSON.stringify(command)}`)
 // 		commandList.push(newcommand)
@@ -142,7 +148,6 @@ async function refreshGlobalCommands() {
 // 			Routes.applicationGuildCommands(clientId, guildId),
 // 			{ body: commandList }
 // 		)
-
 
 // 		console.log(`Successfully reloaded ${data.length} guild application commands.`)
 
@@ -181,15 +186,17 @@ async function getCommands(): Promise<ApplicationCommand[]> {
 	// }
 	//console.log(commands)
 
-	const commandfilepath = path.join(__dirname, '..', 'commands')
+	const commandfilepath = path.join(__dirname, "..", "commands")
 	console.log(commandfilepath)
-	const commandFiles: string[] = fs.readdirSync(commandfilepath).filter(
-		(file) => file.endsWith('.js') || file.endsWith('.ts')
-	)
+	const commandFiles: string[] = fs
+		.readdirSync(commandfilepath)
+		.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
 	console.log(commandFiles)
 	for (let i = 0, len = commandFiles.length; i < len; i++) {
 		const file = commandFiles[i]
-		const command: ApplicationCommand = (await import(`../commands/${file}`)).default as ApplicationCommand
+		const command: ApplicationCommand = (
+			await import(`../commands/${file}`)
+		).default as ApplicationCommand
 		console.log("awa" + file)
 		commands.push(command)
 	}
@@ -198,28 +205,23 @@ async function getCommands(): Promise<ApplicationCommand[]> {
 	return commands
 }
 
-
 async function getGuildCommands() {
 	const commands = []
-
 }
 
 async function getContextMenuCommands() {
-	console.log('context menu commands,,')
-	const commands = []
-
-	const commandsPath = path.join(__dirname, '..', 'commands', 'contextmenu')
-	const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.ts'))
-
-	for (const file of commandFiles) {
-		const command = require(`../commands/contextmenu/${file}`)
-		console.log(file)
-		console.log(command.data.name)
-		commands.push(command.data.toJSON())
-	}
-	return commands
+	// console.log('context menu commands,,')
+	// const commands = []
+	// const commandsPath = path.join(__dirname, '..', 'commands', 'contextmenu')
+	// const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.ts'))
+	// for (const file of commandFiles) {
+	// 	const command = require(`../commands/contextmenu/${file}`)
+	// 	console.log(file)
+	// 	console.log(command.data.name)
+	// 	commands.push(command.data.toJSON())
+	// }
+	// return commands
 }
-
 
 export default {
 	get() {
@@ -235,12 +237,18 @@ export default {
 	 *Runs a command, optionally with altered interaction group, subcommand, options
 	 *
 	 * @param {*} interaction 	command interaction
-	 * @param {*} [commandName=interaction.commandName] 
+	 * @param {*} [commandName=interaction.commandName]
 	 * @param {string} group
 	 * @param {string} subcommand
 	 * @param {{name: string, type: number, value: *}[]} options
 	 */
-	async run(interaction: any, commandName = interaction.commandName, group?: any, subcommand?: any, options?: any) {
+	async run(
+		interaction: any,
+		commandName = interaction.commandName,
+		group?: any,
+		subcommand?: any,
+		options?: any,
+	) {
 		// if theres no options present, create a new options resolver
 
 		if (group != null) {
@@ -258,23 +266,26 @@ export default {
 			// merge options with interaction's options, new options should overwrite
 			console.log(interaction.options._hoistedOptions)
 			console.log(options)
-			interaction.options._hoistedOptions = merge(interaction.options._hoistedOptions, options, "name")
+			interaction.options._hoistedOptions = merge(
+				interaction.options._hoistedOptions,
+				options,
+				"name",
+			)
 			console.log("merged	")
 			console.log(interaction.options._hoistedOptions)
 		}
 		console.log("commandName: " + commandName)
 		const command = await interaction.client.commands.get(commandName)
 
-
 		try {
 			// handle discord permissions
-			let acceptedPermissions = []
-			let deniedPermissions = []
+			const acceptedPermissions = []
+			const deniedPermissions = []
+			const permlist = command.discordPermissions || []
 			let permissionsText = `Permissions:`
-			let permlist = command.discordPermissions || []
 
 			// for every permission set in the command, check it
-			for (var i = 0; i < permlist.length; i++) {
+			for (let i = 0; i < permlist.length; i++) {
 				console.log(i)
 				if (interaction.member.permissions.has(permlist[i])) {
 					console.log("yes")
@@ -284,15 +295,25 @@ export default {
 					deniedPermissions.push(permlist[i])
 				}
 			}
-			for (var i = 0; i < deniedPermissions.length; i++) {
-				permissionsText += `\n🚫  **${new PermissionsBitField(deniedPermissions[i]).toArray()}**` // get text name for each permission
+			for (let i = 0; i < deniedPermissions.length; i++) {
+				permissionsText += `\n🚫  **${new PermissionsBitField(
+					deniedPermissions[i],
+				).toArray()}**` // get text name for each permission
 			}
-			for (var i = 0; i < acceptedPermissions.length; i++) {
-				permissionsText += `\n✅  **${new PermissionsBitField(acceptedPermissions[i]).toArray()}**`
+			for (let i = 0; i < acceptedPermissions.length; i++) {
+				permissionsText += `\n✅  **${new PermissionsBitField(
+					acceptedPermissions[i],
+				).toArray()}**`
 			}
 
 			if (deniedPermissions.length > 0) {
-				interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`You don't have permission to perform this command`, `${permissionsText}`) })
+				interaction.reply({
+					ephemeral: true,
+					embeds: embeds.warningEmbed(
+						`You don't have permission to perform this command`,
+						`${permissionsText}`,
+					),
+				})
 				return
 			}
 
@@ -302,22 +323,27 @@ export default {
 			return await interaction
 		} catch (error) {
 			console.error(error)
-			const row = new ActionRowBuilder()
-				.addComponents(
-					new ButtonBuilder()
-						.setCustomId('errorreport')
-						.setLabel('Report Error')
-						.setStyle(ButtonStyle.Danger),
-				)
-			interaction.channel.send({ embeds: embeds.errorEmbed(`Running command **${interaction.commandName}**`, error), components: [row], ephemeral: true })
-
+			const row = new ActionRowBuilder().addComponents(
+				new ButtonBuilder()
+					.setCustomId("errorreport")
+					.setLabel("Report Error")
+					.setStyle(ButtonStyle.Danger),
+			)
+			interaction.channel.send({
+				embeds: embeds.errorEmbed(
+					`Running command **${interaction.commandName}**`,
+					error,
+				),
+				components: [row],
+				ephemeral: true,
+			})
 		}
 	},
 	async textToCommandParser(text = "") {
 		console.log(text)
 
 		// split text by spaces
-		let words = text.split(' ')
+		const words = text.split(" ")
 		if (words[0].startsWith("/")) words[0] = words[0].substring(1)
 		const commandName = words[0]
 		const commands = await module.exports.get()
@@ -325,7 +351,7 @@ export default {
 		let subcommand: any
 		let optionsStart: any
 
-		let options = {}
+		const options = {}
 		if (!words[1]) words[1] = ""
 		if (!words[2]) words[2] = ""
 
@@ -366,32 +392,42 @@ export default {
 		console.log(`optionsStart = ${optionsStart}`)
 
 		// find group
-		let commandgroup = await command.options.find((e: any) => e.name == group && e.type == 2) || command
+		const commandgroup =
+			(await command.options.find(
+				(e: any) => e.name == group && e.type == 2,
+			)) || command
 		console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
-		let commandsubcommand = await commandgroup.options.find((e: any) => e.name == subcommand && e.type == 1) || commandgroup
+		const commandsubcommand =
+			(await commandgroup.options.find(
+				(e: any) => e.name == subcommand && e.type == 1,
+			)) || commandgroup
 		console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
 
-		let foundoptions: any = []
+		const foundoptions: any = []
 		// parse options
 		// for each word from optionsStart to end
 		for (let i = optionsStart, len = words.length; i < len; i++) {
 			if (words[i].endsWith(":")) {
 				// remove colon
-				let option = words[i].substring(0, words[i].length - 1)
+				const option = words[i].substring(0, words[i].length - 1)
 				console.log(`option = ${option}`)
 				// type 1 is an subcommand (not group)
 
 				// if it hasn't been chosen yet
 				if (!foundoptions.find((e: any) => e.name == option)) {
 					// if it exists in the command
-					if (await commandsubcommand.options.find((e: { name: string; type: number }) => e.name == option && e.type == 3)) {
+					if (
+						await commandsubcommand.options.find(
+							(e: { name: string; type: number }) =>
+								e.name == option && e.type == 3,
+						)
+					) {
 						console.log(`option found ${words[i]}, ${i}`)
 						foundoptions.push({ name: option, position: i })
 					}
 				}
 			}
 		}
-		return ([commandName, group, subcommand, options])
-
+		return [commandName, group, subcommand, options]
 	},
 }

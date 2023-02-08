@@ -1,8 +1,15 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
-const { footer } = require('../config.json')
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
+const { footer } = require("../config.json")
 
-
-function embed(color: string, title: string, description?: string, fields?: any, image?: string, thumbnail?: string, footer?: object): object {
+function embed(
+	color: string,
+	title: string,
+	description?: string,
+	fields?: any,
+	image?: string,
+	thumbnail?: string,
+	footer?: object,
+): object {
 	const embed = new EmbedBuilder()
 	if (color) embed.setColor(color)
 	if (title) embed.setTitle(title)
@@ -21,16 +28,19 @@ function embed(color: string, title: string, description?: string, fields?: any,
 
 export default {
 	errorEmbed(when: string, error: any): object {
-
 		return embed(
 			`#d02721`,
 			`An error occurred!`,
 			undefined,
-			[{
-				name: '__Error__',
-				value: `${error.name || error}\n${error.message || ''}`
-			}], undefined, undefined, undefined
-
+			[
+				{
+					name: "__Error__",
+					value: `${error.name || error}\n${error.message || ""}`,
+				},
+			],
+			undefined,
+			undefined,
+			undefined,
 		)
 	},
 
@@ -38,26 +48,26 @@ export default {
 		return embed(`#00ff00`, title, description)
 	},
 
-	messageEmbed(title: string, description?: string, fields?: any, color: string = '#f9beca'): any {
-		return embed(
-			color,
-			title,
-			description,
-			fields
-		)
+	messageEmbed(
+		title: string,
+		description?: string,
+		fields?: any,
+		color: string = "#f9beca",
+	): any {
+		return embed(color, title, description, fields)
 	},
 
-	warningEmbed(title: string, description?: string, fields?: any, color = '#f2bb05') {
-		return embed(
-			color,
-			title,
-			description,
-			fields
-		)
+	warningEmbed(
+		title: string,
+		description?: string,
+		fields?: any,
+		color = "#f2bb05",
+	) {
+		return embed(color, title, description, fields)
 	},
 
 	/**
-	 * Creates a profile embed. 
+	 * Creates a profile embed.
 	 * Has guild member avatar || profile picture as thumbnail,
 	 * color is user's accent color || pink default
 	 *
@@ -66,16 +76,29 @@ export default {
 	 * @param {*} fields
 	 * @param {*} user
 	 * @param {*} guild
-	 * @return {*} 
+	 * @return {*}
 	 */
-	async profileEmbed(title: string, description: string, fields: any, user: any, guild: any): Promise<any> {
+	async profileEmbed(
+		title: string,
+		description: string,
+		fields: any,
+		user: any,
+		guild: any,
+	): Promise<any> {
 		user = await user.fetch()
 		var thumbnail: string
 		var color: number | string
 
-		if (guild.members.resolve(user) && guild.members.resolve(user).avatar != undefined) {
-			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${user.id}/avatars/${guild.members.resolve(user).avatar}.webp`
-		} else { thumbnail = user.avatarURL(true) }
+		if (
+			guild.members.resolve(user) &&
+			guild.members.resolve(user).avatar != undefined
+		) {
+			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${
+				user.id
+			}/avatars/${guild.members.resolve(user).avatar}.webp`
+		} else {
+			thumbnail = user.avatarURL(true)
+		}
 		color = user.hexAccentColor || `#f9beca`
 		return embed(
 			color.toString(),
@@ -83,8 +106,7 @@ export default {
 			description,
 			fields,
 			undefined,
-			thumbnail
+			thumbnail,
 		)
-
-	}
+	},
 }

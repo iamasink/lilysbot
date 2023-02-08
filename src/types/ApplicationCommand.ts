@@ -3,23 +3,19 @@ import type {
 	ContextMenuCommandBuilder,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
-} from 'discord.js'
+} from "discord.js"
 
 /**
  * Represents an Application Command
  */
 export default class ApplicationCommand {
-	data:
-		| SlashCommandBuilder
-		| ContextMenuCommandBuilder
+	data: SlashCommandBuilder | ContextMenuCommandBuilder
 	execute: (interaction: ChatInputCommandInteraction) => Promise<void> | void
 
 	constructor(options: {
-		data:
-		| SlashCommandBuilder
-		| ContextMenuCommandBuilder
+		data: SlashCommandBuilder | ContextMenuCommandBuilder
 		execute: (
-			interaction: ChatInputCommandInteraction
+			interaction: ChatInputCommandInteraction,
 		) => Promise<void> | void
 	}) {
 		this.execute = options.execute

@@ -6,4 +6,3 @@ import {
 	PermissionResolvable,
 } from "discord.js"
 import { Bot } from "../structures/Client"
-

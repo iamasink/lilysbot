@@ -1,3 +1,0 @@
-# lilysbot
-
--gay

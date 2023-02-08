@@ -1,10 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, ActionRowBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const commands = require('../../structure/commands');
 const GIFEncoder = require('gifencoder');
 const { createCanvas } = require('canvas');
 const fs = require('fs');
 const database = require('../../structure/database');
-export default {
+exports.default = {
     data: new SlashCommandBuilder()
         .setName('test')
         .setDescription('test!')

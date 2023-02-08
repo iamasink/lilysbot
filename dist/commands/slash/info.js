@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js');
 const database = require('../../structure/database');
 const calc = require('../../structure/calc');
@@ -22,7 +24,7 @@ function formattext(val, name, append = ``, fallback) {
     }
     return output;
 }
-export default {
+exports.default = {
     data: new SlashCommandBuilder()
         .setName('info')
         .setDescription('Retrieves info...')

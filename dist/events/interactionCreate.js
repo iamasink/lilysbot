@@ -1,10 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const embeds = require('../structure/embeds');
 const { permissions } = require('../config.json');
 const database = require('../structure/database');
 const commands = require('../structure/commands');
+const index_1 = require("../index");
 // Emitted when an interaction is created.
-export default {
+exports.default = {
     name: 'interactionCreate',
     async execute(interaction) {
         console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
@@ -92,7 +95,7 @@ export default {
                 if (interaction.customId === "errorreport") {
                     console.log(interaction.message);
                     interaction.update({ components: [] });
-                    client.channels.fetch('767026023387758612').then((channel) => {
+                    index_1.client.channels.fetch('767026023387758612').then((channel) => {
                         console.log(channel.name);
                         channel.send("error: " + JSON.stringify(interaction.message, null, 2));
                         return;

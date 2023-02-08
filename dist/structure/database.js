@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const redis = require("redis");
 const key = "lilybot";
+const index_1 = require("../index");
 var db; // idk what im doing but hopefully this makes the client available everywhere??!!!
 async function connect() {
     console.log("connecting to database...");
@@ -9,7 +12,7 @@ async function connect() {
     });
     await db.connect();
     // console.log((await db.json.get(`test`)))
-    client.guilds.cache.each(async (g) => {
+    index_1.client.guilds.cache.each(async (g) => {
         await module.exports.check(`.guilds.${g.id}`);
         await module.exports.check(`.guilds.${g.id}.commands`);
         await module.exports.check(`.guilds.${g.id}.commands.global`);
@@ -20,7 +23,7 @@ async function connect() {
         await module.exports.check(`.guilds.${g.id}.roles.menus`);
     });
 }
-export default {
+exports.default = {
     async connect() {
         connect();
     },

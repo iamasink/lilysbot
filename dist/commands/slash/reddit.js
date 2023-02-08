@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { redditu, redditpw, redditappId, redditappSecret } = require('../../config.json');
 const snoowrap = require('snoowrap');
@@ -11,7 +13,7 @@ const reddit = new snoowrap({
     username: redditu,
     password: redditpw
 });
-export default {
+exports.default = {
     data: new SlashCommandBuilder()
         .setName('reddit')
         .setDescription('reddit')

@@ -1,6 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { request } = require('undici');
-export default {
+exports.default = {
     permission: 'admin.permission',
     data: new SlashCommandBuilder()
         .setName('permissions')

@@ -1,6 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const database = require("../structure/database");
 // Emitted whenever an invite is created
-export default {
+exports.default = {
     name: "inviteCreate",
     async execute(invite) {
         console.log(`a invite was created: ${invite}`);

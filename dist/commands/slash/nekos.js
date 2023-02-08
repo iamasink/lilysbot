@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { request } = require('undici');
 async function getJSONResponse(body) {
@@ -7,7 +9,7 @@ async function getJSONResponse(body) {
     }
     return JSON.parse(fullBody);
 }
-export default {
+exports.default = {
     data: new SlashCommandBuilder()
         .setName('nekos')
         .setDescription('nekos.life')

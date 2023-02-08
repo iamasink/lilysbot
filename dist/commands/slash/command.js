@@ -1,9 +1,12 @@
-import { SlashCommandBuilder } from 'discord.js';
-import commands from '../../structure/commands';
-import database from '../../structure/database';
-import embeds from '../../structure/embeds';
-export default {
-    data: new SlashCommandBuilder()
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const discord_js_1 = require("discord.js");
+const commands_1 = tslib_1.__importDefault(require("../../structure/commands"));
+const database_1 = tslib_1.__importDefault(require("../../structure/database"));
+const embeds_1 = tslib_1.__importDefault(require("../../structure/embeds"));
+exports.default = {
+    data: new discord_js_1.SlashCommandBuilder()
         .setName('command')
         .setDescription('Configure commands')
         .addSubcommandGroup((group) => group
@@ -102,7 +105,7 @@ export default {
                 let exists;
                 if (alias) {
                     try {
-                        value = await database.get(aliasPath);
+                        value = await database_1.default.get(aliasPath);
                     }
                     catch (e) {
                         value = undefined;
@@ -131,11 +134,11 @@ export default {
                             const description = interaction.options.getString('description');
                             console.log(defaultoptions);
                             const data = { commandname: command, group: group, subcommand: subcommand, defaultoptions: defaultoptions || [], hidedefaults: true, hidealloptions: hidealloptions, description: description };
-                            await database.set(aliasPath, data);
-                            interaction.reply({ embeds: embeds.successEmbed("Created alias successfully") });
+                            await database_1.default.set(aliasPath, data);
+                            interaction.reply({ embeds: embeds_1.default.successEmbed("Created alias successfully") });
                         }
                         catch (err) {
-                            interaction.reply({ embeds: embeds.errorEmbed("Creating alias", err) });
+                            interaction.reply({ embeds: embeds_1.default.errorEmbed("Creating alias", err) });
                             throw new Error(`Alias $${aliasPath} could not be created\n${err}`);
                         }
                         break;
@@ -144,21 +147,21 @@ export default {
                         if (!exists)
                             throw new Error(`${aliasPath} does not exist`);
                         try {
-                            await database.del(aliasPath);
-                            interaction.reply({ embeds: embeds.successEmbed("Created removed successfully") });
+                            await database_1.default.del(aliasPath);
+                            interaction.reply({ embeds: embeds_1.default.successEmbed("Created removed successfully") });
                         }
                         catch (err) {
-                            interaction.reply({ embeds: embeds.errorEmbed("Removing alias", err) });
+                            interaction.reply({ embeds: embeds_1.default.errorEmbed("Removing alias", err) });
                         }
                         break;
                     }
                     case 'list': {
-                        value = await database.get(path);
-                        await interaction.reply({ embeds: embeds.messageEmbed("List:", JSON.stringify(value)) });
+                        value = await database_1.default.get(path);
+                        await interaction.reply({ embeds: embeds_1.default.messageEmbed("List:", JSON.stringify(value)) });
                         break;
                     }
                 }
-                await commands.refreshGuild(guildID);
+                await commands_1.default.refreshGuild(guildID);
                 break;
             }
             case 'command': {
@@ -167,8 +170,8 @@ export default {
                 const guildID = interaction.guild.id;
                 const path = `.${guildID}.commands.global`;
                 const commandPath = path + '.' + command;
-                const value = await database.get(commandPath);
-                interaction.reply({ embeds: embeds.messageEmbed("Command:", JSON.stringify(value)) });
+                const value = await database_1.default.get(commandPath);
+                interaction.reply({ embeds: embeds_1.default.messageEmbed("Command:", JSON.stringify(value)) });
                 break;
             }
             case 'run': {

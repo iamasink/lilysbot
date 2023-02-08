@@ -1,6 +1,9 @@
-import { SlashCommandBuilder } from 'discord.js';
-import embeds from '../../structure/embeds';
-import commands from '../../structure/commands';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const discord_js_1 = require("discord.js");
+const embeds_1 = tslib_1.__importDefault(require("../../structure/embeds"));
+const commands_1 = tslib_1.__importDefault(require("../../structure/commands"));
 // function runScript(scriptPath, callback) {
 // 	// keep track of whether callback has been invoked to prevent multiple invocations
 // 	var invoked = false
@@ -19,17 +22,17 @@ import commands from '../../structure/commands';
 // 		callback(err)
 // 	})
 // }
-export default {
+exports.default = {
     permission: `botowner`,
-    data: new SlashCommandBuilder()
+    data: new discord_js_1.SlashCommandBuilder()
         .setName('refresh')
         .setDescription('Reloads the bot and commands'),
     async execute(interaction) {
         await interaction.deferReply();
-        const res = await commands.deploy();
+        const res = await commands_1.default.deploy();
         try {
-            interaction.followUp({ embeds: embeds.successEmbed(`Successfully deployed (${res}) commands!`) });
-            interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') });
+            interaction.followUp({ embeds: embeds_1.default.successEmbed(`Successfully deployed (${res}) commands!`) });
+            interaction.followUp({ embeds: embeds_1.default.messageEmbed('Restarting!', 'Please wait...') });
         }
         catch (error) {
             console.error(error);

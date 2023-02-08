@@ -1,6 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const embeds = require('./embeds');
 const database = require('./database');
-export default {
+exports.default = {
     async log(guild, message) {
         const channel = await database.get(`.guilds.${guild.id}.settings.log_channel`);
         console.log(channel);

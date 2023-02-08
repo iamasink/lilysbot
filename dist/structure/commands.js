@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require('node:fs');
 const path = require('node:path');
 const { clientId, token } = require('../config.json');
@@ -6,6 +8,7 @@ const { PermissionsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const embeds = require('./embeds');
 const { permissions } = require('../config.json');
 const database = require('./database');
+const index_1 = require("../index");
 function merge(a, b, prop) {
     var reduced = a.filter((aitem) => !b.find((bitem) => aitem[prop] === bitem[prop]));
     return reduced.concat(b);
@@ -184,7 +187,7 @@ async function getContextMenuCommands() {
 // 	const type = types[string.toUpperCase()]
 // 	return type
 // }
-export default {
+exports.default = {
     /**
      * Get all commands
      *
@@ -214,7 +217,7 @@ export default {
     async run(interaction, commandName = interaction.commandName, group, subcommand, options) {
         // if theres no options present, create a new options resolver
         if (!interaction.options)
-            interaction.options = new CommandInteractionOptionResolver(client, []);
+            interaction.options = new CommandInteractionOptionResolver(index_1.client, []);
         if (group != null) {
             console.log(`group = ${group}`);
             interaction.options._group = group;

@@ -3,7 +3,7 @@ const embeds = require('../structure/embeds')
 const { permissions } = require('../config.json')
 const database = require('../structure/database')
 const commands = require('../structure/commands')
-
+import { client } from '../index'
 
 // Emitted when an interaction is created.
 export default {

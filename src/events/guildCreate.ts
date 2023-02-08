@@ -1,4 +1,5 @@
 //const database = require("../structure/database")
+import { client } from '../index'
 import database from '../structure/database'
 
 // Emitted whenever the client joins a guild.

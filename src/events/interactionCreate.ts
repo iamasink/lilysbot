@@ -1,4 +1,4 @@
-import { Events, Message } from "discord.js"
+import { Events, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import commands from "../utils/commands"
@@ -7,7 +7,7 @@ import commands from "../utils/commands"
 // Emitted when an interaction is created.
 export default new Event({
 	name: Events.InteractionCreate,
-	async execute(interaction) {
+	async execute(interaction: Interaction) {
 		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`)
 		const guildID = interaction.guild.id
 
@@ -39,7 +39,7 @@ export default new Event({
 		}
 
 		else if (interaction.isAutocomplete()) {
-			const command = interaction.client.commands.get(interaction.commandName)
+			const command = client.commands.get(interaction.commandName)
 
 			if (!command) {
 				console.error(`No command matching ${interaction.commandName} was found.`)
@@ -56,7 +56,7 @@ export default new Event({
 		else if (interaction.isUserContextMenuCommand()) {
 			// gets the (global) command data from the interaction
 			console.log(interaction.commandName)
-			const command = await interaction.client.commands.get(interaction.commandName)
+			const command = await client.commands.get(interaction.commandName)
 			console.log(command)
 
 			if (!command) {
@@ -64,12 +64,14 @@ export default new Event({
 			}
 			commands.run(interaction)
 
-		} else if (interaction.isMessageContextMenuCommand()) { /* empty */ }
+		}
+
+		else if (interaction.isMessageContextMenuCommand()) { /* empty */ }
 
 		// if interaction is from a message (ie buttons, select menu, etc)
 		else {
 			const id = interaction.customId.split(".")
-			const command = interaction.client.commands.get(id[0])
+			const command = client.commands.get(id[0])
 			console.log(command)
 			if (interaction.isSelectMenu()) {
 				// const command = interaction.client.commands.get(interaction.message.interaction.commandName)

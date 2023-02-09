@@ -31,6 +31,7 @@ export class Bot extends Client {
 			(file) => file.endsWith('.js') || file.endsWith('.ts')
 		)
 		console.log(commandFiles)
+
 		commandFiles.forEach(async file => {
 			console.log(file)
 			const command: ApplicationCommand = (await import(`../commands/${file}`)).default as ApplicationCommand
@@ -44,6 +45,7 @@ export class Bot extends Client {
 			(file) => file.endsWith('.js') || file.endsWith('.ts')
 		)
 		console.log(eventFiles)
+
 		eventFiles.forEach(async file => {
 			console.log(file)
 			const event: Event = (await import(`../events/${file}`)).default as Event

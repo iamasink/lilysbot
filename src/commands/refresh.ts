@@ -23,24 +23,7 @@ export default new ApplicationCommand({
 			throw error
 		}
 
-		setTimeout(function () {
-			process.exit()
-		}, 1000)
-
-
-
-		// runScript('./deploy-commands.js', function (err) {
-		// 	if (err) {
-		// 		return interaction.followUp({ embeds: embeds.errorEmbed('An error occurred while deploying commands!`', err) })
-		// 	} else {
-		// 		interaction.followUp({ embeds: embeds.successEmbed('Successfully deployed commands!') })
-		// 		interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
-		// 		setTimeout(function () {
-		// 			process.exit()
-		// 		}, 1000)
-		// 	}
-		// })
-
-
+		// exit the process after 1 sec
+		setTimeout(function () { process.exit() }, 1000)
 	},
 })

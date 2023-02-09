@@ -16,7 +16,7 @@ import type {
 
 export default class ApplicationCommand {
 	permissions?: PermissionResolvable | "botowner"
-	data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any
+	data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any // this should be a type (not any) but i can't figure it out so whatevs
 	execute: (interaction: ChatInputCommandInteraction) => Promise<void> | void
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
 	menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void

@@ -21,6 +21,7 @@ export default {
 		return JSON.parse(fullBody)
 	},
 	time(ms) {
+		// this isn't really accurate because of how days work
 		const years = Math.floor(ms / 31556952000)
 		const yearsms = ms % 31556952000
 		const months = Math.floor(yearsms / 2629800000)
@@ -40,7 +41,17 @@ export default {
 		output += `${minutes} minutes`
 		return output
 	},
-	splitMessage(text, maxLength = 2000, char = '\n', prepend = '', append = '') {
+	/**
+	 * split text up
+	 *
+	 * @param {string} text
+	 * @param {number} [maxLength=2000] maximum length of 1 message
+	 * @param {string} [char='\n'] character to split on
+	 * @param {string} [prepend=''] prepend to every message (i dont think it does it to the first message)
+	 * @param {string} [append=''] append to every message (i dont think it does it to the last one)
+	 * @return {*} 
+	 */
+	splitMessage(text: string, maxLength = 2000, char = '\n', prepend = '', append = '') {
 
 
 		if (text.length <= maxLength) return [text]

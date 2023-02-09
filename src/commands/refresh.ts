@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import commands from "../utils/commands"
+import embeds from "../utils/embeds"
 
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
@@ -11,13 +12,16 @@ export default new ApplicationCommand({
 		const res = await commands.deploy()
 		console.log(res)
 
-		// try {
-		// 	interaction.followUp({ embeds: embeds.successEmbed(`Successfully deployed (${res}) commands!`) })
-		// 	interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
-		// } catch (error) {
-		// 	console.error(error)
-		// 	throw error
-		// }
+
+		try {
+			const res = await commands.deploy()
+			console.log(res)
+			interaction.followUp({ embeds: embeds.successEmbed(`Successfully deployed (${res}) commands!`) })
+			interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
+		} catch (error) {
+			console.error(error)
+			throw error
+		}
 
 		setTimeout(function () {
 			process.exit()

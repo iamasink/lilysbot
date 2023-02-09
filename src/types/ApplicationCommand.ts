@@ -3,20 +3,33 @@ import type {
 	ContextMenuCommandBuilder,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
+	ChatInputApplicationCommandData,
+	SharedSlashCommandOptions,
+	SlashCommandStringOption,
+	PermissionResolvable,
+	AutocompleteInteraction,
+	CacheType,
+	AnySelectMenuInteraction,
+	ButtonInteraction
 } from "discord.js"
 
-/**
- * Represents an Application Command
- */
+
 export default class ApplicationCommand {
-	data: SlashCommandBuilder | ContextMenuCommandBuilder
+	permissions?: PermissionResolvable | "botowner"
+	data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any
 	execute: (interaction: ChatInputCommandInteraction) => Promise<void> | void
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
+	menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void
+	button?: (interaction: ButtonInteraction) => Promise<void> | void
 
 	constructor(options: {
-		data: SlashCommandBuilder | ContextMenuCommandBuilder
-		execute: (
-			interaction: ChatInputCommandInteraction,
-		) => Promise<void> | void
+		permissions?: PermissionResolvable | "botowner"
+		data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any
+		execute: (interaction: ChatInputCommandInteraction) => Promise<void> | void
+		autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
+		menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void
+		button?: (interaction: ButtonInteraction) => Promise<void> | void
+
 	}) {
 		this.execute = options.execute
 		this.data = options.data

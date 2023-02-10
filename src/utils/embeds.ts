@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, ColorResolvable, APIEmbedField, EmbedFooterOptions } from "discord.js"
+import { SlashCommandBuilder, EmbedBuilder, ColorResolvable, APIEmbedField, EmbedFooterOptions, APIEmbed } from "discord.js"
 import { footer } from "../config.json"
 
 function embed(
@@ -9,7 +9,7 @@ function embed(
 	image?: string,
 	thumbnail?: string,
 	footer?: EmbedFooterOptions
-): object {
+): EmbedBuilder[] {
 	const embed = new EmbedBuilder()
 	if (color) embed.setColor(color)
 	if (title) embed.setTitle(title)
@@ -27,7 +27,7 @@ function embed(
 }
 
 export default {
-	errorEmbed(when: string, error: any): object {
+	errorEmbed(when: string, error: any): EmbedBuilder[] {
 		return embed(
 			"#d02721",
 			"An error occurred!",

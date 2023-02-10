@@ -1,4 +1,4 @@
-import { SlashCommandOptionsOnlyBuilder, ChatInputApplicationCommandData, SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder, SharedSlashCommandOptions } from 'discord.js'
+import { SlashCommandOptionsOnlyBuilder, ChatInputApplicationCommandData, SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder, SharedSlashCommandOptions, CommandInteraction, ChatInputCommandInteraction } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 
 export default new ApplicationCommand({
@@ -8,7 +8,7 @@ export default new ApplicationCommand({
 		.addStringOption(option => option
 			.setName("hi")
 			.setDescription("hi")),
-	async execute(interaction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		interaction.reply(interaction.options.getString("hi"))
 	},
 })

@@ -2,6 +2,7 @@ import { Events, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import commands from "../utils/commands"
+import database from "../utils/database"
 
 
 // Emitted when an interaction is created.
@@ -25,7 +26,7 @@ export default new Event({
 
 
 			// checks if the command is an aliased (guild) command
-			const dbpath = `.guilds.${guildID}.commands.aliases`
+			//const dbpath = `.guilds.${guildID}.commands.aliases`
 			//const aliases = await database.get(dbpath) || {}
 			// console.log(`aliases: ${JSON.stringify(aliases)}`)
 			// const aliasedCommand = aliases[interaction.commandName]

@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "discord.js"
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import commands from "../utils/commands"
 import embeds from "../utils/embeds"
@@ -7,7 +7,7 @@ export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName("refresh")
 		.setDescription("Reloads the bot and commands"),
-	async execute(interaction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		await interaction.deferReply()
 		const res = await commands.deploy()
 		console.log(res)

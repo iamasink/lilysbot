@@ -15,7 +15,7 @@ import type {
 
 
 export default class ApplicationCommand {
-	permissions?: PermissionResolvable | "botowner"
+	permissions?: PermissionResolvable[] | ["botowner"]
 	data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any // this should be a type (not any) but i can't figure it out so whatevs
 	execute: (interaction: ChatInputCommandInteraction) => Promise<void> | void
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
@@ -23,7 +23,7 @@ export default class ApplicationCommand {
 	button?: (interaction: ButtonInteraction) => Promise<void> | void
 
 	constructor(options: {
-		permissions?: PermissionResolvable | "botowner"
+		permissions?: PermissionResolvable[] | ["botowner"]
 		data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any
 		execute: (interaction: ChatInputCommandInteraction) => Promise<void> | void
 		autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void

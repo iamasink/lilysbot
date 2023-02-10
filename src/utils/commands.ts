@@ -3,16 +3,25 @@ import path from "node:path"
 import { clientId, token } from "../config.json"
 import { REST } from "@discordjs/rest"
 import {
+	APIActionRowComponent,
+	APIMessageActionRowComponent,
 	ActionRowBuilder,
+	BaseInteraction,
 	ButtonBuilder,
 	ButtonStyle,
+	ChatInputCommandInteraction,
+	CommandInteraction,
 	CommandInteractionOptionResolver,
+	ContextMenuCommandInteraction,
+	Interaction,
 	PermissionsBitField,
 	Routes,
+	SlashCommandBuilder,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from "../index"
 import embeds from "./embeds"
+import database from "./database"
 
 function merge(a: any, b: any, prop: any) {
 	const reduced = a.filter(
@@ -40,120 +49,121 @@ async function refreshGlobalCommands() {
 		throw error
 	}
 }
-// async function refreshGuildCommands(guildId: any) {
-// 	const rest = new REST({ version: '10' }).setToken(token)
-// 	const commandList = []
+async function refreshGuildCommands(guildId: any) {
+	const rest = new REST({ version: '10' }).setToken(token)
+	const commandList = []
 
-// 	const dbpath = `.guilds.${guildId}.commands.aliases`
-// 	//await database.check(`guilds`, `.${guildId}`.commands)
-// 	//await database.check(`guilds`, `.${guildId}`.commands.aliases)
+	const dbpath = `.guilds.${guildId}.commands.aliases`
+	//await database.check(`guilds`, `.${guildId}`.commands)
+	//await database.check(`guilds`, `.${guildId}`.commands.aliases)
 
-// 	//aliases = await process.db.json.get(`guilds`, dbpath) || {}
+	//aliases = await process.db.json.get(`guilds`, dbpath) || {}
 
-// 	const aliases = await database.get(dbpath) || {}
-// 	const commands = []
-// 	for (const i in aliases) {
-// 		console.log(`i = ${i}`)
-// 		console.log(`aliases[i]: `)
-// 		console.log(aliases[i])
-// 		const commandName = aliases[i].commandname
-// 		const defaultoptions = aliases[i].defaultoptions
-// 		const group = aliases[i].group
-// 		const subcommand = aliases[i].subcommand
-// 		const description = aliases[i].description
-// 		const aliasName = i
-// 		//console.log(`${aliasName} => ${commandName}`)
-// 		let command = new SlashCommandBuilder()
-// 		console.log(typeof require(`../commands/slash/${commandName}`).data)
-// 		console.log(require(`../commands/slash/${commandName}`).data.toJSON())
-// 		const data = require(`../commands/slash/${commandName}`).data.toJSON() //ty emily for fixing this ily <3<3<3<3<3<3<3
-// 		const newcommanddata = data
-// 		//console.log(`${aliasName} => ${JSON.stringify(command)}`)
-// 		console.log(newcommanddata.options)
+	const aliases = await database.get(dbpath) || {}
+	const commands = []
+	for (const i in aliases) {
+		console.log(`i = ${i}`)
+		console.log(`aliases[i]: `)
+		console.log(aliases[i])
+		const commandName = aliases[i].commandname
+		const defaultoptions = aliases[i].defaultoptions
+		const group = aliases[i].group
+		const subcommand = aliases[i].subcommand
+		const description = aliases[i].description
+		const aliasName = i
+		//console.log(`${aliasName} => ${commandName}`)
+		let command = new SlashCommandBuilder()
+		console.log(typeof require(`../commands/${commandName}`).data)
+		console.log(await client.commands.get(commandName).data.toJSON())
+		//const data = require(`../commands/${commandName}`).data.toJSON() //~~ty emily for fixing this ily <3<3<3<3<3<3<3~~ this was a terrible solution lol
+		const data = await client.commands.get(commandName).data.toJSON()
+		const newcommanddata = data
+		//console.log(`${aliasName} => ${JSON.stringify(command)}`)
+		console.log(newcommanddata.options)
 
-// 		// get group and subcommand stuff
-// 		// flatten stuff, set main command to subcommand / bring subcommand up
-// 		if (group) {
-// 			console.log(`group = ${group}`)
-// 			newcommanddata.options = newcommanddata.options.find((element: any) => element.name === group).options
-// 			console.log(newcommanddata.options)
-// 		}
-// 		if (subcommand) {
-// 			console.log(`subcommand = ${subcommand}`)
-// 			console.log("awawa")
-// 			newcommanddata.options = newcommanddata.options.find((element: any) => element.name === subcommand).options
-// 			console.log(newcommanddata.options)
-// 		}
-// 		for (let i = 0; i < defaultoptions.length; i++) {
-// 			console.log(defaultoptions[i])
-// 		}
-// 		var a = newcommanddata.options
-// 		var b = defaultoptions
-// 		console.log("a")
-// 		console.log(a)
-// 		console.log("b")
-// 		console.log(b)
-// 		if (Array.isArray(b)) {
-// 			console.log("booobs")
-// 		} else {
-// 			console.log("no lol")
-// 			b = [b]
-// 		}
+		// get group and subcommand stuff
+		// flatten stuff, set main command to subcommand / bring subcommand up
+		if (group) {
+			console.log(`group = ${group}`)
+			newcommanddata.options = newcommanddata.options.find((element: any) => element.name === group).options
+			console.log(newcommanddata.options)
+		}
+		if (subcommand) {
+			console.log(`subcommand = ${subcommand}`)
+			console.log("awawa")
+			newcommanddata.options = newcommanddata.options.find((element: any) => element.name === subcommand).options
+			console.log(newcommanddata.options)
+		}
+		for (let i = 0; i < defaultoptions.length; i++) {
+			console.log(defaultoptions[i])
+		}
+		var a = newcommanddata.options
+		var b = defaultoptions
+		console.log("a")
+		console.log(a)
+		console.log("b")
+		console.log(b)
+		if (Array.isArray(b)) {
+			console.log("booobs")
+		} else {
+			console.log("no lol")
+			b = [b]
+		}
 
-// 		// 	remove item from a if it exists in b
-// 		var reduced = a.filter((aitem: any) => !b.find((bitem: any) => aitem["name"] === bitem["name"]))
-// 		newcommanddata.options = reduced
+		// 	remove item from a if it exists in b
+		var reduced = a.filter((aitem: any) => !b.find((bitem: any) => aitem["name"] === bitem["name"]))
+		newcommanddata.options = reduced
 
-// 		console.log(`new options:`)
-// 		console.log(newcommanddata.options)
-// 		console.log(newcommanddata)
+		console.log(`new options:`)
+		console.log(newcommanddata.options)
+		console.log(newcommanddata)
 
-// 		// adjust guild command
-// 		// 	change name to alias name
-// 		newcommanddata.name = aliasName
-// 		// 	remove options set in defaultoptions from the command
-// 		console.log(defaultoptions)
-// 		// var a = command.data.options
-// 		// var b = options
-// 		// // 	remove item from a if it exists in b
-// 		// var reduced = a.filter(aitem => !b.find(bitem => aitem["name"] === bitem["name"]))
-// 		// command.data.options = reduced
-// 		// console.log("merged")
-// 		// console.log(reduced)
-// 		if (aliases[i].hidedefaults) {
-// 			console.log("hide options set")
-// 			//newcommanddata.options = newcommanddata.options.filter(e => e.name !== "")
+		// adjust guild command
+		// 	change name to alias name
+		newcommanddata.name = aliasName
+		// 	remove options set in defaultoptions from the command
+		console.log(defaultoptions)
+		// var a = command.data.options
+		// var b = options
+		// // 	remove item from a if it exists in b
+		// var reduced = a.filter(aitem => !b.find(bitem => aitem["name"] === bitem["name"]))
+		// command.data.options = reduced
+		// console.log("merged")
+		// console.log(reduced)
+		if (aliases[i].hidedefaults) {
+			console.log("hide options set")
+			//newcommanddata.options = newcommanddata.options.filter(e => e.name !== "")
 
-// 		}
-// 		if (aliases[i].hidealloptions) {
-// 			console.log("hide all options")
-// 			newcommanddata.options = []
-// 		}
+		}
+		if (aliases[i].hidealloptions) {
+			console.log("hide all options")
+			newcommanddata.options = []
+		}
 
-// 		const newcommand = newcommanddata
+		const newcommand = newcommanddata
 
-// 		//console.log(`${i}: ${JSON.stringify(command)}`)
-// 		commandList.push(newcommand)
-// 	}
+		//console.log(`${i}: ${JSON.stringify(command)}`)
+		commandList.push(newcommand)
+	}
 
-// 	console.log(commandList)
+	console.log(commandList)
 
-// 	try {
-// 		console.log(`Started refreshing ${commandList.length} guild application (/) commands.`)
+	try {
+		console.log(`Started refreshing ${commandList.length} guild application (/) commands.`)
 
-// 		const data = await rest.put(
-// 			Routes.applicationGuildCommands(clientId, guildId),
-// 			{ body: commandList }
-// 		)
+		const data = await rest.put(
+			Routes.applicationGuildCommands(clientId, guildId),
+			{ body: commandList }
+		)
 
-// 		console.log(`Successfully reloaded ${data.length} guild application commands.`)
+		console.log(`Successfully reloaded ${(data as any).length} guild application commands.`)
 
-// 	}
-// 	catch (error) {
-// 		console.error(error)
-// 		throw error
-// 	}
-// }
+	}
+	catch (error) {
+		console.error(error)
+		throw error
+	}
+}
 
 async function deployCommands() {
 	//commandList = getCommands()
@@ -225,55 +235,61 @@ export default {
 	deploy() {
 		return deployCommands()
 	},
-	// refreshGuild(guildID: string) {
-	// 	refreshGuildCommands(guildID)
-
+	refreshGuild(guildID: string) {
+		refreshGuildCommands(guildID)
+	},
 	async run(
-		interaction: any,
+		interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
 		commandName = interaction.commandName,
 		group?: any,
 		subcommand?: any,
 		options?: any,
 	) {
+		console.log(interaction.command.permissions)
 		// if theres no options present, create a new options resolver
+		let newInteraction: any = interaction
 
 		if (group != null) {
 			console.log(`group = ${group}`)
-			interaction.options._group = group
+			newInteraction.options._group = group
 		}
 		if (subcommand != null) {
 			console.log(`subcommand = ${subcommand}`)
-			interaction.options._subcommand = subcommand
+			newInteraction.options._subcommand = subcommand
 		}
 		if (options != null) {
 			console.log("balls")
 			//if (!interaction.options._hoistedOptions) interaction.options = new CommandInteractionOptionResolver(client, )
 
 			// merge options with interaction's options, new options should overwrite
-			console.log(interaction.options._hoistedOptions)
+			console.log(newInteraction.options._hoistedOptions)
 			console.log(options)
-			interaction.options._hoistedOptions = merge(
-				interaction.options._hoistedOptions,
+			newInteraction.options._hoistedOptions = merge(
+				newInteraction.options._hoistedOptions,
 				options,
 				"name",
 			)
 			console.log("merged	")
-			console.log(interaction.options._hoistedOptions)
+			console.log(newInteraction.options._hoistedOptions)
 		}
 		console.log("commandName: " + commandName)
-		const command = await interaction.client.commands.get(commandName)
+		const command = client.commands.get(commandName)
+		console.log("command: ")
+		console.log(command)
 
 		try {
 			// handle discord permissions
 			const acceptedPermissions = []
 			const deniedPermissions = []
-			const permlist = command.discordPermissions || []
+			const permlist = command.permissions || []
 			let permissionsText = "Permissions:"
+
+
 
 			// for every permission set in the command, check it
 			for (let i = 0; i < permlist.length; i++) {
 				console.log(i)
-				if (interaction.member.permissions.has(permlist[i])) {
+				if ((interaction.member.permissions as any).has(permlist[i])) {
 					console.log("yes")
 					acceptedPermissions.push(permlist[i])
 				} else {
@@ -296,25 +312,28 @@ export default {
 				return
 			}
 
-			console.log(interaction.options)
+			console.log(newInteraction.options)
 			console.log("running command")
-			await command.execute(interaction) // trys to run the command
-			return await interaction
+			await command.execute(newInteraction) // trys to run the command
+			return newInteraction
 		} catch (error) {
 			console.error(error)
-			const row = new ActionRowBuilder().addComponents(
-				new ButtonBuilder()
-					.setCustomId("errorreport")
-					.setLabel("Report Error")
-					.setStyle(ButtonStyle.Danger),
-			)
+			const row: any = new ActionRowBuilder()
+				.addComponents(
+					new ButtonBuilder()
+						.setCustomId("errorreport")
+						.setLabel("Report Error")
+						.setStyle(ButtonStyle.Danger),
+				)
 			interaction.channel.send({
 				embeds: embeds.errorEmbed(
 					`Running command **${interaction.commandName}**`,
 					error,
 				),
 				components: [row],
-				ephemeral: true,
+				options: {
+					ephemeral: true,
+				}
 			})
 		}
 	},

@@ -20,7 +20,7 @@ export default {
 
 		return JSON.parse(fullBody)
 	},
-	time(ms) {
+	time(ms: number) {
 		// this isn't really accurate because of how days work
 		const years = Math.floor(ms / 31556952000)
 		const yearsms = ms % 31556952000

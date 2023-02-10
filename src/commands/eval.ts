@@ -1,9 +1,9 @@
-import { SlashCommandBuilder } from 'discord.js'
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import format from '../utils/format'
+import database from '../utils/database'
 import http from 'http'
 import https from 'https'
-
 
 // This function cleans up and prepares the
 // result of our eval command input for sending
@@ -29,7 +29,7 @@ const clean = async (text: string) => {
 
 
 export default new ApplicationCommand({
-	permissions: "botowner",
+	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName('eval')
 		.setDescription('eval')
@@ -37,11 +37,15 @@ export default new ApplicationCommand({
 			.setName("string")
 			.setDescription("string to eval")
 			.setRequired(true)),
-	async execute(interaction) {
+	async execute(interaction: ChatInputCommandInteraction) {
+		if (interaction.user.id !== "303267459824353280") throw new Error(`oy <@${interaction.user.id}> you're not allowed bitch`)
+
 		await interaction.deferReply()
+
 		// In case something fails, we to catch errors
 		// in a try/catch block
 		try {
+			let db = database
 			// Evaluate (execute) our input
 			const evaled = eval("(async () => {" + interaction.options.getString("string") + "})()")
 			console.log(evaled)

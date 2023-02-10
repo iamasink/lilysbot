@@ -9,6 +9,7 @@ import path from "node:path"
 import ApplicationCommand from "../types/ApplicationCommand"
 import Event from "../types/Event"
 import commands from "../utils/commands"
+import database from "../utils/database"
 
 // Bot is a class which extends discord.js Client,
 // it is called in index.ts 
@@ -17,6 +18,7 @@ export class Bot extends Client {
 	commands: Collection<string, ApplicationCommand> = new Collection()
 	// function to login and start the bot
 	start() {
+		database.connect()
 		this.register()
 		this.login(token)
 		console.log("starting!")

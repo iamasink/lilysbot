@@ -14,6 +14,7 @@ import {
 	CommandInteractionOptionResolver,
 	ContextMenuCommandInteraction,
 	Interaction,
+	Message,
 	PermissionsBitField,
 	Routes,
 	SlashCommandBuilder,
@@ -239,15 +240,19 @@ export default {
 		refreshGuildCommands(guildID)
 	},
 	async run(
-		interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
-		commandName = interaction.commandName,
+		interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction | CommandInteraction | any,
+		commandName = (interaction as CommandInteraction).commandName,
 		group?: any,
 		subcommand?: any,
 		options?: any,
 	) {
-		console.log(interaction.command.permissions)
-		// if theres no options present, create a new options resolver
 		let newInteraction: any = interaction
+
+		// if theres no options present, create a new options resolver
+		// this probably kinda a stupid way to do everything but like idc
+		if (!newInteraction.options) newInteraction.options = new (CommandInteractionOptionResolver as any)(client, [])
+		console.log(newInteraction)
+
 
 		if (group != null) {
 			console.log(`group = ${group}`)
@@ -260,15 +265,12 @@ export default {
 		if (options != null) {
 			console.log("balls")
 			//if (!interaction.options._hoistedOptions) interaction.options = new CommandInteractionOptionResolver(client, )
+			if (!interaction.options._hoistedOptions) interaction.options._hoistedOptions = []
 
 			// merge options with interaction's options, new options should overwrite
 			console.log(newInteraction.options._hoistedOptions)
 			console.log(options)
-			newInteraction.options._hoistedOptions = merge(
-				newInteraction.options._hoistedOptions,
-				options,
-				"name",
-			)
+			newInteraction.options._hoistedOptions = merge(newInteraction.options._hoistedOptions, options, "name",)
 			console.log("merged	")
 			console.log(newInteraction.options._hoistedOptions)
 		}

@@ -7,6 +7,6 @@ export default new Event({
 	once: false,
 	execute(message: Message): void {
 		// Runs when the bot logs in
-		console.log(`A message was created: ${message}`)
+		console.log(`A message was created in ${message.guild}: ${message}`)
 	},
 })

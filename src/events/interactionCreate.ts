@@ -40,8 +40,11 @@ export default new Event({
 		}
 
 		else if (interaction.isAutocomplete()) {
+			console.log(interaction)
+
 			const command = client.commands.get(interaction.commandName)
 
+			console.log(command)
 			if (!command) {
 				console.error(`No command matching ${interaction.commandName} was found.`)
 				return

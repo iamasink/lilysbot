@@ -13,14 +13,14 @@ async function connect() {
 	// console.log((await db.json.get(`test`)))
 
 	client.guilds.cache.each(async g => {
-		await module.exports.check(`.guilds.${g.id}`)
-		await module.exports.check(`.guilds.${g.id}.commands`)
-		await module.exports.check(`.guilds.${g.id}.commands.global`)
-		await module.exports.check(`.guilds.${g.id}.commands.aliases`)
-		await module.exports.check(`.guilds.${g.id}.users`)
-		await module.exports.check(`.guilds.${g.id}.roles`)
-		await module.exports.check(`.guilds.${g.id}.roles.lists`)
-		await module.exports.check(`.guilds.${g.id}.roles.menus`)
+		await check(`.guilds.${g.id}`)
+		await check(`.guilds.${g.id}.commands`)
+		await check(`.guilds.${g.id}.commands.global`)
+		await check(`.guilds.${g.id}.commands.aliases`)
+		await check(`.guilds.${g.id}.users`)
+		await check(`.guilds.${g.id}.roles`)
+		await check(`.guilds.${g.id}.roles.lists`)
+		await check(`.guilds.${g.id}.roles.menus`)
 	})
 
 }

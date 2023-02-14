@@ -1,8 +1,9 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionsBitField, PermissionResolvable, BitField } from 'discord.js'
+import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionsBitField, PermissionResolvable, BitField, VoiceChannel, VoiceBasedChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import database from '../utils/database'
 import log from '../utils/log'
 import embeds from '../utils/embeds'
+import { client } from '..'
 
 export default new ApplicationCommand({
 	permissions: ["KickMembers"],
@@ -15,6 +16,5 @@ export default new ApplicationCommand({
 
 		log.log(interaction.guild, "test")
 
-		interaction.reply({ embeds: embeds.messageEmbed("title", "[test](https://google.com)") })
 	},
 })

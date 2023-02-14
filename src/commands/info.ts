@@ -2,6 +2,7 @@ import { Interaction, ChatInputCommandInteraction, GuildMember, SlashCommandBuil
 import database from "../utils/database"
 import format from "../utils/format"
 import ApplicationCommand from "../types/ApplicationCommand"
+import { client } from ".."
 
 
 // function fetchPromise(toFetch) {
@@ -189,14 +190,19 @@ export default new ApplicationCommand({
 				if (interaction.options.getString('show') != 'hide') {
 					infoEmbed.addFields({ name: '__Profile__', value: `${a}${av}${gav}${b}\n`, })
 
-					const invitedLink = await database.get(`.guilds.${member.guild.id}.users.${member.id}.invitedLink`)
-					const invited = invitedLink ? `${invitedLink}` : `*Unknown*`
+					if (interaction.guild.members.resolve(user)) {
+						const invitedLink = await database.get(`.guilds.${member.guild.id}.users.${member.id}.invitedLink`)
+						const invites: object = await database.get(`.guilds.${member.guild.id}.invites`)
+						const invitedById = invites[invitedLink].inviterId
+						const invitedBy = await client.users.fetch(invitedById)
+						const invited = invitedBy.tag ? `\`${invitedBy.tag}\` <@${invitedById}>` : `*Unknown*`
 
-					var guildtext = `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f> (${format.time(Date.now() - member.joinedTimestamp)} ago)`
-					guildtext += `\n**Invited by:** ${invited}`
+						var guildtext = `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f> (${format.time(Date.now() - member.joinedTimestamp)} ago)`
+						guildtext += `\n**Invited by:** ${invited}`
 
+						if (member) infoEmbed.addFields({ name: '__Guild__', value: guildtext })
+					}
 
-					if (member) infoEmbed.addFields({ name: '__Guild__', value: guildtext })
 					if (image) infoEmbed.addFields({ name: `\u200b`, value: `**Showing ${imagename}:**` })
 					if (image) infoEmbed.setImage(`${image}?size=4096`)
 				}

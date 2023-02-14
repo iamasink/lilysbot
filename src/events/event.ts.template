@@ -1,0 +1,12 @@
+import { Events, Interaction, Message } from "discord.js"
+import Event from "../types/Event"
+import { client } from "../index"
+
+// Emitted whenever ?
+export default new Event({
+	name: Events.EVENTNAME,
+	async execute(interaction: Interaction) {
+
+	},
+}
+)

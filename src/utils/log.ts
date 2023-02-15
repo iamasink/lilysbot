@@ -1,9 +1,9 @@
-import { Guild, GuildResolvable, TextChannel, GuildBasedChannel } from "discord.js"
+import { Guild, GuildResolvable, TextChannel, GuildBasedChannel, Message, MessagePayload, MessageCreateOptions } from "discord.js"
 import database from "./database"
 import { client } from ".."
 
 export default {
-	async log(guild: Guild, message: string) {
+	async log(guild: Guild, message: string | MessagePayload | MessageCreateOptions) {
 		console.log("logging.. " + message)
 		//console.log("2")
 		//console.log(guild.id)
@@ -19,7 +19,7 @@ export default {
 		//console.log(c)
 		return (c as TextChannel).send(message)
 	},
-	async channel(guild: Guild) {
+	async channel(guild: Guild): Promise<string> {
 		return await database.get(`.guilds.${guild.id}.settings.log_channel`)
 	}
 }

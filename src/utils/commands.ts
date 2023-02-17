@@ -23,6 +23,7 @@ import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from "../index"
 import embeds from "./embeds"
 import database from "./database"
+import config from "../config.json"
 
 function merge(a: any, b: any, prop: any) {
 	const reduced = a.filter(
@@ -291,20 +292,30 @@ export default {
 
 			// for every permission set in the command, check it
 			for (let i = 0; i < permlist.length; i++) {
-				console.log(i)
-				if ((interaction.member.permissions as any).has(permlist[i])) {
-					console.log("yes")
-					acceptedPermissions.push(permlist[i])
+				if (permlist[i] == "botowner") {
+					if (interaction.user.id !== config.permissions.botowner) {
+						interaction.reply({
+							ephemeral: true,
+							embeds: embeds.warningEmbed("You don't have permission to perform this command", `🚫 **Bot Owner**`,),
+						})
+						return
+					}
 				} else {
-					console.log("no")
-					deniedPermissions.push(permlist[i])
+					console.log(i)
+					if ((interaction.member.permissions as any).has(permlist[i])) {
+						console.log("yes")
+						acceptedPermissions.push(permlist[i])
+					} else {
+						console.log("no")
+						deniedPermissions.push(permlist[i])
+					}
 				}
 			}
 			for (let i = 0; i < deniedPermissions.length; i++) {
-				permissionsText += `\n🚫  **${new PermissionsBitField(deniedPermissions[i],).toArray()}**` // get text name for each permission
+				permissionsText += `\n🚫 ** ${new PermissionsBitField(deniedPermissions[i],).toArray()}**` // get text name for each permission
 			}
 			for (let i = 0; i < acceptedPermissions.length; i++) {
-				permissionsText += `\n✅  **${new PermissionsBitField(acceptedPermissions[i],).toArray()}**`
+				permissionsText += `\n✅ ** ${new PermissionsBitField(acceptedPermissions[i],).toArray()}**`
 			}
 
 			if (deniedPermissions.length > 0) {

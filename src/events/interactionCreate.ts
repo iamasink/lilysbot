@@ -9,8 +9,12 @@ import database from "../utils/database"
 export default new Event({
 	name: Events.InteractionCreate,
 	async execute(interaction: Interaction) {
-		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`)
-		const guildID = interaction.guild.id
+		let location: string
+		if (interaction.channel) location = interaction.channel.name
+		else location = "dms"
+		console.log(`${interaction.user.tag} in #${location} triggered an interaction.`)
+
+		//const guildID = interaction.guild.id
 
 
 		if (interaction.isChatInputCommand()) {

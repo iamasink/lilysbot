@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionsBitField, PermissionResolvable, BitField, VoiceChannel, VoiceBasedChannel, ChannelType, Webhook } from 'discord.js'
+import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionsBitField, PermissionResolvable, BitField, VoiceChannel, VoiceBasedChannel, ChannelType, Webhook, ActionRowBuilder, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import database from '../utils/database'
 import log from '../utils/log'
@@ -14,9 +14,7 @@ export default new ApplicationCommand({
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		//let res = await database.get(`.guilds.${interaction.guild.id}`)
 		//console.log(res)
-
 		interaction.reply("hi")
-		//interaction.reply(JSON.stringify(client.commands.get("roles").execute))
 
 	},
 })

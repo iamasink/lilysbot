@@ -1,4 +1,4 @@
-import { PermissionsBitField, SlashCommandBuilder, ActionRowBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle, ComponentType, ChatInputCommandInteraction, StringSelectMenuBuilder, Message, StringSelectMenuInteraction } from 'discord.js'
+import { PermissionsBitField, SlashCommandBuilder, ActionRowBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle, ComponentType, ChatInputCommandInteraction, StringSelectMenuBuilder, Message, StringSelectMenuInteraction, Snowflake, ActionRow } from 'discord.js'
 import embeds from '../utils/embeds'
 import database from '../utils/database'
 import ApplicationCommand from '../types/ApplicationCommand'
@@ -101,7 +101,8 @@ export default new ApplicationCommand({
 			)
 		),
 	async execute(interaction): Promise<void> {
-
+		// please jesus christ come down and refactor this code <3
+		// and add comments
 		switch (interaction.options.getSubcommandGroup()) {
 			case 'menu': {
 				switch (interaction.options.getSubcommand()) {
@@ -167,8 +168,9 @@ export default new ApplicationCommand({
 												maximum = roleMenu.maximum
 											}
 
+											// create the menu
 											const menu = new StringSelectMenuBuilder()
-												.setCustomId(`roles.rolemenu`)
+												.setCustomId(`roles.selectrolemenu`)
 												.setPlaceholder('Choose roles')
 												.setMinValues(roleMenu.minimum)
 												.setMaxValues(maximum)
@@ -176,8 +178,8 @@ export default new ApplicationCommand({
 											options = []
 											for (let i = 0; i < num; i++) {
 												let push = {
-													label: `${interaction.guild.roles.resolve(list[i].id).name}`,
-													value: `${list[i].id}`,
+													label: interaction.guild.roles.resolve(list[i].id).name,
+													value: list[i].id,
 													description: "."
 												}
 												if (list[i].description) {
@@ -199,6 +201,38 @@ export default new ApplicationCommand({
 											break
 										}
 										case 'buttons': {
+											// maximum can't be more than the list size. handle it
+											let maximum = roleMenu.maximum
+											if (roleMenu.maximum > list.length) {
+												maximum = list.length
+											} else {
+												maximum = roleMenu.maximum
+											}
+
+
+											const actionRows: ActionRowBuilder<ButtonBuilder>[] = [];
+
+											for (let i = 0; i < list.length; i += 5) {
+												const buttons: ButtonBuilder[] = [];
+
+												for (let j = 0; j < 5; j++) {
+													if (i + j < list.length) {
+														buttons.push(new ButtonBuilder()
+															.setCustomId(`roles.buttonrolemenu.${list[i + j].id}`)
+															.setLabel(interaction.guild.roles.resolve(list[i + j].id).name)
+															.setStyle(ButtonStyle.Primary));
+													} else {
+														// if there's nothing else to add, don't do anything dumbshit
+													}
+												}
+
+												actionRows.push(new ActionRowBuilder<ButtonBuilder>().addComponents(...buttons));
+											}
+
+											rows = actionRows
+
+
+
 											// let rowcount = Math.floor(1 + (num / 5))
 											// let rows = []
 											// let buttonsOnLastRow = num - (rows * 5)
@@ -221,7 +255,6 @@ export default new ApplicationCommand({
 											// 	}
 											// }
 											// break
-											throw new Error("not implemented :(")
 										}
 									}
 
@@ -290,11 +323,11 @@ export default new ApplicationCommand({
 						console.log(`awawawa msg: ${await (messagesToDelete[0])}`)
 
 						// `m` is a message object that will be passed through the filter function
-						const filter = m => m.author.id === interaction.user.id
+						const filter = (m: Message) => m.author.id === interaction.user.id
 						// collect messages
 						const collector = interaction.channel.createMessageCollector({ filter, time: 120000 })
 						collector.on('collect', async m => {
-							var roleid
+							var roleid: string
 							const isnew = false
 							// delete the collected message
 							m.delete()
@@ -305,10 +338,12 @@ export default new ApplicationCommand({
 							if (text.toLowerCase() == 'done') {
 								collector.stop()
 								return
-							} else if (text.toLowerCase() == 'cancel') {
+							}
+							if (text.toLowerCase() == 'cancel') {
 								collector.stop("cancel")
 								return
-							} else if (text[0] === '+') {
+							}
+							if (text[0] === '+') {
 								// get name
 								const rolename = text.split('\n')[0].slice(1)
 								// create new role by name with no permissions
@@ -334,18 +369,16 @@ export default new ApplicationCommand({
 
 											// collect button press to remove role
 											collector.on('collect', i => {
-												if (i.user.id === interaction.user.id) {
-													const index = roleList.roles.findIndex(r => r.id === roleid)
-													roleList.roles.splice(index, 1)
-													interaction.guild.roles.delete(roleid, 'The role needed to go')
-														.then(() => console.log('Deleted the role'))
-														.catch(console.error)
-													collector.stop()
-													msg.delete()
+												if (i.user.id !== interaction.user.id) i.reply({ content: `These buttons aren't for you!`, ephemeral: true })
 
-												} else {
-													i.reply({ content: `These buttons aren't for you!`, ephemeral: true })
-												}
+												const index = roleList.roles.findIndex(r => r.id === roleid)
+												roleList.roles.splice(index, 1)
+												interaction.guild.roles.delete(roleid, 'The role needed to go')
+													.then(() => console.log('Deleted the role'))
+													.catch(console.error)
+												collector.stop()
+												msg.delete()
+
 											})
 
 											collector.on('end', collected => {
@@ -372,8 +405,8 @@ export default new ApplicationCommand({
 								if (!role) { // if no role was found from id, search with the text
 									const fetchedroles = await interaction.guild.roles.fetch()
 									console.log(`fetchedroles = ${JSON.stringify(fetchedroles)}`)
-									const rolelist = []
-									const roleidlist = []
+									const rolelist: string[] = []
+									const roleidlist: Snowflake[] = []
 									for (const [key, value] of fetchedroles) {
 										console.log(`key= ${key}, value= ${value}`)
 										if (!value.managed) {
@@ -488,7 +521,7 @@ export default new ApplicationCommand({
 										const path = `.guilds.${interaction.guild.id}.roles.lists`
 										await database.set(path + `.${roleList.name}`, roleList)
 									} catch (error) {
-										throw new Error(`Could not create role menu, does one by this name already exist?`)
+										throw new Error(`Could not create role list, does one by this name already exist?`)
 									}
 								} else {
 									interaction.followUp({ embeds: embeds.messageEmbed("No roles added", null, null, '#ff0000') })
@@ -560,13 +593,13 @@ export default new ApplicationCommand({
 		console.log(interaction)
 		const id = interaction.customId.split(".")
 		switch (id[1]) {
-			case 'rolemenu': {
+			case 'selectrolemenu': {
 				const menuid = interaction.message.id
 				const roleMenu = await database.get(`.guilds.${interaction.guild.id}.roles.menus.${menuid}`)
 				const roleList = await database.get(`.guilds.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
 				const user = await interaction.user.fetch()
-				const member = await interaction.guild.members.resolve(user)
-				const roles = await member.roles.cache // members roles
+				const member = interaction.guild.members.resolve(user)
+				const roles = member.roles.cache // members roles
 				const roleids = roleList.roles.map(r => r.id) // list of ids on the role list
 
 				// for every role on the role list
@@ -602,7 +635,7 @@ export default new ApplicationCommand({
 		console.log(interaction)
 		let id = interaction.customId.split(".")
 		switch (id[1]) {
-			case 'rolemenu': {
+			case 'buttonrolemenu': {
 				const roleid = id[2]
 				const menuid = interaction.message.id
 				const roleMenu = await database.get(`.guilds.${interaction.guild.id}.roles.menus.${menuid}`)
@@ -611,8 +644,8 @@ export default new ApplicationCommand({
 				console.log(roleList)
 				const role = await interaction.guild.roles.fetch(roleid)
 				const user = await interaction.user.fetch()
-				const member = await interaction.guild.members.resolve(user)
-				const roles = await member.roles.cache // members roles
+				const member = interaction.guild.members.resolve(user)
+				const roles = member.roles.cache // members roles
 				// list of role ids from the list
 				const roleids = roleList.roles.map(r => r.id)
 
@@ -672,7 +705,8 @@ export default new ApplicationCommand({
 					}
 				}
 
-				await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), options: { ephemeral: true } }).then(msg => msg.delete())
+				await interaction.deferUpdate()
+				//await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), options: { ephemeral: true } }).then(msg => msg.delete())
 
 
 				// // does the user already have the role?

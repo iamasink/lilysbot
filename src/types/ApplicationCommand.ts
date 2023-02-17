@@ -31,7 +31,11 @@ export default class ApplicationCommand {
 		button?: (interaction: ButtonInteraction) => Promise<void> | void
 
 	}) {
-		this.execute = options.execute
+		this.permissions = options.permissions
 		this.data = options.data
+		this.execute = options.execute
+		this.autocomplete = options.autocomplete
+		this.menu = options.menu
+		this.button = options.button
 	}
 }

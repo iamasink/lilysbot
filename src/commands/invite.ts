@@ -5,6 +5,7 @@ import embeds from '../utils/embeds'
 import format from '../utils/format'
 
 export default new ApplicationCommand({
+	permissions: ["Administrator"],
 	data: new SlashCommandBuilder()
 		.setName('invite')
 		.setDescription('Manage invites')

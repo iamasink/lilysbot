@@ -70,14 +70,14 @@ export default new Event({
 
 		}
 
-		else if (interaction.isMessageContextMenuCommand()) { /* empty */ }
+		else if (interaction.isMessageContextMenuCommand()) { }
 
 		// if interaction is from a message (ie buttons, select menu, etc)
 		else {
 			const id = interaction.customId.split(".")
 			const command = client.commands.get(id[0])
 			console.log(command)
-			if (interaction.isSelectMenu()) {
+			if (interaction.isStringSelectMenu()) {
 				// const command = interaction.client.commands.get(interaction.message.interaction.commandName)
 				// if (command) {
 				// 	console.log(command)

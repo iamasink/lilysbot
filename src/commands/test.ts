@@ -15,9 +15,8 @@ export default new ApplicationCommand({
 		//let res = await database.get(`.guilds.${interaction.guild.id}`)
 		//console.log(res)
 
-		log.log(interaction.guild, "test")
-
-		interaction.channel
+		interaction.reply("hi")
+		//interaction.reply(JSON.stringify(client.commands.get("roles").execute))
 
 	},
 })

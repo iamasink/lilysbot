@@ -7,6 +7,7 @@ import commands from "../utils/commands"
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 
 export default new ApplicationCommand({
+	permissions: ["Administrator"],
 	data: new SlashCommandBuilder()
 		.setName('command')
 		.setDescription('Configure commands')

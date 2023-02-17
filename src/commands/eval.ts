@@ -4,6 +4,7 @@ import format from '../utils/format'
 import database from '../utils/database'
 import http from 'http'
 import https from 'https'
+import { client } from '..'
 
 // This function cleans up and prepares the
 // result of our eval command input for sending

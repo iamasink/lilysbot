@@ -284,6 +284,7 @@ export default {
 			const acceptedPermissions = []
 			const deniedPermissions = []
 			const permlist = command.permissions || []
+			console.log(command.permissions)
 			let permissionsText = "Permissions:"
 
 
@@ -333,9 +334,7 @@ export default {
 					error,
 				),
 				components: [row],
-				options: {
-					ephemeral: true,
-				}
+				ephemeral: true,
 			})
 		}
 	},

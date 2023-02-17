@@ -4,6 +4,7 @@ import commands from "../utils/commands"
 import embeds from "../utils/embeds"
 
 export default new ApplicationCommand({
+	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName("refresh")
 		.setDescription("Reloads the bot and commands"),

@@ -9,7 +9,7 @@ import { RawAttachmentData } from "discord.js/typings/rawDataTypes";
 export default new Event({
 	name: Events.MessageDelete,
 	async execute(message: Message) {
-		console.log("a message was deleted.")
+		console.log("a message was deleted in <#${message.channel.id}>.")
 
 		// stolen from discordjs.guide <3
 
@@ -29,19 +29,21 @@ export default new Event({
 		// Perform a coherence check to make sure that there's *something*
 		if (!deletionLog) {
 			// Discord does not emit an audit log if the person who deleted the message is a bot deleting a single message or is the author of the message itself.
-			console.log(`A message by ${message.author.tag} was deleted, but we don't know by who.`)
-			log.log(message.guild, `A message by ${message.author.tag} was deleted, but we don't know by who.`)
+			console.log(`A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}>, but we don't know by who.`)
+			log.log(message.guild, `A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}>, but we don't know by who.`)
 
 		} else {
 			// Now grab the user object of the person who deleted the message
 			// Also grab the target of this action to double-check things
 			const { executor, target } = deletionLog;
 
+			if (target.bot) return
+
 			// Update the output with a bit more information
 			// Also run a check to make sure that the log returned was for the same author's message
 			if (target.id === message.author.id) {
-				console.log(`A message by ${message.author.tag} was deleted by ${executor.tag}.`)
-				log.log(message.guild, `A message by ${message.author.tag} was deleted by ${executor.tag}.`)
+				console.log(`A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor.tag}.`)
+				log.log(message.guild, `A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor.tag}.`)
 			}
 		}
 

@@ -1,13 +1,14 @@
-import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, SlashCommandBuilder, TextChannel } from 'discord.js'
+import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, PermissionsBitField, SlashCommandBuilder, TextChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import embeds from '../utils/embeds'
 import database from '../utils/database'
 import { Channel } from 'diagnostics_channel'
+import command from './command'
 const settings = [
 	{
 		name: "Log Channel",
 		value: "log_channel",
-		type: "channel"
+		type: "channel",
 	},
 	{
 		name: "Log Channel2",
@@ -20,6 +21,7 @@ const choices = settings.map(setting => {
 })
 
 export default new ApplicationCommand({
+	permissions: [new PermissionsBitField("Administrator")],
 	data: new SlashCommandBuilder()
 		.setName('settings')
 		.setDescription('Configure stuff')
@@ -39,15 +41,19 @@ export default new ApplicationCommand({
 			// )
 		)
 		.addSubcommand(command => command
+			.setName('get')
+			.setDescription('get all options')
+		)
+		.addSubcommand(command => command
 			.setName('list')
 			.setDescription('list all settings')
 		),
 	async execute(interaction) {
 		console.log(`choices: ${JSON.stringify(choices)}`)
-		const setting = interaction.options.getString("setting")
 		switch (interaction.options.getSubcommand()) {
 			case 'set': {
-				const option = settings[settings.findIndex(e => e.value == setting)]
+				const setting = interaction.options.getString("setting")
+				const option = settings[settings.findIndex(e => e.value === setting)]
 				console.log(JSON.stringify(option))
 				let value = ""
 				switch (option.type) {
@@ -58,6 +64,13 @@ export default new ApplicationCommand({
 					}
 				}
 				database.set(`.guilds.${interaction.guild.id}.settings.${option.value}`, value)
+
+				break
+			}
+			case 'get': {
+				const settings: object = database.get(`.guilds.${interaction.guild.id}.settings`)
+
+				interaction.reply({ embeds: embeds.messageEmbed(`Settings:\n${settings}`) })
 
 				break
 			}

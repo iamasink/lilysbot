@@ -4,6 +4,7 @@ import ApplicationCommand from '../types/ApplicationCommand'
 import log from '../utils/log'
 
 export default new ApplicationCommand({
+	permissions: ["Administrator"],
 	data: new SlashCommandBuilder()
 		.setName('purge')
 		.setDescription('bulk delete messages')
@@ -14,7 +15,7 @@ export default new ApplicationCommand({
 		),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (interaction.user.id !== "303267459824353280") {
-			throw new Error(`@<${interaction.user.id}>, you're not allowed to do this <3`)
+			throw new Error(`<@${interaction.user.id}>, you're not allowed to do this <3`)
 		}
 
 		console.log(interaction)

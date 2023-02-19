@@ -10,7 +10,6 @@ export default new Event({
 	name: Events.GuildMemberAdd,
 	async execute(member: GuildMember) {
 		const guild = member.guild
-		console.log(`${member.user.tag} has joined ${guild.name}`)
 
 		// To compare, we need to load the current invite list.
 		const newInvites = await guild.invites.fetch()
@@ -31,7 +30,6 @@ export default new Event({
 		log.log(guild, `${member.id}, \`${member.user.tag}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
 			.then(async msg => {
 				if (!msg) return
-
 				let interaction = await commands.run(msg, "info", null, "user", [
 					{
 						name: 'target',

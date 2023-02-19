@@ -1,9 +1,7 @@
-import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, PermissionsBitField, SlashCommandBuilder, TextChannel } from 'discord.js'
+import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, PermissionsBitField, Role, RoleSelectMenuBuilder, SlashCommandBuilder, TextChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import embeds from '../utils/embeds'
 import database from '../utils/database'
-import { Channel } from 'diagnostics_channel'
-import command from './command'
 const settings = [
 	{
 		name: "Log Channel",
@@ -14,6 +12,11 @@ const settings = [
 		name: "Log Channel2",
 		value: "log_channel2",
 		type: "channel"
+	},
+	{
+		name: "Hidden Role",
+		value: "hidden_role",
+		type: "role"
 	}
 ]
 const choices = settings.map(setting => {
@@ -61,6 +64,16 @@ export default new ApplicationCommand({
 						let channel = await channelSelector(interaction)
 						console.log(channel.name)
 						value = channel.id
+						break
+					}
+					case 'role': {
+						let role = await roleSelector(interaction)
+						console.log(role.name)
+						value = role.id
+						break
+					}
+					default: {
+						throw new Error(`invalid type: ${option.type}`)
 					}
 				}
 				database.set(`.guilds.${interaction.guild.id}.settings.${option.value}`, value)
@@ -68,9 +81,9 @@ export default new ApplicationCommand({
 				break
 			}
 			case 'get': {
-				const settings: object = database.get(`.guilds.${interaction.guild.id}.settings`)
+				const settings: object = await database.get(`.guilds.${interaction.guild.id}.settings`)
 
-				interaction.reply({ embeds: embeds.messageEmbed(`Settings:\n${settings}`) })
+				interaction.reply({ embeds: embeds.messageEmbed(`Settings:\n${JSON.stringify(settings)}`) })
 
 				break
 			}
@@ -126,6 +139,33 @@ async function channelSelector(interaction: ChatInputCommandInteraction): Promis
 				})
 		})
 	})
+}
 
+async function roleSelector(interaction: ChatInputCommandInteraction): Promise<Role> {
+	return new Promise(async (resolve, reject) => {
 
+		const row = new ActionRowBuilder<RoleSelectMenuBuilder>()
+			.addComponents(
+				new RoleSelectMenuBuilder()
+					.setCustomId('select')
+					.setPlaceholder('Nothing selected')
+			)
+		const filter = i => {
+			return i.user.id === interaction.user.id
+		}
+		await interaction.reply({ embeds: embeds.messageEmbed("Choose a role.."), components: [row] }).then((message) => {
+			message
+				.awaitMessageComponent({ filter, componentType: ComponentType.RoleSelect, time: 60000 })
+				.then(async (i) => {
+					let role = await interaction.guild.roles.fetch(i.values[0])
+					console.log(role)
+					interaction.editReply({ embeds: embeds.successEmbed(`Choose a role..`, `You selected <@&${role.id}>`), components: [] })
+					resolve(role)
+				})
+				.catch(err => {
+					interaction.editReply({ embeds: embeds.messageEmbed(`Choose a role..`, `No role selected`, null, "#ff0000"), components: [] })
+					reject(new Error("No role selected"))
+				})
+		})
+	})
 }

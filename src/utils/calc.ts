@@ -1,15 +1,19 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js'
 import { levels } from '../config.json'
+function exactLevel(xp = 0) {
+	return (1 + Math.sqrt(1 + 8 * xp / levels.threshold)) / 2
+
+}
 
 export default {
 	exactLevel(xp = 0) {
-		return (1 + Math.sqrt(1 + 8 * xp / levels.threshold)) / 2
+		exactLevel(xp)
 	},
 	level(xp = 0) {
-		return Math.floor(module.exports.exactLevel(xp))
+		return Math.floor(exactLevel(xp))
 	},
 	levelProgress(xp = 0) {
-		const level = module.exports.exactLevel(xp)
+		const level = exactLevel(xp)
 		console.log(`levelaaa: ${level}`)
 		const output = level - Math.floor(level)
 		console.log(`output: ${output}`)

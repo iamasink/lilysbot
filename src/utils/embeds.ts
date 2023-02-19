@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, ColorResolvable, APIEmbedField, EmbedFooterOptions, APIEmbed } from "discord.js"
+import { SlashCommandBuilder, EmbedBuilder, ColorResolvable, APIEmbedField, EmbedFooterOptions, APIEmbed, User } from "discord.js"
 import { footer } from "../config.json"
 
 function embed(
@@ -82,7 +82,7 @@ export default {
 		title: string,
 		description: string,
 		fields: any,
-		user: any,
+		user: User,
 		guild: any,
 	): Promise<any> {
 		user = await user.fetch()
@@ -94,12 +94,12 @@ export default {
 		) {
 			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${user.id}/avatars/${guild.members.resolve(user).avatar}.webp`
 		} else {
-			thumbnail = user.avatarURL(true)
+			thumbnail = user.avatarURL()
 		}
 
 		const color = user.hexAccentColor || "#f9beca"
 		return embed(
-			color.toString(),
+			color,
 			title,
 			description,
 			fields,

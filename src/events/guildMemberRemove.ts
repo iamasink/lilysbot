@@ -12,7 +12,7 @@ export default new Event({
 		let action: string = "left"
 
 		if (member.pending) {
-			log.log(member.guild, `${member.id} has left guild ${member.guild}, but never passed rules screening`)
+			//log.log(member.guild, `${member.id} has left guild ${member.guild}, but never passed rules screening`)
 			return
 		}
 
@@ -32,7 +32,10 @@ export default new Event({
 		console.log(kickLog)
 
 		// Perform a coherence check to make sure that there's *something*
-		if (!kickLog) { return console.log(`${member.user.tag} left the guild, most likely of their own will.`) }
+		if (!kickLog) {
+			console.log(`${member.user.tag} left the guild, most likely of their own will.`)
+			action = "left"
+		}
 		else {
 			// Now grab the user object of the person who kicked the member
 			// Also grab the target of this action to double-check things

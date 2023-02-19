@@ -4,6 +4,7 @@ import { Events, GuildMember, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import log from "../utils/log"
+import database from "../utils/database"
 
 // Emitted whenever a user is 'updated' in a guild.
 export default new Event({
@@ -15,6 +16,7 @@ export default new Event({
 			info = `\nthey are pending.`
 		} else {
 			info = `\nthey aren't pending.`
+
 		}
 		log.log(member.guild, `${member.id} has been updated.` + info)
 

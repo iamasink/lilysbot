@@ -1,8 +1,7 @@
-import { Events, Interaction, Message } from "discord.js"
+import { Events, GuildTextBasedChannel, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import commands from "../utils/commands"
-import database from "../utils/database"
 
 
 // Emitted when an interaction is created.
@@ -117,7 +116,7 @@ export default new Event({
 				if (interaction.customId === "errorreport") {
 					console.log(interaction.message)
 					interaction.update({ components: [] })
-					client.channels.fetch("767026023387758612").then((channel: any) => {
+					client.channels.fetch("767026023387758612").then((channel: GuildTextBasedChannel) => {
 						console.log(channel.name)
 						channel.send("error: " + JSON.stringify(interaction.message, null, 2))
 						return

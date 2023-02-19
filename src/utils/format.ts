@@ -8,7 +8,7 @@ export default {
 		console.log(`min: ${min}, current: ${current}, max: ${max}, length: ${length}, chars: ${chars}, progress: ${progress}, count: ${count}`)
 		return `${chars[0].repeat(count)}${chars[1].repeat(length - count)}`
 	},
-	numberCommas(n) {
+	numberCommas(n = 0) {
 		return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	},
 	async getJSONResponse(body) {

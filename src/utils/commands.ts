@@ -241,7 +241,7 @@ export default {
 		refreshGuildCommands(guildID)
 	},
 	async run(
-		interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction | CommandInteraction | any,
+		interaction: any,
 		commandName = (interaction as CommandInteraction).commandName,
 		group?: any,
 		subcommand?: any,
@@ -339,14 +339,19 @@ export default {
 						.setLabel("Report Error")
 						.setStyle(ButtonStyle.Danger),
 				)
-			interaction.channel.send({
+			let message = {
 				embeds: embeds.errorEmbed(
 					`Running command **${interaction.commandName}**`,
 					error,
 				),
 				components: [row],
 				ephemeral: true,
-			})
+			}
+			if (interaction.replied) {
+				interaction.followUp(message)
+			} else {
+				interaction.reply(message)
+			}
 		}
 	},
 	async textToCommandParser(text = "") {

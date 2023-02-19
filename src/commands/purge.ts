@@ -12,7 +12,8 @@ export default new ApplicationCommand({
 			.setName('amount')
 			.setDescription('amount of messages to delete')
 			.setRequired(true)
-		),
+		)
+	,
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (interaction.user.id !== "303267459824353280") {
 			throw new Error(`<@${interaction.user.id}>, you're not allowed to do this <3`)

@@ -74,7 +74,7 @@ export default new Event({
 			let random = Math.floor(Math.random() * activities.length)
 
 			let res = client.user.setPresence(activities[random]);
-			console.log(res)
+			//console.log(res)
 		}, 60 * 1000);
 	},
 })

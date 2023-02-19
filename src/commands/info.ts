@@ -193,12 +193,15 @@ export default new ApplicationCommand({
 					if (interaction.guild.members.resolve(user)) {
 						const invitedLink = await database.get(`.guilds.${member.guild.id}.users.${member.id}.invitedLink`)
 						const invites: object = await database.get(`.guilds.${member.guild.id}.invites`)
-						const invitedById = invites[invitedLink].inviterId
-						const invitedBy = await client.users.fetch(invitedById)
-						const invited = invitedBy.tag ? `\`${invitedBy.tag}\` <@${invitedById}>` : `*Unknown*`
+						const invite = invites[invitedLink]
 
 						var guildtext = `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f> (${format.time(Date.now() - member.joinedTimestamp)} ago)`
-						guildtext += `\n**Invited by:** ${invited}`
+						if (invite) {
+							const invitedById = invite.inviterId
+							const invitedBy = await client.users.fetch(invitedById) || null
+							const invited = invitedBy.tag ? `\`${invitedBy.tag}\` <@${invitedById}>` : `*Unknown*`
+							guildtext += `\n**Invited by:** ${invited}`
+						}
 
 						if (member) infoEmbed.addFields({ name: '__Guild__', value: guildtext })
 					}

@@ -22,7 +22,7 @@ interface bodyParameters {
 }
 
 export default new ApplicationCommand({
-	//permissions: ["botowner"],
+	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName('light')
 		.setDescription('LOL i hate myself <3')

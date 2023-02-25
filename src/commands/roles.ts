@@ -595,6 +595,7 @@ export default new ApplicationCommand({
 		console.log(id)
 		switch (id[1]) {
 			case 'selectrolemenu': {
+				await interaction.deferUpdate()
 				const menuid = interaction.message.id
 				const roleMenu = await database.get(`.guilds.${interaction.guild.id}.roles.menus.${menuid}`)
 				const roleList = await database.get(`.guilds.${interaction.guild.id}.roles.lists.${roleMenu.list}`)
@@ -626,7 +627,6 @@ export default new ApplicationCommand({
 						}
 					}
 				}
-				await interaction.deferUpdate()
 				//await interaction.editReply({ embeds: embeds.messageEmbed(`Roles updated!`,), ephemeral: true }).then(msg => msg.delete())
 				break
 			}

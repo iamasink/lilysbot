@@ -592,6 +592,7 @@ export default new ApplicationCommand({
 		console.log(interaction.values)
 		console.log(interaction)
 		const id = interaction.customId.split(".")
+		console.log(id)
 		switch (id[1]) {
 			case 'selectrolemenu': {
 				const menuid = interaction.message.id

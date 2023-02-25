@@ -41,6 +41,7 @@ export default new Event({
 			//console.log("author is a bot, so not adding xp")
 			return
 		}
+		if (newmessages.length < 2) return
 		if (newmessages[0].author.id === newmessages[1].author.id) {
 			//console.log("user sent 2 messages to the same channel, not adding xp")
 			return
@@ -49,7 +50,6 @@ export default new Event({
 		// 	console.log("last message was from a bot, so not adding xp")
 		// 	return
 		// }
-
 
 		// const messages = await message.channel.messages.fetch({ limit: 2 })
 		// console.log(messages.map(e => e.author.id))

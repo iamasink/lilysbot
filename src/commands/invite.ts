@@ -3,6 +3,7 @@ import ApplicationCommand from '../types/ApplicationCommand'
 import database from '../utils/database'
 import embeds from '../utils/embeds'
 import format from '../utils/format'
+import { findBestMatch } from 'string-similarity'
 
 export default new ApplicationCommand({
 	permissions: ["Administrator"],
@@ -12,6 +13,9 @@ export default new ApplicationCommand({
 		.addSubcommand(command => command
 			.setName('list')
 			.setDescription('list invites')
+			.addBooleanOption(option => option
+				.setName("showall")
+				.setDescription("show all invites? by default expired invites without uses are hidden."))
 		)
 		.addSubcommand(command => command
 			.setName('name')
@@ -27,6 +31,18 @@ export default new ApplicationCommand({
 				.setDescription('the name to assign')
 			)
 		)
+
+		.addSubcommand(command => command
+			.setName('delete')
+			.setDescription('permanently and irreversibly deletes an invite')
+			.addStringOption(option => option
+				.setName('code')
+				.setDescription('The invite to delete')
+				.setRequired(true)
+				.setAutocomplete(true)
+			)
+		)
+
 		.addSubcommand(command => command
 			.setName('create')
 			.setDescription('create a new invite.')
@@ -71,10 +87,13 @@ export default new ApplicationCommand({
 					const name = invite.name ? `${invite.name} - ` : ""
 					const hasExpired = invite.expired
 					const uses = invite.uses
+					const showall = interaction.options.getBoolean("showall")
 					console.log(code, name, hasExpired, uses)
 					console.log(invite.inviterId)
 					const inviter = await interaction.client.users.fetch(invite.inviterId)
 					var tempoutput = ``
+
+					if (hasExpired && uses === 0 && !showall) continue
 
 
 					tempoutput += `${name}\`${code}\`, by \`${inviter.tag}\` (<@${inviter.id}>),`
@@ -131,14 +150,42 @@ export default new ApplicationCommand({
 
 				break
 			}
+			case 'delete': {
+				const guild = interaction.guild
+				const code = interaction.options.getString('code')
+				const invites = await interaction.guild.invites.fetch()
+
+				console.log(code)
+
+
+				const invite = invites.find(invite => invite.code === code)
+				if (!invite) {
+					interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite`) })
+					return
+				}
+				if (!invite.deletable) {
+					interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invite could not be deleted.`, `Invite \`${code}\` couldn't be deleted.\nDoes it not exist or do I not have permission?`) })
+					return
+				}
+
+				invite.delete()
+				interaction.reply({ ephemeral: true, embeds: embeds.successEmbed(`Invite Deleted`, `Invite \`${code}\` deleted`) })
+
+				break
+
+			}
+
 			case 'create': {
 				const name = interaction.options.getString('name')
 				const channel = interaction.options.getChannel('channel') || await interaction.guild.channels.fetch(interaction.guild.systemChannelId)
 				const length = interaction.options.getInteger('length') || 0
 				const maxuses = interaction.options.getInteger('maxuses') || 0
 
-				if (interaction.options.getChannel('channel').type == ChannelType.GuildText) {
-					await interaction.reply({ embeds: embeds.warningEmbed("hi") })
+				if (channel.type == ChannelType.GuildCategory ||
+					channel.type == ChannelType.GuildDirectory ||
+					channel.type == ChannelType.PublicThread ||
+					channel.type == ChannelType.PrivateThread) {
+					await interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed("The channel you selected is of an invalid type.") })
 				}
 
 				(channel as TextChannel).createInvite({ unique: true, maxAge: length, maxUses: maxuses, reason: "invite create command" })
@@ -179,32 +226,50 @@ export default new ApplicationCommand({
 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
 
 		//convert to array of objects (from object of objects)
-		var choices = Object.keys(invites).map(key => {
+		var invitesArray = Object.keys(invites).map(key => {
 			return invites[key]
 		})
-		for (let i in invites) {
+		for (let i in invitesArray) {
 			console.log("awaw")
 			console.log(i)
-			console.log(invites[i])
+			console.log(invitesArray[i])
 		}
+		let arrayWithNames = invitesArray.map(i => {
+			let output = i.code
+			if (i.name) {
+				output += ` - ${i.name}`
+			}
+			return output
+		})
 
-		const filtered = choices.filter(choice => choice.code.startsWith(focusedOption.value))
+		const matches = findBestMatch(focusedOption.value, arrayWithNames)
+		console.log(matches)
+		let filtered = []
+
+		if (matches.bestMatch.rating === 0) {
+			filtered = arrayWithNames.sort((a, b) => {
+				return b.length - a.length
+			})
+			console.log(filtered)
+		} else {
+			let sorted = matches.ratings.sort((a, b) => {
+				return b.rating - a.rating
+			})
+			console.log("sorted:")
+			console.log(sorted)
+			filtered = sorted.map(i => i.target)
+		}
 
 		var shortfiltered = filtered
-		if (filtered.length > 25) {
-			shortfiltered = filtered.slice(0, 24)
+		if (filtered.length > 10) {
+			shortfiltered = filtered.slice(0, 5)
 		}
 		var response = shortfiltered.map(choice => {
-			console.log(choice)
-			var name = `${choice.code}`
-			if (choice.name) {
-				name += ` - ${choice.name}`
-			}
-			//name += ` - by ${(interaction.client.users.fetch(choice.inviterId)).username}`
+			const name = choice
+			console.log(name)
+			const value = choice.split(' ')[0]
 
-			console.log(choice.code)
-			console.log({ name: name, value: choice.code })
-			return { name: name, value: choice.code }
+			return { name: name, value: value }
 		})
 		console.log(response)
 		await interaction.respond(response)

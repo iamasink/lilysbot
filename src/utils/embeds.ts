@@ -80,15 +80,16 @@ export default {
 	 */
 	async profileEmbed(
 		title: string,
-		description: string,
-		fields: any,
-		user: User,
-		guild: any,
+		description?: string,
+		fields?: any,
+		user?: User,
+		guild?: any,
 	): Promise<any> {
 		user = await user.fetch()
 		let thumbnail: string
 
 		if (
+			guild &&
 			guild.members.resolve(user) &&
 			guild.members.resolve(user).avatar != undefined
 		) {

@@ -68,14 +68,13 @@ export default new ApplicationCommand({
 					usersArray.push([key, users[key].xp])
 				}
 
-				usersArray.sort((a, b) => b[1] - a[1]).slice(0, 10)
+				const sortedArray = usersArray.sort((a, b) => b[1] - a[1]).slice(0, 10)
 
 				let output = ''
-				for (let i = 0, len = usersArray.length; i < len; i++) {
-					const member = await guild.members.fetch(usersArray[i][0])
-					output += `\`#${i + 1}\` - ${(member.nickname || member.user.username)} ${(member)} - Level ${calc.level(usersArray[i][1])}\n`
+				for (let i = 0, len = sortedArray.length; i < len; i++) {
+					const member = await guild.members.fetch(sortedArray[i][0])
+					output += `\`#${i + 1}\` - ${(member.nickname || member.user.username)} ${(member)} - Level ${calc.level(sortedArray[i][1])}\n`
 				}
-
 
 				interaction.reply({ content: output, allowedMentions: { users: [], repliedUser: false } })
 				break

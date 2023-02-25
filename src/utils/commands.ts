@@ -39,7 +39,6 @@ async function refreshGlobalCommands() {
 	try {
 		console.log(`Started refreshing ${commandList.length} global application (/) commands.`,)
 
-
 		const data: any = await rest.put(Routes.applicationCommands(clientId), {
 			body: commandList.map((e) => e.data),
 		})
@@ -256,36 +255,36 @@ export default {
 
 
 		if (group != null) {
-			console.log(`group = ${group}`)
+			//console.log(`group = ${group}`)
 			newInteraction.options._group = group
 		}
 		if (subcommand != null) {
-			console.log(`subcommand = ${subcommand}`)
+			//console.log(`subcommand = ${subcommand}`)
 			newInteraction.options._subcommand = subcommand
 		}
 		if (options != null) {
-			console.log("balls")
+			//console.log("balls")
 			//if (!interaction.options._hoistedOptions) interaction.options = new CommandInteractionOptionResolver(client, )
 			if (!interaction.options._hoistedOptions) interaction.options._hoistedOptions = []
 
 			// merge options with interaction's options, new options should overwrite
-			console.log(newInteraction.options._hoistedOptions)
-			console.log(options)
+			//console.log(newInteraction.options._hoistedOptions)
+			//console.log(options)
 			newInteraction.options._hoistedOptions = merge(newInteraction.options._hoistedOptions, options, "name",)
-			console.log("merged	")
-			console.log(newInteraction.options._hoistedOptions)
+			//console.log("merged	")
+			//console.log(newInteraction.options._hoistedOptions)
 		}
-		console.log("commandName: " + commandName)
+		//console.log("commandName: " + commandName)
 		const command = client.commands.get(commandName)
-		console.log("command: ")
-		console.log(command)
+		//console.log("command: ")
+		//console.log(command)
 
 		try {
 			// handle discord permissions
 			const acceptedPermissions = []
 			const deniedPermissions = []
 			const permlist = command.permissions || []
-			console.log(command.permissions)
+			//console.log(command.permissions)
 			let permissionsText = "Permissions:"
 
 
@@ -326,8 +325,8 @@ export default {
 				return
 			}
 
-			console.log(newInteraction.options)
-			console.log("running command")
+			//console.log(newInteraction.options)
+			//console.log("running command")
 			await command.execute(newInteraction) // trys to run the command
 			return newInteraction
 		} catch (error) {
@@ -350,7 +349,11 @@ export default {
 			if (interaction.replied) {
 				interaction.followUp(message)
 			} else {
-				interaction.reply(message)
+				try {
+					await interaction.reply(message)
+				} catch (e) {
+					await interaction.editReply(message)
+				}
 			}
 		}
 	},

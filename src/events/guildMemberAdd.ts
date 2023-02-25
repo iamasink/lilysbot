@@ -4,6 +4,7 @@ import { client } from "../index"
 import database from "../utils/database"
 import log from "../utils/log"
 import commands from "../utils/commands"
+import invites from "../utils/invites"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
@@ -17,14 +18,16 @@ export default new Event({
 		const oldInvites = await database.get(`.guilds.${guild.id}.invites`)
 		// Look through the invites, find the one for which the uses went up.
 		const invite = newInvites.find(i => i.uses > oldInvites[i.code].uses || 0)
-		// update invite cache
-		database.set(`.guilds.${guild.id}.invites.${invite.code}.uses`, invite.uses)
-		// This is just to simplify the message being sent below (inviter doesn't have a tag property)
+		if (newInvites.filter(i => i.uses > oldInvites[i.code].uses).size > 1) {
+			console.log("cache is broken somehow, we can't know who invited this user.")
+			invites.updateInviteCache(guild)
+		} else {
+			// update invite cache
+			database.set(`.guilds.${guild.id}.invites.${invite.code}.uses`, invite.uses)
+			// set inviter code for member
+			database.set(`.guilds.${guild.id}.users.${member.id}.invitedLink`, invite.code)
+		}
 		const inviter = await client.users.fetch(invite.inviterId)
-		// set inviter code for member
-		database.set(`.guilds.${guild.id}.users.${member.id}.invitedLink`, invite.code)
-
-
 		let inviterUser = await client.users.fetch(inviter.id)
 
 		log.log(guild, `${member.id}, \`${member.user.tag}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
@@ -40,7 +43,6 @@ export default new Event({
 					}
 				])
 			})
-
 
 		//await database.check(`guilds`, `.${guild.id}.users.${member.id}`)
 	},

@@ -2,6 +2,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import commands from "../utils/commands"
 import embeds from "../utils/embeds"
+import database from "../utils/database"
 
 export default new ApplicationCommand({
 	permissions: ["botowner"],
@@ -10,15 +11,14 @@ export default new ApplicationCommand({
 		.setDescription("Reloads the bot and commands"),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		await interaction.deferReply()
-		const res = await commands.deploy()
-		console.log(res)
-
 
 		try {
 			const res = await commands.deploy()
 			console.log(res)
-			interaction.followUp({ embeds: embeds.successEmbed(`Successfully deployed (${res}) commands!`) })
-			interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
+			await interaction.followUp({ embeds: embeds.successEmbed(`Successfully deployed (${res}) commands!`) })
+
+			let msg = await interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
+			await database.set(`.botdata.lastchannel`, { guild: interaction.guild.id, channel: interaction.channel.id, message: msg.id })
 		} catch (error) {
 			console.error(error)
 			throw error

@@ -9,6 +9,18 @@ export default new ApplicationCommand({
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		//let res = await database.get(`.guilds.${interaction.guild.id}`)
 		//console.log(res)
-		const commands = await interaction.guild.commands
+		const usernames = await database.get(`.users.661333181802348564.usernames`)
+		const namesarray = []
+		for (let key in usernames) {
+			if (usernames.hasOwnProperty(key)) {
+				namesarray.push({ key, ...usernames[key] })
+			}
+		}
+		const sortedArray = namesarray.sort((a, b) => {
+			return a.key - b.key
+		})
+		console.log(sortedArray)
+
+
 	},
 })

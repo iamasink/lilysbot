@@ -47,6 +47,7 @@ export default new ApplicationCommand({
 		// in a try/catch block
 		try {
 			let db = database
+			let cl = client
 			// Evaluate (execute) our input
 			const evaled = eval("(async () => {" + interaction.options.getString("string") + "})()")
 			console.log(evaled)

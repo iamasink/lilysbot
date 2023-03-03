@@ -1,9 +1,10 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
+import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import database from '../utils/database'
 import calc from '../utils/calc'
 import embeds from '../utils/embeds'
 import format from '../utils/format'
+import { client } from '..'
 
 
 function fetchPromise(toFetch) {
@@ -57,6 +58,7 @@ export default new ApplicationCommand({
 				break
 			}
 			case 'ranking': {
+				await interaction.deferReply()
 
 				// some terrible way to sort by xp
 				const users = await database.get(`.guilds.${interaction.guild.id}.users`)
@@ -72,11 +74,20 @@ export default new ApplicationCommand({
 
 				let output = ''
 				for (let i = 0, len = sortedArray.length; i < len; i++) {
-					const member = await guild.members.fetch(sortedArray[i][0])
-					output += `\`#${i + 1}\` - ${(member.nickname || member.user.username)} ${(member)} - Level ${calc.level(sortedArray[i][1])}\n`
+					const members = await guild.members.fetch()
+					const memberid = sortedArray[i][0]
+					let member: GuildMember
+
+					if (members.has(memberid)) {
+						member = await guild.members.fetch(memberid)
+						output += `\`#${i + 1}\` - ${(member.nickname || member.user.username)} ${(member)} - Level ${calc.level(sortedArray[i][1])}\n`
+					} else {
+						const user = await client.users.fetch(memberid)
+						output += `\`#${i + 1}\` - ${(user.username)} ${(user)} - Level ${calc.level(sortedArray[i][1])}\n`
+					}
 				}
 
-				interaction.reply({ content: output, allowedMentions: { users: [], repliedUser: false } })
+				await interaction.editReply({ content: output, allowedMentions: { users: [], repliedUser: false } })
 				break
 			}
 		}

@@ -76,7 +76,7 @@ export default new ApplicationCommand({
 		console.log(bodyParameters)
 
 		axios.post(
-			`http://192.168.0.29:8123/api/services/light/${service}`,
+			`http://homeassistant.local:8123/api/services/light/${service}`,
 			bodyParameters,
 			config
 		)

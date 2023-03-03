@@ -1,7 +1,8 @@
-import { Events, GuildTextBasedChannel, Interaction, Message } from "discord.js"
+import { ActionRowBuilder, Events, GuildTextBasedChannel, Interaction, Message, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import commands from "../utils/commands"
+import embeds from "../utils/embeds"
 
 
 // Emitted when an interaction is created.
@@ -114,11 +115,45 @@ export default new Event({
 
 				// handle non command buttons (eg on error)
 				if (interaction.customId === "errorreport") {
+					const modal = new ModalBuilder()
+						.setCustomId('myModal')
+						.setTitle('Reporting an Error');
+
+
+					// Add components to modal
+
+					// Create the text input components
+					const reportInput = new TextInputBuilder()
+						.setCustomId('errorReportModalField')
+						// The label is the prompt the user sees for this input
+						.setLabel("What went wrong?")
+						// Short means only a single line of text
+						.setStyle(TextInputStyle.Paragraph)
+						.setRequired(false)
+						.setValue("hi")
+
+					// An action row only holds one text input,
+					// so you need one action row per text input.
+					const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInput);
+
+					// Add inputs to the modal
+					modal.addComponents(firstActionRow);
+
+					// Show the modal to the user
+					await interaction.showModal(modal);
+
+					const filter = i => {
+						return i.user.id === interaction.user.id;
+					};
+					interaction.awaitModalSubmit({ time: 240 * 1000, filter })
+						.then(i => i.reply({ embeds: embeds.successEmbed('Thank you for your submission!'), ephemeral: true }))
+						.catch(err => console.log(err));
+
 					console.log(interaction.message)
 					interaction.update({ components: [] })
 					client.channels.fetch("767026023387758612").then((channel: GuildTextBasedChannel) => {
 						console.log(channel.name)
-						channel.send("error: " + JSON.stringify(interaction.message, null, 2))
+						channel.send("error: " + JSON.stringify(interaction.message))
 						return
 					})
 				} else {

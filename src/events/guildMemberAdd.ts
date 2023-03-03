@@ -45,6 +45,8 @@ export default new Event({
 			})
 
 		//await database.check(`guilds`, `.${guild.id}.users.${member.id}`)
+
+
 	},
 }
 )

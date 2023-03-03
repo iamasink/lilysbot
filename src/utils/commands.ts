@@ -251,7 +251,7 @@ export default {
 		// if theres no options present, create a new options resolver
 		// this probably kinda a stupid way to do everything but like idc
 		if (!newInteraction.options) newInteraction.options = new (CommandInteractionOptionResolver as any)(client, [])
-		console.log(newInteraction)
+		//console.log(newInteraction)
 
 
 		if (group != null) {

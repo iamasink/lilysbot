@@ -3,6 +3,8 @@ import { client } from ".."
 import database from "./database"
 
 async function updateInviteCache(guild: Guild) {
+	console.log(`updating invite cache for ${guild.name}`)
+
 	// Fetch all Guild Invites
 	const oldinvites = await database.get(`.guilds.${guild.id}.invites`)
 	const guildinvites = await guild.invites.fetch()
@@ -29,7 +31,9 @@ async function updateInviteCache(guild: Guild) {
 
 export default {
 	async updateAllInviteCaches() {
+		console.log("updating all invite cache")
 		client.guilds.cache.forEach(async (guild) => {
+
 			updateInviteCache(guild)
 		})
 

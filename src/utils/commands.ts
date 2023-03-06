@@ -12,18 +12,28 @@ import {
 	ChatInputCommandInteraction,
 	CommandInteraction,
 	CommandInteractionOptionResolver,
+	ComponentType,
 	ContextMenuCommandInteraction,
+	GuildTextBasedChannel,
 	Interaction,
+	InteractionResponse,
 	Message,
+	MessageInteraction,
+	ModalActionRowComponentBuilder,
+	ModalBuilder,
 	PermissionsBitField,
 	Routes,
 	SlashCommandBuilder,
+	TextInputBuilder,
+	TextInputStyle,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from "../index"
 import embeds from "./embeds"
 import database from "./database"
 import config from "../config.json"
+import { setTimeout } from "node:timers"
+import { Octokit } from "@octokit/rest";
 
 function merge(a: any, b: any, prop: any) {
 	const reduced = a.filter(
@@ -345,16 +355,92 @@ export default {
 				),
 				components: [row],
 				ephemeral: true,
+				fetchReply: true
 			}
+			let msg: Message
+
 			if (interaction.replied) {
-				interaction.followUp(message)
+				msg = await interaction.followUp(message)
 			} else {
 				try {
-					await interaction.reply(message)
+					console.log("reply")
+					msg = await interaction.reply(message)
 				} catch (e) {
+					console.log(e)
+					console.log("editreply")
 					await interaction.editReply(message)
+					msg = await interaction.message
 				}
 			}
+
+			const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 2 * 60 * 1000 });
+
+			collector.on('collect', async i => {
+				if (i.user.id === interaction.user.id) {
+					console.log(`${i.user.id} clicked on the ${i.customId} button.`)
+
+					const modal = new ModalBuilder()
+						.setCustomId('myModal')
+						.setTitle('Reporting an Error')
+
+
+					// Add components to modal
+
+					// Create the text input components
+					const reportInput = new TextInputBuilder()
+						.setCustomId('errorReportModalField')
+						// The label is the prompt the user sees for this input
+						.setLabel("What went wrong?")
+						// Short means only a single line of text
+						.setStyle(TextInputStyle.Paragraph)
+						.setRequired(false)
+						.setPlaceholder("What happaned? Why are you reporting this error!!!?")
+
+					// An action row only holds one text input,
+					// so you need one action row per text input.
+					const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInput);
+
+					// Add inputs to the modal
+					modal.addComponents(firstActionRow);
+
+					// Show the modal to the user
+					await i.showModal(modal);
+
+					const filter = i => {
+						return i.user.id === interaction.user.id;
+					}
+					i.awaitModalSubmit({ time: 240 * 1000, filter })
+						.then(async i => {
+							interaction.deleteReply()
+							await i.reply({ embeds: embeds.successEmbed('Thank you for your submission!'), ephemeral: true, fetchReply: true })
+								.then(msg => {
+									setTimeout(() => {
+										i.deleteReply()
+									}, 1000)
+								})
+
+							const usermessage = i.fields.getTextInputValue('errorReportModalField')
+							const content = `error: \`\`\`${error.toString()}\`\`\`\nOn command: \`${interaction.commandName}\`\nOptions: \`\`\`${JSON.stringify(interaction.options)}\`\`\`\nReported by: \`${interaction.user.tag} (${interaction.user.id})\`\nUser's Message: \`\`\`${usermessage}\`\`\``
+
+							client.channels.fetch("767026023387758612").then((channel: GuildTextBasedChannel) => {
+								console.log(channel.name)
+								channel.send(content)
+								return
+							})
+
+							// create an github issue from the error report
+							const octokit = new Octokit({
+								auth: config.github.token
+							})
+							octokit.issues.create({ owner: "iamasink", repo: "lilysbot", title: `Error report from command "${interaction.commandName}" - ${usermessage}`, body: content, labels: ["report"] })
+						})
+						.catch(err => console.log(err))
+				} else {
+					i.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+				}
+			});
+
+
 		}
 	},
 	async textToCommandParser(text = "") {

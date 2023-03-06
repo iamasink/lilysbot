@@ -1,8 +1,9 @@
-import { Interaction, ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } from "discord.js"
+import { Interaction, ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder, Embed } from "discord.js"
 import database from "../utils/database"
 import format from "../utils/format"
 import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from ".."
+import embeds from "../utils/embeds"
 
 
 // function fetchPromise(toFetch) {
@@ -216,51 +217,68 @@ export default new ApplicationCommand({
 			}
 			case 'guild': { // TODO
 				console.log(interaction.guild)
-				const guild = interaction.guild
-				//				fetchPromise(guild).then(async guild => {
-				// 					info = `${ format(guild.name, `Name`)
-				// 						}
-				// ${format(guild.nameAcronym, `nameAcronym`)
-				// 						}
-				// ${format(guild.approximateMemberCount, `approximateMemberCount`)}
-				// ${format(guild.approximatePresenceCount, `approximatePresenceCount`)}
-				// ${format(guild.available, `available`)}
-				// ${format(guild.banner, `banner`)}
-				// ${format(guild.createdAt, `createdAt`)}
-				// ${format(guild.createdTimestamp, `createdTimestamp`)}
-				// ${format(guild.description, `description`)}
-				// ${format(guild.discoverySplash, `discoverySplash`)} `
-				// 					info2 = `${format(guild.explicitContentFilter, `explicitContentFilter`)}
-				// ${format(guild.features, `features`)}
-				// ${format(guild.icon, `icon`)}
-				// ${format(guild.id, `id`)}
-				// ${format(guild.joinedAt, `joinedAt`)}
-				// ${format(guild.joinedTimestamp, `joinedTimestamp`)}
-				// ${format(guild.large, `large`)}
-				// ${format(guild.maximumBitrate, `maximumBitrate`)}
-				// ${format(guild.maximumMembers, `maximumMembers`)} `
-				// 					info3 = `${format(guild.maximumPresences, `maximumPresences`)}
-				// ${format(guild.memberCount, `memberCount`)}
-				// ${format(guild.mfaLevel, `mfaLevel`)}
-				// ${format(guild.nsfwLevel, `nsfwLevel`)}
-				// ${format(guild.ownerId, `ownerId`)}
-				// ${format(guild.partnered, `partnered`)}
-				// ${format(guild.preferredLocale, `preferredLocale`)}
-				// ${format(guild.premiumProgressBarEnabled, `premiumProgressBarEnabled`)}
-				// ${format(guild.premiumSubscriptionCount, `premiumSubscriptionCount`)}
-				// ${format(guild.premiumTier, `premiumTier`)} `
-				// 					info4 = `${format(guild.shard, `shard`)}
-				// ${format(guild.shardId, `shardId`)}
-				// ${format(guild.splash, `splash`)}
-				// ${format(guild.systemChannel, `systemChannel`)}
-				// ${format(guild.vanityURLCode, `vanityURLCode`)} `
-				// 					info5 = `${format(guild.vanityURLUses, `vanityURLUses`)}
-				// ${format(guild.verificationLevel, `verificationLevel`)}
-				// ${format(guild.verified, `verified`)}
-				// ${format(guild.widgetChannel, `widgetChannel`)}
-				// ${format(guild.widgetChannelId, `widgetChannelId`)}
-				// ${format(guild.widgetEnabled, `widgetEnabled`)} `
-				throw new Error("Not Implemented")
+				const guild = await interaction.guild.fetch()
+				const channels = await interaction.guild.channels.fetch()
+				const channels2 = interaction.guild.channels.cache
+				console.log(channels)
+				const textChannelCount = channels.filter(i => i.isTextBased()).size
+				const voiceChannelCount = channels.filter(i => i.isVoiceBased()).size
+				const activeThreadChannelCount = (await guild.channels.fetchActiveThreads()).threads.filter(i => !i.archived).size
+				const archivedThreadChannelCount = (await guild.channels.fetchActiveThreads()).threads.filter(i => i.archived).size
+				const threadChannelCount = channels2.filter(i => i.isThread()).size
+
+				const roles = await guild.roles.fetch()
+				const roleCount = roles.size
+				const managedRoleCount = roles.filter(role => role.managed).size
+
+				const members = await guild.members.fetch({ withPresences: true })
+				const memberCount = guild.memberCount
+
+
+				const onlineMembers = members.filter(member =>
+					member.presence?.status === 'online' ||
+					member.presence?.status === 'dnd' ||
+					member.presence?.status === 'idle'
+				)
+				const onlineMemberCount = onlineMembers.size
+
+				const botMemberCount = members.filter(member => member.user.bot).size
+				const onlineBotMemberCount = onlineMembers.filter(member => member.user.bot).size
+
+
+				const embed = new EmbedBuilder()
+					.setTitle(`${guild.name} (${guild.id})`)
+					.setDescription(guild.description)
+					.setFields(
+						{ name: "__**Owner**__", value: `<@${guild.ownerId}>` },
+						{
+							name: "__**Channels**__", value:
+								`
+								**Total**: ${channels.size}
+								**Text Channels**: ${textChannelCount}
+								**Voice Channels**: ${voiceChannelCount}
+								**Thread Channels**: ${activeThreadChannelCount} active of ${threadChannelCount}
+							`
+						},
+						{
+							name: "__**Roles**__", value:
+								`
+								**Total**: ${roleCount}
+								**Roles**: ${roleCount - managedRoleCount}
+								**Bot (aka Managed) Roles**: ${managedRoleCount}
+							`
+						},
+						{
+							name: "__**Members**__", value:
+								`
+								**Total**: ${memberCount} | ${memberCount - botMemberCount} Users, ${botMemberCount} Bots
+								**Online**: ${onlineMemberCount} | ${onlineMemberCount - onlineBotMemberCount} Users, ${onlineBotMemberCount} Bots
+							`
+						}
+					)
+					.setThumbnail(guild.iconURL())
+
+				interaction.reply({ embeds: [embed] })
 
 
 

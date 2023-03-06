@@ -4,6 +4,9 @@ import database from '../utils/database'
 import { client } from '..'
 import axios from 'axios'
 import embeds from '../utils/embeds'
+import { Octokit } from "@octokit/rest";
+import config from "../config.json"
+
 export default new ApplicationCommand({
 	permissions: ["KickMembers"],
 	data: new SlashCommandBuilder()
@@ -26,5 +29,7 @@ export default new ApplicationCommand({
 		// console.log(sortedArray)
 		// const presence = guild.presences.cache
 		// const status = presence.get((interaction.member as GuildMember).id).clientStatus
+
+		console.log(interaction.options)
 	},
 })

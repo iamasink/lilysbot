@@ -4,6 +4,7 @@ import format from "../utils/format"
 import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from ".."
 import embeds from "../utils/embeds"
+import axios from "axios"
 
 
 // function fetchPromise(toFetch) {
@@ -287,7 +288,8 @@ export default new ApplicationCommand({
 				const client = interaction.client
 				const user = client.user
 				console.log(client)
-
+				const glances = (await axios.get('http://glances.local/api/3/all')).data
+				console.log(glances)
 
 				const infoEmbed = new EmbedBuilder()
 					.setColor(`#f9beca`)
@@ -298,6 +300,20 @@ export default new ApplicationCommand({
 					.addFields(
 						{
 							name: '__Stats__', value: `**Guilds**: ${client.guilds.cache.size}\n**Total Channels**: ${client.channels.cache.size}\n**Total Members**: ${client.users.cache.size}\n`
+						},
+						{
+							name: '__System Info__', value:
+								`
+								**Load**: ${glances.load.min1.toFixed(2)} ${glances.load.min5.toFixed(2)} ${glances.load.min15.toFixed(2)} 
+								**Uptime**: ${glances.uptime}
+								**CPU**:
+								　　*Cores*: ${glances.core.phys} | ${glances.core.log}
+								　　*Usage*: ${glances.cpu.total}
+								**Memory**:
+								　　*Used*: ${(glances.mem.used / 1073741824).toFixed(2)}G / ${(glances.mem.total / 1073741824).toFixed(2)}G
+								　　*Percent*: ${glances.mem.percent}
+								　　\`${format.bar(0, glances.mem.used, glances.mem.total, 25)}\`
+								`
 						},
 					)
 				//

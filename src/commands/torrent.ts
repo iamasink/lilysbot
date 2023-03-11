@@ -25,9 +25,7 @@ export default new ApplicationCommand({
 				.setName('hide')
 				.setDescription('hide the information for everyone but you. defaults to true. recommended for private torrents')
 			),
-
-		)
-	,
+		),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		console.log(interaction)
 		const hide = interaction.options.getBoolean("hide") || true

@@ -1,10 +1,3 @@
-module.exports = {
-	name: "messageReactionAdd",
-	async execute(reaction, user) {
-
-	},
-}
-
 import { Events, Interaction, Message, User } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"

@@ -5,7 +5,7 @@ import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from ".."
 import embeds from "../utils/embeds"
 import axios from "axios"
-
+import { stripIndent } from "common-tags"
 
 // function fetchPromise(toFetch) {
 // 	return new Promise((resolve, reject) => {
@@ -254,7 +254,7 @@ export default new ApplicationCommand({
 						{ name: "__**Owner**__", value: `<@${guild.ownerId}>` },
 						{
 							name: "__**Channels**__", value:
-								`
+								stripIndent`
 								**Total**: ${channels.size}
 								**Text Channels**: ${textChannelCount}
 								**Voice Channels**: ${voiceChannelCount}
@@ -263,7 +263,7 @@ export default new ApplicationCommand({
 						},
 						{
 							name: "__**Roles**__", value:
-								`
+								stripIndent`
 								**Total**: ${roleCount}
 								**Roles**: ${roleCount - managedRoleCount}
 								**Bot (aka Managed) Roles**: ${managedRoleCount}
@@ -271,7 +271,7 @@ export default new ApplicationCommand({
 						},
 						{
 							name: "__**Members**__", value:
-								`
+								stripIndent`
 								**Total**: ${memberCount} | ${memberCount - botMemberCount} Users, ${botMemberCount} Bots
 								**Online**: ${onlineMemberCount} | ${onlineMemberCount - onlineBotMemberCount} Users, ${onlineBotMemberCount} Bots
 							`
@@ -303,7 +303,7 @@ export default new ApplicationCommand({
 						},
 						{
 							name: '__System Info__', value:
-								`
+								stripIndent`
 								**Load**: ${glances.load.min1.toFixed(2)} ${glances.load.min5.toFixed(2)} ${glances.load.min15.toFixed(2)} 
 								**Uptime**: ${glances.uptime}
 								**CPU**:

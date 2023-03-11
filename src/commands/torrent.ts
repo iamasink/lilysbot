@@ -153,11 +153,6 @@ export default new ApplicationCommand({
 					interaction.editReply({ embeds: embeds.warningEmbed("No Torrent Selected", "You must add an attachment to a .torrent file or a magnet link") })
 				}
 
-
-
-
-
-
 				break
 			}
 

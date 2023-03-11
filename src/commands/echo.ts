@@ -6,9 +6,10 @@ export default new ApplicationCommand({
 		.setName('echo')
 		.setDescription('Echos you')
 		.addStringOption(option => option
-			.setName("hi")
-			.setDescription("hi")),
+			.setName("message")
+			.setDescription("The message to echo")
+			.setRequired(true)),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		interaction.reply(interaction.options.getString("hi"))
+		interaction.reply(interaction.options.getString("message"))
 	},
 })

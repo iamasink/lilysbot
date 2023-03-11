@@ -13,23 +13,7 @@ export default new ApplicationCommand({
 		.setName('test')
 		.setDescription('testy'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		const guild = interaction.guild
-		//let res = await database.get(`.guilds.${interaction.guild.id}`)
-		//console.log(res)
-		// const usernames = await database.get(`.users.661333181802348564.usernames`)
-		// const namesarray = []
-		// for (let key in usernames) {
-		// 	if (usernames.hasOwnProperty(key)) {
-		// 		namesarray.push({ key, ...usernames[key] })
-		// 	}
-		// }
-		// const sortedArray = namesarray.sort((a, b) => {
-		// 	return a.key - b.key
-		// })
-		// console.log(sortedArray)
-		// const presence = guild.presences.cache
-		// const status = presence.get((interaction.member as GuildMember).id).clientStatus
 
-		console.log(interaction.options)
+
 	},
 })

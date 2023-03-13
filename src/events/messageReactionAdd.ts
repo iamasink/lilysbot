@@ -45,7 +45,7 @@ export default new Event({
 				// this message has already been starred. it will not be resent and instead updated :)
 				console.log("this message has already been starred. it will not be resent and instead updated :)")
 				const oldMessage = await starboardChannel.messages.fetch(databaseThing.starMessage)
-				oldMessage.edit({ content: `${reaction.count} ⭐` })
+				oldMessage.edit({ content: `${reaction.count} ⭐ in ${message.channel}` })
 			} else {
 				// dont sent if not enough reactions
 				// TODO: change this 1 to a customizable optionx	
@@ -62,15 +62,29 @@ export default new Event({
 
 					const embed = new EmbedBuilder()
 						.setColor("#ffac33")
-						.setAuthor({ name: authorName, iconURL: url })
-						.setDescription(description)
+						.setAuthor({ name: `${authorName}`, iconURL: url })
+						.setDescription(description || "\u200b")
 						.setTimestamp(message.createdTimestamp)
+						.setFields({ name: "Jump to message:", value: message.url })
 
+					let image = undefined
+					if (message.attachments.size) {
+						image = message.attachments.first().url
+						embed.setImage(image)
+					} else if (message.embeds.length) {
+						image = message.embeds[0]
+						if (image.video) {
+							embed.setImage(image.video.url)
+						}
+						else if (image.thumbnail) {
+							embed.setImage(image.thumbnail.url)
+						}
+					}
 
 					console.log(embed)
 
 					// save the sentMessage and originalMessage id into the database so they can be looked up later :)
-					const sentMessage = await (starboardChannel as GuildTextBasedChannel).send({ content: `${reaction.count} ⭐`, embeds: [embed] })
+					const sentMessage = await (starboardChannel as GuildTextBasedChannel).send({ content: `${reaction.count} ⭐ in ${message.channel}`, embeds: [embed] })
 					previousStars.push({ starMessage: sentMessage.id, originalMessage: message.id })
 					await database.set(`.guilds.${guild.id}.starboard`, previousStars)
 				}

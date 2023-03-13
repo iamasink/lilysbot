@@ -47,7 +47,7 @@ export default new Event({
 				// TODO: change this 1 to a customizable option
 				if (reaction.count > 1) {
 					// this message has already been starred. it will not be resent and instead updated :)
-					oldMessage.edit({ content: `${reaction.count} ⭐` })
+					oldMessage.edit({ content: `${reaction.count} ⭐ in ${message.channel}` })
 				} else {
 					oldMessage.delete()
 					// splice 1 element from the index of the found element :)

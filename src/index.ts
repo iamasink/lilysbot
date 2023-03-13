@@ -1,4 +1,4 @@
-import { ChannelType, GatewayIntentBits, IntentsBitField } from "discord.js"
+import { ChannelType, GatewayIntentBits, IntentsBitField, Partials } from "discord.js"
 import { Bot } from "./structures/Client"
 // create new client from class Bot with intents
 export const client = new Bot({
@@ -22,6 +22,15 @@ export const client = new Bot({
 		GatewayIntentBits.GuildWebhooks,
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.MessageContent,
+	],
+	partials: [
+		Partials.Message,
+		Partials.Channel,
+		Partials.Reaction,
+		Partials.GuildMember,
+		Partials.GuildScheduledEvent,
+		Partials.User,
+		Partials.ThreadMember
 	]
 })
 

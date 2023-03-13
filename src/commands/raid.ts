@@ -18,6 +18,9 @@ export default new ApplicationCommand({
 					{ name: 'No Avatar', value: 'no_avatar' },
 				)
 			)
+			.addBooleanOption(option => option
+				.setName("dryrun")
+				.setDescription("don't actually do anything, just list"))
 
 		)
 		.addSubcommand(option => option
@@ -37,9 +40,10 @@ export default new ApplicationCommand({
 		switch (interaction.options.getSubcommand()) {
 			case 'kick': {
 				const option = interaction.options.getString("kickoption")
+				const isDryRun = interaction.options.getBoolean("dryrun")
 				console.log(option)
 
-				interaction.reply("awawa")
+				interaction.reply("Kicking members...")
 				let toban = []
 				const memberlist = await interaction.guild.members.fetch()
 				console.log(memberlist.size)
@@ -47,7 +51,9 @@ export default new ApplicationCommand({
 					switch (option) {
 						case 'pending': {
 							if (member.pending) {
-								await member.kick()
+								if (!isDryRun) {
+									await member.kick()
+								}
 								toban.push(member.user.id)
 								console.log(`kicked member ${member.user.tag}`)
 

@@ -17,6 +17,11 @@ const settings = [
 		name: "Hidden Role",
 		value: "hidden_role",
 		type: "role"
+	},
+	{
+		name: "Starboard Channel",
+		value: "starboard_channel",
+		type: "channel"
 	}
 ]
 const choices = settings.map(setting => {

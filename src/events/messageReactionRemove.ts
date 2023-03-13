@@ -6,9 +6,9 @@ import messageCreate from "./messageCreate"
 import embeds from "../utils/embeds"
 import { type } from "os"
 
-// Emitted whenever a reaction is added to a message
+// Emitted whenever a reaction is removed froma message
 export default new Event({
-	name: Events.MessageReactionAdd,
+	name: Events.MessageReactionRemove,
 	async execute(reaction: MessageReaction, user: User) {
 		const guild = reaction.message.guild
 		const message = reaction.message
@@ -26,7 +26,7 @@ export default new Event({
 		}
 
 		// Now the message has been cached and is fully available
-		console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`)
+		console.log(`${reaction.message.author}'s message "${reaction.message.content}" lost a reaction!`)
 		// The reaction is now also fully available and the properties will be reflected accurately:
 		console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
 
@@ -42,38 +42,21 @@ export default new Event({
 
 			// if the message could be found in the database
 			if (databaseThing) {
-				// this message has already been starred. it will not be resent and instead updated :)
 				console.log("this message has already been starred. it will not be resent and instead updated :)")
 				const oldMessage = await starboardChannel.messages.fetch(databaseThing.starMessage)
-				oldMessage.edit({ content: `${reaction.count} ⭐` })
-			} else {
-				// dont sent if not enough reactions
-				// TODO: change this 1 to a customizable optionx	
+				// TODO: change this 1 to a customizable option
 				if (reaction.count > 1) {
-
-					// send message in starboard channel
-					const author = await guild.members.fetch(message.author.id)
-					const url = author.avatarURL({ forceStatic: true }) || author.user.avatarURL({ forceStatic: true })
-					const authorName = author.displayName;
-					console.log(url)
-
-					let description = message.content
-					if (message.editedAt) description += " *(edited)*"
-
-					const embed = new EmbedBuilder()
-						.setColor("#ffac33")
-						.setAuthor({ name: authorName, iconURL: url })
-						.setDescription(description)
-						.setTimestamp(message.createdTimestamp)
-
-
-					console.log(embed)
-
-					// save the sentMessage and originalMessage id into the database so they can be looked up later :)
-					const sentMessage = await (starboardChannel as GuildTextBasedChannel).send({ content: `${reaction.count} ⭐`, embeds: [embed] })
-					previousStars.push({ starMessage: sentMessage.id, originalMessage: message.id })
+					// this message has already been starred. it will not be resent and instead updated :)
+					oldMessage.edit({ content: `${reaction.count} ⭐` })
+				} else {
+					oldMessage.delete()
+					// splice 1 element from the index of the found element :)
+					previousStars.splice(previousStars.findIndex(i => i.originalMessage == message.id), 1)
 					await database.set(`.guilds.${guild.id}.starboard`, previousStars)
 				}
+
+			} else {
+				// a reaction was lost, so theres no way it should be sent probably
 			}
 		}
 	},

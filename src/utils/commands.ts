@@ -58,6 +58,7 @@ async function refreshGlobalCommands() {
 	} catch (error) {
 		console.error(error)
 		throw error
+
 	}
 }
 async function refreshGuildCommands(guildId: any) {

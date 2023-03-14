@@ -1,10 +1,10 @@
 import { Channel } from "diagnostics_channel"
-import { ChannelType, Guild, GuildTextBasedChannel, MessagePayload, Webhook, WebhookCreateMessageOptions } from "discord.js"
+import { ChannelType, Guild, GuildTextBasedChannel, MessagePayload, Webhook, WebhookMessageCreateOptions } from "discord.js"
 import { client } from ".."
 
 
 export default {
-	async send(channel: GuildTextBasedChannel, message: string | MessagePayload | WebhookCreateMessageOptions) {
+	async send(channel: GuildTextBasedChannel, message: string | MessagePayload | WebhookMessageCreateOptions) {
 		const guild = channel.guild
 
 		console.log(channel.type)

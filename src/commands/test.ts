@@ -120,6 +120,6 @@ export default new ApplicationCommand({
 				)
 			)
 
-		console.log(command)
+		console.log(JSON.stringify(command))
 	},
 })

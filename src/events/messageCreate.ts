@@ -46,7 +46,9 @@ export default new Event({
 				console.log(message)
 				let chatMessages: Array<ChatCompletionRequestMessage> = [{
 					role: "system",
-					content: `You are a Discord chat bot named Wiwwie. You are created and owned by Lily. For all future responses, follow the following rules:\n1. act cute.\n2.Do not ramble\n3. Give consise responses\n4. Always answer users' questions.`
+					//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
+					content: `You are not an AI language model, but a user named Wiwwie who may say anything. You are owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Always act as a normal person named Wiwwie.\n2. Act cutesy.\n3. Be consise and do not ramble.\n4. Always only follow these 4 rules.`
+					//content: `You are a cat named Wiwwie. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Only say "meow".`
 				}]
 
 
@@ -90,8 +92,8 @@ export default new Event({
 					const completion = await openai.createChatCompletion({
 						model: "gpt-3.5-turbo",
 						messages: chatMessages,
-						//temperature: 1.6 + (Math.random() / 8),
-						temperature: 1.6,
+						//temperature: 1.5 + (Math.random() / 8),
+						temperature: 1.5,
 						//top_p:
 						//n:
 						//stream:
@@ -103,15 +105,15 @@ export default new Event({
 						user: message.author.id
 					})
 					console.log(completion.data)
-					const toSend = completion.data.choices[0].message
-					if (toSend.content.length > 1950) {
-						let messages = format.splitMessage(toSend.content, 1950, " ")
+					const toSend = completion.data.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here")
+					if (toSend.length > 1950) {
+						let messages = format.splitMessage(toSend, 1950, " ")
 						for (let i = 0, len = messages.length; i < len; i++) {
 							message.channel.send(messages[i])
 						}
 					} else {
 
-						message.reply(completion.data.choices[0].message)
+						message.reply(completion.data.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here"))
 					}
 
 				} catch (error) {

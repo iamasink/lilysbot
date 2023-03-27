@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, PermissionsBitField, Role, RoleSelectMenuBuilder, SlashCommandBuilder, TextChannel } from 'discord.js'
+import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, PermissionsBitField, Role, RoleSelectMenuBuilder, SlashCommandBuilder, StringSelectMenuBuilder, TextChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import embeds from '../utils/embeds'
 import database from '../utils/database'
@@ -7,11 +7,6 @@ const settings = [
 		name: "Log Channel",
 		value: "log_channel",
 		type: "channel",
-	},
-	{
-		name: "Log Channel2",
-		value: "log_channel2",
-		type: "channel"
 	},
 	{
 		name: "Hidden Role",

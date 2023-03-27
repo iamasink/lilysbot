@@ -202,7 +202,7 @@ export default new ApplicationCommand({
 							const invitedById = invite.inviterId
 							const invitedBy = await client.users.fetch(invitedById) || null
 							const invited = invitedBy.tag ? `\`${invitedBy.tag}\` <@${invitedById}>` : `*Unknown*`
-							guildtext += `\n**Invited by:** ${invited}`
+							guildtext += `\n**Invited by:** ${invited} ${invite.code.slice(0, 4)}`
 						}
 
 						if (member) infoEmbed.addFields({ name: '__Guild__', value: guildtext })

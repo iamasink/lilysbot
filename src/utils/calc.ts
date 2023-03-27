@@ -1,13 +1,15 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js'
 import { levels } from '../config.json'
 function exactLevel(xp = 0) {
-	return (1 + Math.sqrt(1 + 8 * xp / levels.threshold)) / 2
-
+	// what the fuck is this calculation?
+	// i have no idea but it seems to work well. so its staying :)
+	// seriously, I suck at math. But it works?
+	return (-(levels.threshold / 2) + Math.sqrt(((levels.threshold / 2) ** 2) + ((levels.threshold * 2) * xp))) / levels.threshold
 }
 
 export default {
 	exactLevel(xp = 0) {
-		exactLevel(xp)
+		return exactLevel(xp)
 	},
 	level(xp = 0) {
 		return Math.floor(exactLevel(xp))
@@ -19,7 +21,8 @@ export default {
 		console.log(`output: ${output}`)
 		return (output)
 	},
-	xp(level = 1) {
-		return Math.floor((((level * level) - level) * levels.threshold) / 2)
+	xp(level = 0) {
+		// this is the opposite of the other calculation :)
+		return (levels.threshold / 2) * level * (level + 1)
 	}
 }

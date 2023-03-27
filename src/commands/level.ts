@@ -31,7 +31,12 @@ export default new ApplicationCommand({
 		.addSubcommand(command => command
 			.setName('ranking')
 			.setDescription('see a list of the highest levels')
-		),
+			.addBooleanOption(option => option
+				.setName("extended")
+				.setDescription("add a description here :O")
+			)
+		)
+	,
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		// get the guild
 		const guild = interaction.guild
@@ -58,6 +63,7 @@ export default new ApplicationCommand({
 				break
 			}
 			case 'ranking': {
+				const extended = interaction.options.getBoolean("extended")
 				await interaction.deferReply()
 
 				// some terrible way to sort by xp
@@ -70,24 +76,49 @@ export default new ApplicationCommand({
 					usersArray.push([key, users[key].xp])
 				}
 
-				const sortedArray = usersArray.sort((a, b) => b[1] - a[1]).slice(0, 10)
+				let limit: number
+				if (extended) {
+					limit = 100
+				} else {
+					limit = 10
+				}
+
+				const sortedArray = usersArray.sort((a, b) => b[1] - a[1]).slice(0, limit)
+				const members = await guild.members.fetch()
 
 				let output = ''
 				for (let i = 0, len = sortedArray.length; i < len; i++) {
-					const members = await guild.members.fetch()
 					const memberid = sortedArray[i][0]
 					let member: GuildMember
+					member = members.find(m => m.id == memberid)
 
 					if (members.has(memberid)) {
-						member = await guild.members.fetch(memberid)
-						output += `\`#${i + 1}\` - ${(member.nickname || member.user.username)} ${(member)} - Level ${calc.level(sortedArray[i][1])}\n`
+						const xp = sortedArray[i][1]
+						const progress = calc.levelProgress(xp)
+						const level = calc.level(xp)
+						const xpLower = calc.xp(level)
+						const xpHigher = calc.xp(level + 1)
+						output += `\`#${i + 1}\` - ${(member.displayName || member.user.username)} ${(member)} - Level ${calc.level(xp)} (${format.numberCommas(xp)} xp)\n`
+						output += `\`[${format.bar(0, progress, 1, 25)}]\`\n${format.numberCommas(level)} (${format.numberCommas(xpLower)} xp) - ${format.numberCommas(level + 1)} (${format.numberCommas(xpHigher)} xp)\n`
 					} else {
-						const user = await client.users.fetch(memberid)
-						output += `\`#${i + 1}\` - ${(user.username)} ${(user)} - Level ${calc.level(sortedArray[i][1])}\n`
+						// the member's probably left. Kind of an L not going to lie..
+						// output += `\`#${i + 1}\` - <@${(memberid)}> - Level ${calc.level(sortedArray[i][1])}\n`
 					}
 				}
 
-				await interaction.editReply({ content: output, allowedMentions: { users: [], repliedUser: false } })
+
+				const messages = format.splitMessage(output, 1500)
+				for (let i = 0, len = messages.length; i < len; i++) {
+					const message = messages[i]
+					if (i == 0) {
+						await interaction.editReply({ content: `__**Top ${limit} ranking:**__\n${message}`, allowedMentions: { users: [], repliedUser: false } })
+					}
+					else await interaction.followUp({ content: message, allowedMentions: { users: [], repliedUser: false } })
+				}
+
+
+
+
 				break
 			}
 		}

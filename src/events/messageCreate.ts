@@ -32,8 +32,8 @@ export default new Event({
 		// Runs when the bot logs in
 		console.log(`A message was created in ${guild}: ${message}`)
 
-		console.log(message.mentions.users)
-		console.log(client.user.id)
+		//console.log(message.mentions.users)
+		//console.log(client.user.id)
 
 
 		// if bot pinged

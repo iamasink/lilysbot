@@ -1,29 +1,9 @@
 import {
 	SlashCommandBuilder,
-	ChatInputCommandInteraction,
-	PermissionsBitField,
-	PermissionResolvable,
-	BitField,
-	VoiceChannel,
-	VoiceBasedChannel,
-	ChannelType,
-	Webhook,
-	ActionRowBuilder,
-	ModalActionRowComponentBuilder,
-	ModalBuilder,
-	TextInputBuilder,
-	TextInputStyle,
-	GuildFeature,
-	GuildMember
+	ChatInputCommandInteraction
 } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
-import database from '../utils/database'
-import { client } from '..'
-import axios from 'axios'
-import embeds from '../utils/embeds'
-import { Octokit } from "@octokit/rest";
-import config from "../config.json"
-import { AudioPlayerStatus, VoiceConnectionStatus, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel } from '@discordjs/voice'
+import calc from '../utils/calc'
 
 export default new ApplicationCommand({
 	permissions: ["KickMembers"],
@@ -31,6 +11,12 @@ export default new ApplicationCommand({
 		.setName('test')
 		.setDescription('testy'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		console.log("vyigay🐱👤🌈!!".replace(/[^a-zA-Z0-9_-]{1,64}/g, '-'))
+		const level = 5
+		const xp: number = 750
+
+		const calculatedLevel = calc.exactLevel(xp)
+		const calculatedXp = calc.xp(calculatedLevel)
+
+		await interaction.reply(`${calculatedLevel} - ${calculatedXp} xp`)
 	},
-})
+}) 

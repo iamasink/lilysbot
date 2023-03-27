@@ -12,12 +12,13 @@ export default {
 		if (!channelid) {
 			console.log("no log channel set. ignoring")
 			return
+		} else {
+			console.log(channelid)
+			let g = await client.guilds.fetch(guild.id)
+			let c = await g.channels.fetch(channelid)
+			//console.log(c)
+			return (c as TextChannel).send(message)
 		}
-		console.log(channelid)
-		let g = await client.guilds.fetch(guild.id)
-		let c = await g.channels.fetch(channelid)
-		//console.log(c)
-		return (c as TextChannel).send(message)
 	},
 	async channel(guild: Guild): Promise<string> {
 		return await database.get(`.guilds.${guild.id}.settings.log_channel`)

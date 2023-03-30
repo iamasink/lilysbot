@@ -26,7 +26,7 @@ export default new Event({
 			embeds: await embeds.profileEmbed(
 				":wave: Hi!",
 				`Thanks for inviting me! See \`/settings\` for some options <3 
-				This bot is really quite WIP so things might breal and I'm sorry
+				This bot is really quite WIP so things might break and I'm sorry
 				-Lily`,
 				null, client.user)
 		})

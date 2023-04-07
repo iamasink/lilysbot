@@ -1,5 +1,5 @@
 
-import { ChatInputCommandInteraction, SlashCommandBuilder, Collection } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandBuilder, Collection, FetchMessageOptions, Message } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import log from '../utils/log'
 
@@ -12,6 +12,7 @@ export default new ApplicationCommand({
 			.setName('amount')
 			.setDescription('amount of messages to delete')
 			.setMaxValue(100)
+			.setRequired(true)
 		)
 		.addUserOption(option => option
 			.setName("user")
@@ -35,13 +36,17 @@ export default new ApplicationCommand({
 		const channel = interaction.channel
 		const user = interaction.options.getUser("user")
 		let todelete = new Collection()
-		let lastmessage = interaction.options.getString("before") || channel.lastMessage.id
-
-		while (todelete.size < amount) {
-			let messages = await channel.messages.fetch({ limit: 100, before: lastmessage })
-			if (user) messages = messages.filter(e => e.author.id === user.id)
+		let before = interaction.options.getString("before")
+		let after = interaction.options.getString("after")
+		if (before && after) {
+			throw new Error("you may only use \`before\` *or* \`after\`")
 		}
 
+		let messages: Collection<string, Message<true>>;
+		if (before) messages = await channel.messages.fetch({ before: before })
+		else if (after) messages = await channel.messages.fetch({ after: after })
+		else messages = await channel.messages.fetch()
+		if (user) messages = messages.filter(message => message.author.id === user.id)
 
 
 		//channel.bulkDelete({})

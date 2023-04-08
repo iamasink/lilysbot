@@ -13,22 +13,6 @@ async function getRoles(interaction) {
 	return roles.sort((a, b) => b.rawPosition - a.rawPosition)
 }
 
-async function createMenu(guild, rolelist) {
-	var output = ""
-	for (let i = 0; i < rolelist.length; i++) {
-		let role = await guild.roles.fetch(rolelist[i].id)
-		output += `\n${role.name}`
-	}
-	return `breuh\n` + output
-}
-
-async function updateMenu(id) {
-
-}
-
-
-
-
 interface RoleList {
 	name: string,
 	roles: Role[]
@@ -141,6 +125,7 @@ export default new ApplicationCommand({
 		switch (interaction.options.getSubcommandGroup()) {
 			case 'menu': {
 				switch (interaction.options.getSubcommand()) {
+					// /roles menu create
 					case 'create': {
 						// get list of role lists from database
 						const rolelists: RoleList[] = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
@@ -218,11 +203,15 @@ export default new ApplicationCommand({
 												.setMaxValues(maximum)
 
 											options = []
+											// for each role in the list
 											for (let i = 0; i < num; i++) {
 												let push: SelectMenuItem = {
 													label: interaction.guild.roles.resolve(list[i].id).name,
 													value: list[i].id
 												}
+
+												// set description and emoji if it should exist. 
+
 												if (list[i].description) {
 													push.description = list[i].description
 													console.log(`desc: ${push.description}`)
@@ -230,9 +219,9 @@ export default new ApplicationCommand({
 												if (list[i].emoji) {
 													push.emoji = list[i].emoji
 												}
-
-												if (list[i])
+												if (list[i]) {
 													options.push(push)
+												}
 											}
 											console.log(`options: ${JSON.stringify(options)}`)
 											menu.addOptions(options)
@@ -283,35 +272,20 @@ export default new ApplicationCommand({
 
 											console.log(rows)
 
-
-
-											// let rowcount = Math.floor(1 + (num / 5))
-											// let rows = []
-											// let buttonsOnLastRow = num - (rows * 5)
-											// for (let x = 0; x < rowcount; x++) {
-											// 	rows[x] = new ActionRowBuilder()
-											// 	let buttonscount: number
-											// 	if (x == rowcount - 1) {
-											// 		buttonscount = buttonsOnLastRow
-											// 	} else {
-											// 		buttonscount = 5
-											// 	}
-											// 	console.log(`buttonscount ${buttonscount}`)
-											// 	for (let i = 0; i < buttonscount; i++) {
-											// 		rows[x].addComponents(
-											// 			new ButtonBuilder()
-											// 				.setCustomId(`roles.rolemenu.${list[i].id}`)
-											// 				.setLabel(`${interaction.guild.roles.resolve(list[i].id).name}`)
-											// 				.setStyle(ButtonStyle.Primary),
-											// 		)
-											// 	}
-											// }
-											// break
-
 											break
 										}
 										case 'reactions': {
+											message = "React to pick a role!"
+											for (let i = 0, len = list.length; i < len; i++) {
+												// if (!list[i].emoji) {
+												// 	throw new Error("all roles must have an emoji assigned")
+												// }
+											}
 
+
+
+
+											console.log(rows)
 											break
 										}
 										default: {
@@ -338,29 +312,18 @@ export default new ApplicationCommand({
 								})
 						})
 
-
-						// interaction.guild.channels.cache.get(interaction.channelId).send('__Roles__').then(msg => {
-						// 	const id = msg.id
-						// 	roleMenu.id = id
-						// 	console.log(interaction.channel.messages.fetch(id))
-						// 	path = `.${interaction.guild.id}.roles.menus`
-						// 	try {
-						// 		database.set(path + `.${roleMenu.name}`, roleMenu)
-						// 	} catch (error) {
-						// 		throw new Error(`Could not create role menu, does one by this name already exist?`)
-						// 	}
-						// })
-
 						break
 					}
+					// /roles menu update
 					case 'update': {
-
+						// refresh the message with the updated list
 					}
 				}
 				break
 			}
 			case 'lists': {
 				switch (interaction.options.getSubcommand()) {
+					// /roles lists create
 					case 'create': {
 						// check if it already exists
 						const lists = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
@@ -450,13 +413,16 @@ export default new ApplicationCommand({
 								roleid = ""
 								console.log(`role = ${role}`)
 								if (!role) { // if no role was found from id, search with the text
+									// fetch all the guild's roles
 									const fetchedroles = await interaction.guild.roles.fetch()
 									console.log(`fetchedroles = ${JSON.stringify(fetchedroles)}`)
 									const rolelist: string[] = []
 									const roleidlist: Snowflake[] = []
 									for (const [key, value] of fetchedroles) {
 										console.log(`key= ${key}, value= ${value}`)
+										// managed means its for a bot/application  :)
 										if (!value.managed) {
+											// if roleList doesn't yet have the role, push it to the rolelist. this is so you can't search for the same thing twice
 											if (!roleList.roles.map(e => e.id).includes(value.id)) {
 												console.log("hi")
 												rolelist.push(value.name.toLowerCase())
@@ -467,6 +433,7 @@ export default new ApplicationCommand({
 										}
 									}
 									console.log(rolelist)
+									// find best match to the text
 									const matches = stringSimilarity.findBestMatch(text, rolelist)
 									const index = matches.bestMatchIndex
 									if (index != 0) {
@@ -571,6 +538,7 @@ export default new ApplicationCommand({
 							}
 							m.delete()
 						})
+
 						collector.on('end', async (collected, reason) => {
 
 							if (reason == "done") {
@@ -617,6 +585,7 @@ export default new ApplicationCommand({
 						})
 						break
 					}
+					// /roles lists get
 					case 'get': {
 						const rolelists: RoleList[] = await database.get(`.guilds.${interaction.guild.id}.roles.lists`)
 						if (!interaction.options.getString('name') || interaction.options.getString('name') == 'all') {
@@ -744,67 +713,85 @@ export default new ApplicationCommand({
 					}
 				})
 
-				//count roles the user has in the list
-				let rolecount = 0
-				// for (var i = 0; i < roles.size; i++) {
-				// 	// for each role the user has
-				// 	console.log(i)
-				// 	console.log(roles[i])
-				// 	if (roleids.includes(roles[i].id)) {
-				// 		rolecount++
-				// 	}
-				// }
-				for (const [key, value] of roles) {
-					console.log(`key: ${key}`)
-					console.log(`value: ${value}`)
-					if (roleids.includes(value.id)) {
-						rolecount++
+				if (rolesinlist.filter(r => r.id == roleid).size > 0) {
+					console.log("hi")
+					// remove it
+					console.log(`removing ${roleList.roles[i]}`)
+					try {
+						await interaction.guild.members.removeRole({ user: member, role: roleid, reason: `rolemenu ${roleMenu.name}` })
+						await interaction.reply({ content: `Removed the role <@&${roleid}>`, ephemeral: true })
+					} catch (e) {
+						await interaction.reply(`Failed to remove role <@&${roleid}>. The bot probably isn't high enough in the role hierarchy. Go to server settings, roles and drag my role up!!\nError: ${e}`)
 					}
-				}
+				} else {
 
 
-				console.log(`roleids: ${JSON.stringify(roleids)}`)
-				console.log(`rolesinlist: ${JSON.stringify(rolesinlist)}`)
-				console.log(`roles: ${JSON.stringify(roles)}`)
+
+					//count roles the user has in the list
+					let rolecount = 0
+					// for (var i = 0; i < roles.size; i++) {
+					// 	// for each role the user has
+					// 	console.log(i)
+					// 	console.log(roles[i])
+					// 	if (roleids.includes(roles[i].id)) {
+					// 		rolecount++
+					// 	}
+					// }
+					for (const [key, value] of roles) {
+						console.log(`key: ${key}`)
+						console.log(`value: ${value}`)
+						if (roleids.includes(value.id)) {
+							rolecount++
+						}
+					}
 
 
-				// for every role on the role list
-				for (let i = 0; i < roleList.roles.length; i++) {
-					console.log(i)
-					console.log(roleList.roles[i])
-					// if the user has it:
-					if (roles.find(r => r.id === roleList.roles[i].id)) {
-						console.log("user has it")
-						// if its not selected on the list
-						if (roleid != roleList.roles[i].id) {
-							// remove it
-							console.log(`removing ${roleList.roles[i]}`)
-							try {
-								await interaction.guild.members.removeRole({ user: member, role: roleList.roles[i].id, reason: `rolemenu ${roleMenu.name}` })
+					console.log(`roleids: ${JSON.stringify(roleids)}`)
+					console.log(`rolesinlist: ${JSON.stringify(rolesinlist)}`)
+					console.log(`roles: ${JSON.stringify(roles)}`)
 
-							} catch (e) {
-								await interaction.reply(`No Permission to remove role <@&${roleList.roles[i].id}>. The bot probably isn't high enough in the role hierarchy. Go to server settings, roles and drag my role up!!\nError: ${e}`)
+
+					// for every role on the role list
+					for (let i = 0; i < roleList.roles.length; i++) {
+						console.log(i)
+						console.log(roleList.roles[i])
+						// if the user has it:
+						if (roles.find(r => r.id === roleList.roles[i].id)) {
+							console.log("user has it")
+							// if its not selected on the list
+							if (roleid != roleList.roles[i].id) {
+								// remove it
+								console.log(`removing ${roleList.roles[i]}`)
+								try {
+									await interaction.guild.members.removeRole({ user: member, role: roleList.roles[i].id, reason: `rolemenu ${roleMenu.name}` })
+									await interaction.reply({ content: `Removed the role <@&${roleList.roles[i].id}>`, ephemeral: true })
+
+								} catch (e) {
+									await interaction.reply(`No Permission to remove role <@&${roleList.roles[i].id}>. The bot probably isn't high enough in the role hierarchy. Go to server settings, roles and drag my role up!!\nError: ${e}`)
+								}
+							}
+						} else { // if the user doesn't have it
+							console.log("not found")
+							// if its selceted on the list
+							if (roleid == roleList.roles[i].id) {
+								// add it
+								console.log(`adding ${roleList.roles[i]}`)
+								try {
+									await interaction.guild.members.addRole({ user: member, role: roleList.roles[i].id, reason: `rolemenu ${roleMenu.name}` })
+									await interaction.reply({ content: `Added the role <@&${roleList.roles[i].id}>`, ephemeral: true })
+								} catch (e) {
+									await interaction.reply(`No Permission to remove role <@&${roleList.roles[i].id}>. The bot probably isn't high enough in the role hierarchy. Go to server settings, roles and drag my role up!!\nError: ${e}`)
+
+								}
+
 							}
 						}
-					} else { // if the user doesn't have it
-						console.log("not found")
-						// if its selceted on the list
-						if (roleid == roleList.roles[i].id) {
-							// add it
-							console.log(`adding ${roleList.roles[i]}`)
-							try {
-								await interaction.guild.members.addRole({ user: member, role: roleList.roles[i].id, reason: `rolemenu ${roleMenu.name}` })
-							} catch (e) {
-								await interaction.reply(`No Permission to remove role <@&${roleList.roles[i].id}>. The bot probably isn't high enough in the role hierarchy. Go to server settings, roles and drag my role up!!\nError: ${e}`)
 
-							}
-
-						}
 					}
 
 				}
 				if (!interaction.replied) {
-
+					// if the interaction wasn't otherwise acknowledged, acknowledged it. This is so it doesn't say "This interaction failed" or whatever
 					await interaction.deferUpdate()
 				}
 
@@ -833,6 +820,7 @@ export default new ApplicationCommand({
 
 				// }
 				//interaction.reply(rolename)
+
 
 
 				break

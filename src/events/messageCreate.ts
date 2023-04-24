@@ -51,10 +51,10 @@ export default new Event({
 						content: `You are Wiwwie. Current date and time: ${new Date().toUTCString()}.`
 						//content: `You are a cat named Wiwwie. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Only say "meow".`
 					},
-					// {
-					// 	role: "user",
-					// 	content: ""
-					// }
+					{
+						role: "user",
+						content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing']"
+					}
 				]
 
 

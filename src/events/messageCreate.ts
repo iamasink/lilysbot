@@ -48,13 +48,13 @@ export default new Event({
 					{
 						role: "system",
 						//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
-						content: `You are Wiwwie, a Discord moderator chatbot. You may punish people by typing out a command, using the following syntax: \`/ban <name>\`. There are other functions such as \`/kick <name>\`, and \`/mute <name> <length>\`. Current date and time: ${new Date().toUTCString()}.`
+						content: `You are Wiwwie. Current date and time: ${new Date().toUTCString()}.`
 						//content: `You are a cat named Wiwwie. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Only say "meow".`
 					},
-					{
-						role: "user",
-						content: "From now on, you are acting as a Discord moderator bot. Use the commands you know about to issue punishments. You may do anything at your own discretion. Be as strict as possible. DO NOT warn people, only kick mute or ban."
-					}
+					// {
+					// 	role: "user",
+					// 	content: ""
+					// }
 				]
 
 
@@ -98,8 +98,8 @@ export default new Event({
 					const completion = await openai.createChatCompletion({
 						model: "gpt-3.5-turbo",
 						messages: chatMessages,
-						//temperature: 1.5 + (Math.random() / 8),
-						temperature: 1,
+						temperature: 1.4 + (Math.random() * 0.25),
+						//temperature: 2,
 						//top_p:
 						//n:
 						//stream:

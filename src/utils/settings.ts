@@ -1,6 +1,8 @@
 import { Snowflake } from "discord.js"
 import database from "./database"
-const settings = [
+
+
+const settings: setting[] = [
 	{
 		name: "Log Channel",
 		value: "log_channel",
@@ -25,7 +27,21 @@ const settings = [
 	{
 		name: "Member Leave Message",
 		value: "leave_message",
-		description: "Whether to show the member leave message.",
+		description: "Whether to show a message when a member leaves.",
+		type: "toggle",
+		default: true
+	},
+	{
+		name: "Member Kick Message",
+		value: "leave_kick_message",
+		description: "Whether to show a message when a member leaves, when a member is kicked.",
+		type: "toggle",
+		default: true
+	},
+	{
+		name: "Member Join Message",
+		value: "join_message",
+		description: "Whether to show a message when a member joins.",
 		type: "toggle",
 		default: true
 	}

@@ -41,7 +41,8 @@ export default new ApplicationCommand({
 		switch (interaction.options.getSubcommand()) {
 			case 'set': {
 				const setting = interaction.options.getString("setting")
-				const option = settings[settings.settings.findIndex(e => e.value === setting)]
+				console.log(setting)
+				const option: setting = await settings[settings.settings.findIndex(e => e.value === setting)]
 				console.log(JSON.stringify(option))
 				let value = ""
 				switch (option.type) {

@@ -107,22 +107,22 @@ export default new ApplicationCommand({
 				// format each thing 
 
 				const a = formattext(user.hexAccentColor, `Accent color`)
-				const av = formatlink(user.avatarURL({ forceStatic: true }), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`)
+				const av = formatlink(user.avatarURL({ forceStatic: false }), `Avatar URL`, `?size=4096`, `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`)
 				const gav = formatlink(gavURL, `Guild Avatar URL`, `?size=4096`)
-				const b = formatlink(user.bannerURL({ forceStatic: true }), `Banner URL`, `?size=4096`)
+				const b = formatlink(user.bannerURL({ forceStatic: false }), `Banner URL`, `?size=4096`)
 
 				let thumb: string
 				let avatar: string
 
 				// if user has an avatar, set thumbnail to avatar
-				if (user.avatarURL({ forceStatic: true })) {
-					thumb = user.avatarURL({ forceStatic: true })
+				if (user.avatarURL({ forceStatic: false })) {
+					thumb = user.avatarURL({ forceStatic: false })
 				} // else set it to default avatar (calculated by discrim modulo 5)
 				else { thumb = `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png` }
 
 				// sets image and image name to whatever was specified
-				if (user.avatarURL({ forceStatic: true })) {
-					avatar = user.avatarURL({ forceStatic: true })
+				if (user.avatarURL({ forceStatic: false })) {
+					avatar = user.avatarURL({ forceStatic: false })
 				} else {
 					avatar = `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`
 				}
@@ -139,7 +139,7 @@ export default new ApplicationCommand({
 					}
 					case 'banner': {
 						if (b) {
-							image = user.bannerURL({ forceStatic: true })
+							image = user.bannerURL({ forceStatic: false })
 							imagename = `banner`
 						} else {
 							image = avatar
@@ -164,7 +164,7 @@ export default new ApplicationCommand({
 					}
 					default: { // if no option was specified, default to banner || avatar
 						if (b) {
-							image = user.bannerURL({ forceStatic: true })
+							image = user.bannerURL({ forceStatic: false })
 							imagename = `banner`
 						} else if (av) {
 							image = null
@@ -183,8 +183,10 @@ export default new ApplicationCommand({
 					.setTitle(`__${user.username.replace(/[\\"']/g, '\\$&')}#${user.discriminator}__`)
 					.setThumbnail(thumb)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
-					.setDescription(`<@${user.id}>\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)})`)
-
+					.setDescription(`<@${user.id}>`)
+					//.setDescription(`<@${user.id}>\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)})`)
+					.addFields({ name: "ID", value: `${user.id}` })
+					.addFields({ name: "Created at", value: `<t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)}` })
 
 
 				//.setTimestamp()
@@ -294,7 +296,7 @@ export default new ApplicationCommand({
 				const infoEmbed = new EmbedBuilder()
 					.setColor(`#f9beca`)
 					.setTitle(`__${user.username}#${user.discriminator}__`)
-					.setThumbnail(`${user.avatarURL({ forceStatic: true })}?size=4096`)
+					.setThumbnail(`${user.avatarURL({ forceStatic: false })}?size=4096`)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
 					.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
 					.addFields(
@@ -312,7 +314,7 @@ export default new ApplicationCommand({
 								**Memory**:
 								　　*Used*: ${(glances.mem.used / 1073741824).toFixed(2)}G / ${(glances.mem.total / 1073741824).toFixed(2)}G
 								　　*Percent*: ${glances.mem.percent}
-								　　\`${format.bar(0, glances.mem.used, glances.mem.total, 25)}\`
+								　　\`${format.bar(0, glances.mem.used, glances.mem.total, 25, true)}\`
 								`
 						},
 					)

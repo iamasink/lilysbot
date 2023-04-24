@@ -53,7 +53,7 @@ export default new Event({
 
 					// send message in starboard channel
 					const author = await guild.members.fetch(message.author.id)
-					const url = author.avatarURL({ forceStatic: true }) || author.user.avatarURL({ forceStatic: true })
+					const url = author.avatarURL({ forceStatic: false }) || author.user.avatarURL({ forceStatic: false })
 					const authorName = author.displayName;
 					console.log(url)
 

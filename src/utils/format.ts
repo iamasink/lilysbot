@@ -1,12 +1,14 @@
 export default {
-	bar(min, current, max, length = 10, chars = [`#`, `.`]) {
+	bar(min: number, current: number, max: number, length = 10, border = false, chars = [`#`, `.`, `[`, `]`]) {
 		const progress = (current - min) / (max - min)
 
 		const count = Math.floor(progress * length)
 		console.log(progress)
 		console.log(length)
 		console.log(`min: ${min}, current: ${current}, max: ${max}, length: ${length}, chars: ${chars}, progress: ${progress}, count: ${count}`)
-		return `${chars[0].repeat(count)}${chars[1].repeat(length - count)}`
+		let bar = `${chars[0].repeat(count)}${chars[1].repeat(length - count)}`
+		if (border) bar = `${chars[2]}${bar}${chars[3]}`
+		return bar
 	},
 	numberCommas(n = 0) {
 		return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")

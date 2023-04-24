@@ -89,7 +89,7 @@ export default new Event({
 				content: content,
 				username: message.member.nickname || message.author.username,
 				files: files,
-				avatarURL: message.author.avatarURL({ forceStatic: true }),
+				avatarURL: message.author.avatarURL({ forceStatic: false }),
 			}
 		).then(msg => {
 			if (length > 2000) {

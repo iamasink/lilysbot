@@ -61,7 +61,7 @@ export default new Event({
 				.setColor('#ff0000')
 				.setTitle(`${member.user.tag} ${action}.`)
 				.setDescription(`They were a member for ${format.time(Date.now() - member.joinedTimestamp)}.\nJoined on <t:${member.joinedTimestamp.toString().slice(0, -3)}:f>`)
-				.setThumbnail(member.user.avatarURL({ forceStatic: true }))
+				.setThumbnail(member.user.avatarURL({ forceStatic: false }))
 			member.guild.systemChannel.send({ embeds: [embed] })
 		} else {
 			console.log("the leave message is disabled.")

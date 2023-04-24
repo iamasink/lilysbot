@@ -251,9 +251,10 @@ export default new ApplicationCommand({
 
 				const embed = new EmbedBuilder()
 					.setTitle(`${guild.name} (${guild.id})`)
-					.setDescription(guild.description)
 					.setFields(
-						{ name: "__**Owner**__", value: `<@${guild.ownerId}>` },
+						{ name: "Description", value: `${guild.description}` },
+						{ name: "**Owner**", value: `<@${guild.ownerId}>` },
+						{ name: "**Created at**", value: `<t:${guild.createdTimestamp.toString().slice(0, -3)}:f>` },
 						{
 							name: "__**Channels**__", value:
 								stripIndent`

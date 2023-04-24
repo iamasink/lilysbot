@@ -283,7 +283,7 @@ export default new ApplicationCommand({
 					.setThumbnail(guild.iconURL())
 
 				interaction.reply({ embeds: [embed] })
-
+				break
 
 
 			}
@@ -321,7 +321,7 @@ export default new ApplicationCommand({
 					)
 				//
 				interaction.reply({ embeds: [infoEmbed] })
-
+				break
 			}
 		}
 

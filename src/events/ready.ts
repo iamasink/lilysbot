@@ -1,10 +1,11 @@
-import { ActivityType, Events, PresenceData, TextChannel } from 'discord.js'
+import { ActivityOptions, ActivityType, Events, PresenceData, PresenceStatusData, TextChannel } from 'discord.js'
 import Event from '../types/Event'
 import { client } from "../index"
 import database from '../utils/database'
 import format from '../utils/format'
 import invites from '../utils/invites'
 import embeds from '../utils/embeds'
+import axios from 'axios'
 
 export default new Event({
 	name: Events.ClientReady,
@@ -20,9 +21,9 @@ export default new Event({
 		console.log(`Users: ${users}`)
 
 		let res = client.user.setPresence({
-			activities: [{ name: `You and ${users - 1} others <3`, type: ActivityType.Watching, }],
+			activities: [{ name: `Starting Up!`, type: ActivityType.Playing, }],
 			status: 'dnd',
-		});
+		})
 
 		console.log(res)
 
@@ -40,34 +41,39 @@ export default new Event({
 				message.reply({ embeds: embeds.successEmbed(`Restarted!`) })
 			}
 			database.set(`.botdata.lastchannel`, { guild: null, channel: null, message: null })
+			client.user.setPresence({
+				activities: [{ name: `Restarted!`, type: ActivityType.Playing, }],
+				status: 'online',
+			})
+
 		}, 2000 + guilds.size * 100) // wait (hopefully) an appropriate amount of time
 
 
 		// update the activity on an interval
-		setInterval(() => {
-			const activities: PresenceData[] = [
-				{
-					activities: [{ name: `You and ${client.users.cache.size - 1} others <33`, type: ActivityType.Watching, }],
-					status: 'dnd',
-				},
-				{
-					activities: [{ name: `You.`, type: ActivityType.Watching, }],
-					status: 'idle',
-				},
-				{
-					activities: [{ name: `${client.guilds.cache.size} Guilds`, type: ActivityType.Listening, }],
-					status: 'online',
-				},
-				{
-					activities: [{ name: `For ${format.time(client.uptime)}`, type: ActivityType.Playing, }],
-					status: 'online',
-				},
+		setInterval(async () => {
+			const activities: ActivityOptions[] = [
+				{ type: ActivityType.Watching, name: `you and ${client.users.cache.size - 1} others <33`, },
+				{ type: ActivityType.Watching, name: `you.`, },
+				{ type: ActivityType.Listening, name: `${client.guilds.cache.size} guilds`, },
+				{ type: ActivityType.Playing, name: `for ${format.time(client.uptime)}`, },
+			]
+			const statuses: PresenceStatusData[] = [
+				"dnd",
+				"idle",
+				"online",
 			]
 
 			console.log("updating activity")
-			let random = Math.floor(Math.random() * activities.length)
+			let randomActivity = Math.floor(Math.random() * activities.length)
+			let randomStatus = Math.floor(Math.random() * activities.length)
+			let activity = activities[randomActivity]
+			let status = statuses[randomStatus]
+			const glances = (await axios.get('http://localhost:61208/api/3/all')).data
 
-			let res = client.user.setPresence(activities[random]);
+			activity.name = activity.name + ` |\n System Load: ${glances.load.min1.toFixed(2)}`
+
+			let res = client.user.setActivity(activity)
+			client.user.setStatus(status)
 			//console.log(res)
 		}, 60 * 1000);
 	},

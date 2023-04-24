@@ -288,7 +288,7 @@ export default new ApplicationCommand({
 				const client = interaction.client
 				const user = client.user
 				console.log(client)
-				const glances = (await axios.get('http://glances.local/api/3/all')).data
+				const glances = (await axios.get('http://localhost:61208/api/3/all')).data
 				console.log(glances)
 
 				const infoEmbed = new EmbedBuilder()

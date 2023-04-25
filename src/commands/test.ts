@@ -9,6 +9,7 @@ import calc from '../utils/calc'
 import { client } from '..'
 import settings from '../utils/settings'
 import { RootNodesUnavailableError } from 'redis'
+import { stripIndents } from 'common-tags'
 
 export default new ApplicationCommand({
 	permissions: ["KickMembers"],

@@ -18,6 +18,7 @@ export default {
 		if (!chatallowedguilds.includes(message.guild.id)) {
 			return
 		}
+		message.channel.sendTyping()
 
 		console.log(message)
 		let chatMessages: Array<ChatCompletionRequestMessage> = [
@@ -29,14 +30,15 @@ export default {
 			},
 			{
 				role: "user",
+				//content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing']"
 				content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing']"
 			}
 		]
 
-
+		let messagerole: ChatCompletionRequestMessageRoleEnum
+		let messagename: string
 		if (message.reference) {
-			let messagerole: ChatCompletionRequestMessageRoleEnum
-			let messagename: string
+
 
 			console.log(message.reference)
 			const referenceGuild = await client.guilds.fetch(message.reference.guildId)
@@ -51,41 +53,75 @@ export default {
 				messagerole = "assistant"
 				chatMessages.push({
 					role: messagerole,
-					content: referenceMessage.content,
+					content: referenceMessage.cleanContent,
 				})
 			} else {
 				messagerole = "user"
 				messagename = referenceMessage.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
 				chatMessages.push({
 					role: messagerole,
-					content: referenceMessage.content,
+					content: referenceMessage.cleanContent,
 					name: messagename
 				})
 			}
+
+			chatMessages.push({
+				role: "user",
+				content: message.cleanContent,
+				name: message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
+			})
 
 
 
 		} else {
 			console.log("sex")
+			const messages = await message.channel.messages.fetch({ limit: 3 })
+			for (let i = 0, len = messages.size; i < len; i++) {
+
+			}
+
+			messages.reverse().forEach((m: Message) => {
+				if (m.author.id === client.user.id) {
+					if (m.embeds.length > 0) {
+						console.log("ignoring because it has an embed. Im sorry.")
+						return
+					}
+
+					messagerole = "assistant"
+					chatMessages.push({
+						role: messagerole,
+						content: m.cleanContent,
+					})
+				} else {
+					messagerole = "user"
+					messagename = m.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
+					chatMessages.push({
+						role: messagerole,
+						content: m.cleanContent,
+						name: messagename
+					})
+				}
+			})
+
+
+
+
 		}
-		chatMessages.push({
-			role: "user",
-			content: message.cleanContent,
-			name: message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
-		})
 		console.log(chatMessages)
+
+
 
 		try {
 			const completion = await openai.createChatCompletion({
 				model: "gpt-3.5-turbo",
 				messages: chatMessages,
-				temperature: 1.4 + (Math.random() * 0.25),
+				temperature: 1.3 + (Math.random() * 0.25),
 				//temperature: 2,
 				//top_p:
 				//n:
 				//stream:
 				//stop:
-				max_tokens: 500,
+				max_tokens: 150,
 				//presence_penalty:
 				//frequency_penalty:
 				//logit_bias:
@@ -99,7 +135,6 @@ export default {
 					message.channel.send(messages[i])
 				}
 			} else {
-
 				message.reply(completion.data.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here"))
 			}
 
@@ -113,7 +148,7 @@ export default {
 			message.reply(
 				stripIndents`an error occurred
 					\`${error}\`
-					like sorry but you can always give me money to support the bot cuz this ai bit actually costs me a bit of money [cash.app/lillliieieiee](https://cash.app/lillliieieiee)`
+					give me money <https://cash.app/lillliieieiee>`
 			)
 		}
 	}

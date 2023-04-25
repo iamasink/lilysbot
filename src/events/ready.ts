@@ -70,11 +70,14 @@ export default new Event({
 			let status = statuses[randomStatus]
 			const glances = (await axios.get('http://localhost:61208/api/3/all')).data
 
-			activity.name = activity.name + ` |\n System Load: ${glances.load.min1.toFixed(2)}`
+			//activity.name = activity.name + ` | Load: ${glances.cpu.total}`
 
-			let res = client.user.setActivity(activity)
-			client.user.setStatus(status)
-			//console.log(res)
+			let res = client.user.setPresence({
+				activities: [activity],
+				status: status
+			})
+
+			console.log(res)
 		}, 60 * 1000);
 	},
 })

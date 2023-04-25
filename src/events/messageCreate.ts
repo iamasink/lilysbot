@@ -28,17 +28,17 @@ export default new Event({
 
 		// if bot pinged
 
-		if (message.mentions.has(client.user)) {
-			if (message.author.bot) return
-			message.channel.sendTyping()
-			openai.chatgptFuck(message)
+		if (
+			message.mentions.has(client.user)
+			|| Math.random() < 0.01 && (message.channel as GuildTextBasedChannel).name == "general"
+			//|| message.channel.id == "1085933094328090745"
+		) {
+
+			if (message.channel.id == "645053287208452112") return
+			if (message.author != client.user) {
+				openai.chatgptFuck(message)
+			}
 		}
-
-
-
-
-
-
 
 
 		if (user.id === "302050872383242240") { // if disboard bump

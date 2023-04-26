@@ -28,6 +28,8 @@ export default new Event({
 
 		// if bot pinged
 
+
+		// handle the stuff for pings and that for ai chatbot uwu
 		if (
 			message.mentions.has(client.user)
 			|| Math.random() < 0.01 && (message.channel as GuildTextBasedChannel).name == "general"
@@ -40,8 +42,8 @@ export default new Event({
 			}
 		}
 
-
-		if (user.id === "302050872383242240") { // if disboard bump
+		// if disboard bump
+		if (user.id === "302050872383242240") {
 			if (!message.embeds) return
 			if (message.embeds[0].description.startsWith("Bump done!")) {
 				message.reply(`${message.interaction.user}, thanks for bumping! You've been awarded some xp <3\nThe server can next be bumped at <t:${(Date.now() + 7200000).toString().slice(0, -3)}:t>`)
@@ -52,6 +54,8 @@ export default new Event({
 				return
 			}
 		}
+
+		// add xp
 
 		// fetch a few messages
 		const messages = await message.channel.messages.fetch({ limit: 5 })

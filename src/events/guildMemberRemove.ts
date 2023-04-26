@@ -4,6 +4,7 @@ import { client } from "../index"
 import database from "../utils/database"
 import log from "../utils/log"
 import format from "../utils/format"
+import settings from "../utils/settings"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
@@ -48,15 +49,20 @@ export default new Event({
 			if (target.id === member.id) {
 				log.log(guild, `${member.user.tag} left the guild; kicked by ${executor.tag}?`);
 				console.log(`${member.user.tag} left the guild; kicked by ${executor.tag}?`);
-				action = "was kicked"
+				if (await settings.get(guild, "leave_kick_message")) {
+					action = "was kicked"
+				} else {
+					action = "false"
+				}
+
 			} else {
 				console.log(`${member.user.tag} left the guild, audit log fetch was inconclusive.`);
 				log.log(guild, `${member.user.tag} left the guild, audit log fetch was inconclusive.`);
-				action = "vanished"
+				action = "vanished??"
 			}
 		}
 
-		if (await database.get(`.guilds.${guild.id}.settings.leave_message`)) {
+		if (await settings.get(guild, "leave_message") && action != "false") {
 			const embed = new EmbedBuilder()
 				.setColor('#ff0000')
 				.setTitle(`${member.user.tag} ${action}.`)
@@ -64,7 +70,7 @@ export default new Event({
 				.setThumbnail(member.user.avatarURL({ forceStatic: false }))
 			member.guild.systemChannel.send({ embeds: [embed] })
 		} else {
-			console.log("the leave message is disabled.")
+			console.log("this leave/kick message is disabled.")
 		}
 
 	},

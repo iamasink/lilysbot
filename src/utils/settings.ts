@@ -1,5 +1,6 @@
-import { Snowflake } from "discord.js"
+import { Guild, GuildResolvable, Snowflake } from "discord.js"
 import database from "./database"
+import { client } from ".."
 
 
 const settings: setting[] = [
@@ -38,13 +39,13 @@ const settings: setting[] = [
 		type: "toggle",
 		default: true
 	},
-	{
-		name: "Member Join Message",
-		value: "join_message",
-		description: "Whether to show a message when a member joins.",
-		type: "toggle",
-		default: true
-	}
+	// {
+	// 	name: "Member Join Message",
+	// 	value: "join_message",
+	// 	description: "Whether to show a message when a member joins.",
+	// 	type: "toggle",
+	// 	default: true
+	// }
 ]
 
 
@@ -67,6 +68,15 @@ export default {
 				console.log("it has it!")
 			}
 		}
+	},
+	async get(guild: Guild, setting: string) {
+		if (!settings.map(e => e.value).includes(setting)) throw new Error("invalid setting")
+		const value = await database.get(`.guilds.${guild.id}.settings.${setting}`)
+		return value
+	},
+	async set(guild: Guild, setting: string, value: any) {
+		if (!settings.map(e => e.value).includes(setting)) throw new Error("invalid setting")
+		return await database.set(`.guilds.${guild.id}.settings.${setting}`, value)
 	},
 	settings
 }

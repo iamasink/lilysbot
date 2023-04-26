@@ -5,6 +5,7 @@ import database from "../utils/database"
 import log from "../utils/log"
 import commands from "../utils/commands"
 import invites from "../utils/invites"
+import settings from "../utils/settings"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
@@ -29,6 +30,7 @@ export default new Event({
 		}
 		const inviter = await client.users.fetch(invite.inviterId)
 		let inviterUser = await client.users.fetch(inviter.id)
+
 
 		log.log(guild, `${member.id}, \`${member.user.tag}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
 			.then(async msg => {

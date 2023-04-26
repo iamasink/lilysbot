@@ -45,6 +45,13 @@ const settingsList: setting[] = [
 	// 	description: "Whether to show a message when a member joins.",
 	// 	type: "toggle",
 	// 	default: true
+	// },
+	// {
+	// 	name: 
+	// 	value: 
+	// 	description: 
+	// 	type: 
+	// 	default: 
 	// }
 ]
 

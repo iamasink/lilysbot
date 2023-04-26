@@ -3,7 +3,7 @@ import database from "./database"
 import { client } from ".."
 
 
-const settings: setting[] = [
+const settingsList: setting[] = [
 	{
 		name: "Log Channel",
 		value: "log_channel",
@@ -54,13 +54,13 @@ export default {
 		const currentSettings = await database.get(`.guilds.${guildId}.settings`)
 
 
-		for (let i = 0, len = settings.length; i < len; i++) {
+		for (let i = 0, len = settingsList.length; i < len; i++) {
 			if (!currentSettings) {
 				await database.set(`.guilds.${guildId}.settings`, {})
 			}
 
-			const setting = settings[i]
-			console.log(settings[i])
+			const setting = settingsList[i]
+			console.log(settingsList[i])
 			if (!currentSettings.hasOwnProperty(setting.value)) {
 				console.log("it doesnt have it =(")
 				database.set(`.guilds.${guildId}.settings.${setting.value}`, setting.default)
@@ -70,13 +70,13 @@ export default {
 		}
 	},
 	async get(guild: Guild, setting: string) {
-		if (!settings.map(e => e.value).includes(setting)) throw new Error("invalid setting")
+		if (!settingsList.map(e => e.value).includes(setting)) throw new Error("invalid setting")
 		const value = await database.get(`.guilds.${guild.id}.settings.${setting}`)
 		return value
 	},
 	async set(guild: Guild, setting: string, value: any) {
-		if (!settings.map(e => e.value).includes(setting)) throw new Error("invalid setting")
+		if (!settingsList.map(e => e.value).includes(setting)) throw new Error("invalid setting")
 		return await database.set(`.guilds.${guild.id}.settings.${setting}`, value)
 	},
-	settings
+	settingsList
 }

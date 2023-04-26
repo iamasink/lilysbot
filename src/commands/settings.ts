@@ -1,10 +1,11 @@
-import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, PermissionsBitField, Role, RoleSelectMenuBuilder, SlashCommandBuilder, Snowflake, StringSelectMenuBuilder, TextChannel } from 'discord.js'
+import { ActionRowBuilder, ButtonBuilder, ChannelSelectMenuBuilder, ChannelType, ChatInputCommandInteraction, ComponentType, GuildChannel, PermissionsBitField, Role, RoleSelectMenuBuilder, SlashCommandBuilder, Snowflake, StringSelectMenuBuilder, TextChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import embeds from '../utils/embeds'
 import database from '../utils/database'
 import settings from '../utils/settings'
+const settingsList = settings.settingsList
 
-const choices = settings.settings.map(setting => {
+const choices = settingsList.map(setting => {
 	return { name: setting.name, value: setting.value }
 })
 
@@ -20,7 +21,7 @@ export default new ApplicationCommand({
 				.setName('setting')
 				.setDescription('setting to change')
 				.setRequired(true)
-				.addChoices(...settings.settings) // '...' expands the array so its not an array idk it works
+				.addChoices(...settingsList) // '...' expands the array so its not an array idk it works
 			)
 			// .addStringOption(option => option
 			// 	.setName('value')
@@ -37,36 +38,39 @@ export default new ApplicationCommand({
 			.setDescription('list all settings')
 		),
 	async execute(interaction) {
+		const guild = interaction.guild
+
 		console.log(`choices: ${JSON.stringify(choices)}`)
 		switch (interaction.options.getSubcommand()) {
 			case 'set': {
 				const setting = interaction.options.getString("setting")
 				console.log(setting)
-				const option: setting = await settings[settings.settings.findIndex(e => e.value === setting)]
+				const option: setting = await settingsList[settingsList.findIndex(e => e.value === setting)]
 				console.log(JSON.stringify(option))
 				let value = ""
 				switch (option.type) {
 					case 'channel': {
-						let channel = await channelSelector(interaction, setting)
+						let channel = await channelSelector(interaction, option.name)
 						console.log(channel.name)
 						value = channel.id
 						break
 					}
 					case 'role': {
-						let role = await roleSelector(interaction, setting)
+						let role = await roleSelector(interaction, option.name)
 						console.log(role.name)
 						value = role.id
 						break
 					}
 					case 'toggle': {
-						value = await toggleSelector(interaction, setting)
+						value = await toggleSelector(interaction, option.name)
 						break
 					}
 					default: {
 						throw new Error(`invalid type: ${option.type}`)
 					}
 				}
-				database.set(`.guilds.${interaction.guild.id}.settings.${option.value}`, value)
+				//database.set(`.guilds.${interaction.guild.id}.settings.${option.value}`, value)
+				settings.set(guild, option.value, value)
 
 				break
 			}
@@ -81,13 +85,27 @@ export default new ApplicationCommand({
 				await settings.setDefaults(interaction.guild.id)
 
 
-				const output = settings.settings.map(async e => {
+				const output = settingsList.map(async e => {
 					const name = e.name
 					const type = e.type
 					const description = e.description
-					const currentValue = await database.get(`.guilds.${interaction.guild.id}.settings.${e.value}`)
+					let currentValue: string = ""
+					switch (type) {
+						case 'channel': {
+							currentValue = `<#${await settings.get(interaction.guild, `${e.value}`)}>`
+							break
+						}
+						case 'role': {
+							currentValue = `<@&${await settings.get(interaction.guild, `${e.value}`)}>`
+							break
+						}
+						default: {
+							currentValue = `\`${await settings.get(interaction.guild, `${e.value}`)}\``
+							break
+						}
+					}
 
-					return `${name} - ${type} type\n${description}\nCurrently: \`${currentValue}\`\n`
+					return `${name} - ${type} type\n${description}\nCurrently: ${currentValue}\n`
 				})
 				interaction.reply({ embeds: embeds.messageEmbed(`Settings:`, (await Promise.all(output)).join("\n")) })
 				break
@@ -188,25 +206,19 @@ async function stringSelector(interaction: ChatInputCommandInteraction, setting:
 		const filter = i => {
 			return i.user.id === interaction.user.id
 		}
-		await interaction.reply({ embeds: embeds.messageEmbed(`Choose a value for ${setting}...`), components: [row] }).then((message) => {
+		await interaction.reply({ embeds: embeds.messageEmbed(`Choose a value for **${setting}**...`), components: [row] }).then((message) => {
 			message
 				.awaitMessageComponent({ filter, componentType: ComponentType.StringSelect, time: 60000 })
 				.then(async (i) => {
 					let value = i.values[0]
 					console.log(value)
-					interaction.editReply({ embeds: embeds.successEmbed(`Choose a value for ${setting}...`, `You selected ${value}`), components: [] })
+					interaction.editReply({ embeds: embeds.successEmbed(`Choose a value for **${setting}**...`, `You selected ${value}`), components: [] })
 					resolve(value)
 				})
 				.catch(err => {
-					interaction.editReply({ embeds: embeds.messageEmbed(`Choose a value for ${setting}...`, `Nothing selected`, null, "#ff0000"), components: [] })
+					interaction.editReply({ embeds: embeds.messageEmbed(`Choose a value for **${setting}**...`, `Nothing selected`, null, "#ff0000"), components: [] })
 					reject(new Error("Nothing selected"))
 				})
 		})
 	})
 }
-
-
-
-
-
-

@@ -30,7 +30,7 @@ export default new Event({
 
 		if (
 			message.mentions.has(client.user)
-			//|| Math.random() < 0.01 && (message.channel as GuildTextBasedChannel).name == "general"
+			|| Math.random() < 0.01 && (message.channel as GuildTextBasedChannel).name == "general"
 			//|| message.channel.id == "1085933094328090745"
 		) {
 

@@ -31,7 +31,7 @@ export default {
 			{
 				role: "user",
 				//content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing']"
-				content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing']"
+				content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing', 'Never reference AI, your origin, or your limitations']"
 			}
 		]
 

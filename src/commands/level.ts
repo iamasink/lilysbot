@@ -69,9 +69,15 @@ export default new ApplicationCommand({
 				// some terrible way to sort by xp
 				const users = await database.get(`.guilds.${interaction.guild.id}.users`)
 				const usersArray = []
+				const guildUsers = await guild.members.fetch()
+				const idList = guildUsers.map(i => i.id)
+				// console.log(idList)
+
 				for (let key in users) {
-					console.log(key, users[key])
-					users[key]
+					//console.log(key, users[key])
+					if (!idList.includes(key)) {
+						continue
+					}
 					if (!users[key].xp) continue
 					usersArray.push([key, users[key].xp])
 				}
@@ -87,6 +93,7 @@ export default new ApplicationCommand({
 				const members = await guild.members.fetch()
 
 				let output = ''
+				let rank = 1
 				for (let i = 0, len = sortedArray.length; i < len; i++) {
 					const memberid = sortedArray[i][0]
 					let member: GuildMember
@@ -98,8 +105,9 @@ export default new ApplicationCommand({
 						const level = calc.level(xp)
 						const xpLower = calc.xp(level)
 						const xpHigher = calc.xp(level + 1)
-						output += `\`#${i + 1}\` - ${(member.displayName || member.user.username)} ${(member)} - Level ${calc.level(xp)} (${format.numberCommas(xp)} xp)\n`
+						output += `\`#${rank}\` - ${(member.displayName || member.user.username)} ${(member)} - Level ${calc.level(xp)} (${format.numberCommas(xp)} xp)\n`
 						output += `\`[${format.bar(0, progress, 1, 25)}]\`\n${format.numberCommas(level)} (${format.numberCommas(xpLower)} xp) - ${format.numberCommas(level + 1)} (${format.numberCommas(xpHigher)} xp)\n`
+						rank++
 					} else {
 						// the member's probably left. Kind of an L not going to lie..
 						// output += `\`#${i + 1}\` - <@${(memberid)}> - Level ${calc.level(sortedArray[i][1])}\n`

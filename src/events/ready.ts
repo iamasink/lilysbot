@@ -78,6 +78,17 @@ export default new Event({
 			})
 
 			console.log(res)
+
+
+			// log ip
+			const lastip = await database.get(`.botdata.lastip`)
+			const newip = (await axios.get(`http://icanhazip.com/`)).data
+			console.log(newip)
+			if (lastip != newip) {
+				const messageChannel = client.channels.cache.get("825797286344917022") as TextChannel;
+				messageChannel.send({ embeds: embeds.messageEmbed("IP Changed!", `From: \`${lastip}\`\nTo: \`${newip}\``) })
+				database.set(`.botdata.lastip`, newip)
+			}
 		}, 60 * 1000);
 	},
 })

@@ -6,6 +6,7 @@ import format from '../utils/format'
 import invites from '../utils/invites'
 import embeds from '../utils/embeds'
 import axios from 'axios'
+import { botlogchannel } from '../config.json'
 
 export default new Event({
 	name: Events.ClientReady,
@@ -81,13 +82,15 @@ export default new Event({
 
 
 			// log ip
-			const lastip = await database.get(`.botdata.lastip`)
-			const newip = (await axios.get(`http://icanhazip.com/`)).data
-			console.log(newip)
-			if (lastip != newip) {
-				const messageChannel = client.channels.cache.get("825797286344917022") as TextChannel;
-				messageChannel.send({ embeds: embeds.messageEmbed("IP Changed!", `From: \`${lastip}\`\nTo: \`${newip}\``) })
-				database.set(`.botdata.lastip`, newip)
+			if (botlogchannel) {
+				const lastip = await database.get(`.botdata.lastip`)
+				const newip = (await axios.get(`http://icanhazip.com/`)).data
+				console.log(newip)
+				if (lastip != newip) {
+					const messageChannel = client.channels.cache.get(botlogchannel) as TextChannel;
+					messageChannel.send({ embeds: embeds.messageEmbed("IP Changed!", `From: \`${lastip}\`\nTo: \`${newip}\``) })
+					database.set(`.botdata.lastip`, newip)
+				}
 			}
 		}, 60 * 1000);
 	},

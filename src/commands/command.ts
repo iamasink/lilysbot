@@ -3,6 +3,7 @@ import ApplicationCommand from "../types/ApplicationCommand"
 import database from "../utils/database"
 import embeds from "../utils/embeds"
 import commands from "../utils/commands"
+import format from "../utils/format"
 
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 
@@ -82,10 +83,6 @@ export default new ApplicationCommand({
 					.setRequired(true)
 				)
 			)
-			.addSubcommand(command => command
-				.setName('list')
-				.setDescription('list all commands')
-			)
 		)
 		.addSubcommand(command => command
 			.setName('run')
@@ -95,6 +92,10 @@ export default new ApplicationCommand({
 				.setDescription('command to run')
 				.setRequired(true)
 			)
+		)
+		.addSubcommand(command => command
+			.setName('list')
+			.setDescription('list all commands')
 		),
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -188,17 +189,44 @@ export default new ApplicationCommand({
 				break
 			}
 			case 'command': {
-				const command = interaction.options.getString('command')
-				console.log('command: ' + command)
-				const guildID = interaction.guild.id
-				const path = `.${guildID}.commands.global`
-				const commandPath = path + '.' + command
-				value = await database.get(commandPath)
-				interaction.reply({ embeds: embeds.messageEmbed("Command:", JSON.stringify(value)) })
+				switch (interaction.options.getSubcommand()) {
+
+					case 'enable': {
+
+						break
+					}
+					case 'disable': {
+
+						break
+					}
+					default: {
+						throw new Error("it broke")
+					}
+				}
 				break
 			}
-			case 'run': {
-				break
+
+			default: {
+				switch (interaction.options.getSubcommand()) {
+					case 'run': {
+						break
+					}
+					case 'list': {
+						const lines = []
+						const commandList = await commands.get()
+						for (let i = 0, len = commandList.length; i < len; i++) {
+							const command = commandList[i]
+							lines.push(`${command.data.name} - "${command.data.description}"`)
+						}
+						const message = lines.join("\n")
+						const messages = format.splitMessage(message)
+						for (let i = 0, len = messages.length; i < len; i++) {
+							if (i == 0) interaction.reply(messages[i])
+							else interaction.followUp(messages[i])
+						}
+						break
+					}
+				}
 			}
 		}
 	}

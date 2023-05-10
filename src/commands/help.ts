@@ -1,7 +1,9 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
+import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import commands from '../utils/commands'
 import format from '../utils/format'
+import { client } from '..'
+import { stripIndents } from 'common-tags'
 
 export default new ApplicationCommand({
 	permissions: ["botowner"],
@@ -9,13 +11,17 @@ export default new ApplicationCommand({
 		.setName('help')
 		.setDescription('Help me!!'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		const lines = []
-		const commandList = await commands.get()
-		for (let i = 0, len = commandList.length; i < len; i++) {
-			const command = commandList[i]
-			lines.push(`${command.data.name} - testing!!!!!`)
-		}
-		const message = lines.join("\n")
-		interaction.reply(message)
+		const embed = new EmbedBuilder()
+			.setColor("#f9beca")
+			.setTitle("Wiwwie")
+			.setDescription(
+				stripIndents
+					`hi im wiwwie <3
+				[GitHub Repo](https://github.com/iamasink/lilysbot)
+				For a list of commands run \`/command list\`
+				`
+			)
+			.setThumbnail(client.user.avatarURL())
+		interaction.reply({ embeds: [embed] })
 	},
 })

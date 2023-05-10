@@ -34,6 +34,7 @@ import database from "./database"
 import config from "../config.json"
 import { setTimeout } from "node:timers"
 import { Octokit } from "@octokit/rest";
+import format from "./format"
 
 function merge(a: any, b: any, prop: any) {
 	const reduced = a.filter(
@@ -415,6 +416,7 @@ export default {
 						.setStyle(TextInputStyle.Paragraph)
 						.setRequired(false)
 						.setPlaceholder("What happaned? Why are you reporting this error!!!?")
+						.setMaxLength(1800)
 
 					// An action row only holds one text input,
 					// so you need one action row per text input.
@@ -432,13 +434,6 @@ export default {
 					i.awaitModalSubmit({ time: 240 * 1000, filter })
 						.then(async i => {
 							interaction.deleteReply()
-							await i.reply({ embeds: embeds.successEmbed('Thank you for your submission!'), ephemeral: true, fetchReply: true })
-								.then(msg => {
-									setTimeout(() => {
-										i.deleteReply()
-									}, 1000)
-								})
-
 							const usermessage = i.fields.getTextInputValue('errorReportModalField')
 							const content = `error: \`\`\`${error.toString()}\`\`\`\nOn command: \`${interaction.commandName}\`\nOptions: \`\`\`${JSON.stringify(interaction.options)}\`\`\`\nReported by: \`${interaction.user.tag} (${interaction.user.id})\`\nUser's Message: \`\`\`${usermessage}\`\`\``
 
@@ -452,7 +447,13 @@ export default {
 							const octokit = new Octokit({
 								auth: config.github.token
 							})
-							octokit.issues.create({ owner: "iamasink", repo: "lilysbot", title: `Error report from command "${interaction.commandName}" - ${usermessage}`, body: content, labels: ["report"] })
+
+							let title = format.cutToLength(`Error report from command "${interaction.commandName}" - ${usermessage}`, 250)
+
+							octokit.issues.create({ owner: "iamasink", repo: "lilysbot", title: title, body: content, labels: ["report"] })
+								.then(async res => {
+									await i.reply({ embeds: embeds.successEmbed(`Thank you for your submission!\nLink: ${res.data.html_url}`), ephemeral: true, fetchReply: true })
+								})
 						})
 						.catch(err => console.log(err))
 				} else {

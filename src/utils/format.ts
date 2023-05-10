@@ -81,5 +81,11 @@ export default {
 			msg += (msg && msg !== prepend ? char : '') + chunk
 		}
 		return messages.concat(msg).filter(m => m)
+	},
+	cutToLength(text: string, length: number) {
+		if (text.length > length) {
+			text = text.substring(0, length - 1) + "...";
+		}
+		return text
 	}
 }

@@ -26,7 +26,7 @@ export default new Event({
 		}
 
 
-		log.log(oldmessage.guild, { allowedMentions: { users: [] }, content: `A message (https://discord.com/channels/${oldmessage.guildId}/${oldmessage.channelId}/${oldmessage.id}) was edited by ${oldmessage.author} in ${oldmessage.channel}:\nOld: ${oldmessage.content}\nNew: ${newmessage.content}` })
+		log.log(oldmessage.guild, `A message (https://discord.com/channels/${oldmessage.guildId}/${oldmessage.channelId}/${oldmessage.id}) was edited by ${oldmessage.author} in ${oldmessage.channel}:\nOld: ${oldmessage.content}\nNew: ${newmessage.content}`)
 		console.log("old")
 		console.log(oldmessage)
 		console.log("new")

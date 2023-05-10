@@ -3,7 +3,7 @@ import database from "./database"
 import { client } from ".."
 
 export default {
-	async log(guild: Guild, message: string | MessagePayload | MessageCreateOptions) {
+	async log(guild: Guild, message: string) {
 		console.log("logging.. " + message)
 		//console.log("2")
 		//console.log(guild.id)
@@ -17,7 +17,7 @@ export default {
 			let g = await client.guilds.fetch(guild.id)
 			let c = await g.channels.fetch(channelid)
 			//console.log(c)
-			return (c as TextChannel).send(message)
+			return (c as TextChannel).send({ content: message, allowedMentions: { repliedUser: false, users: [] } })
 		}
 	},
 	async channel(guild: Guild): Promise<string> {

@@ -2,7 +2,11 @@ import {
 	SlashCommandBuilder,
 	ChatInputCommandInteraction,
 	ReactionEmoji,
-	CommandInteractionOptionResolver
+	CommandInteractionOptionResolver,
+	ContextMenuCommandBuilder,
+	ApplicationCommandType,
+	ContextMenuCommandInteraction,
+	AnySelectMenuInteraction
 } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import calc from '../utils/calc'
@@ -12,12 +16,12 @@ import { RootNodesUnavailableError } from 'redis'
 import { stripIndents } from 'common-tags'
 
 export default new ApplicationCommand({
-	permissions: ["KickMembers"],
-	data: new SlashCommandBuilder()
+	permissions: ["Administrator"],
+	data: new ContextMenuCommandBuilder()
 		.setName('test')
-		.setDescription('testy'),
-	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-
-
+		.setType(ApplicationCommandType.Message)
+	,
+	async menu(interaction: AnySelectMenuInteraction): Promise<void> {
+		interaction.reply("hi!")
 	},
 }) 

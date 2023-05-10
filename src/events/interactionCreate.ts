@@ -38,7 +38,7 @@ export default new Event({
 			// if (aliasedCommand) {
 			// 	commands.run(interaction, aliasedCommand.commandname, aliasedCommand.group, aliasedCommand.subcommand, aliasedCommand.defaultoptions)
 			//} else {
-			commands.run(interaction)
+			commands.run(interaction, "slash")
 			//}
 
 		}
@@ -70,11 +70,21 @@ export default new Event({
 			if (!command) {
 				console.log(`${interaction} not a command.`)
 			}
-			commands.run(interaction)
+			commands.run(interaction, "usercontext")
 
 		}
 
-		else if (interaction.isMessageContextMenuCommand()) { }
+		else if (interaction.isMessageContextMenuCommand()) {
+			// gets the (global) command data from the interaction
+			console.log(interaction.commandName)
+			const command = await client.commands.get(interaction.commandName)
+			console.log(command)
+
+			if (!command) {
+				console.log(`${interaction} not a command.`)
+			}
+			commands.run(interaction, "messagecontext")
+		}
 
 		// if interaction is from a message (ie buttons, select menu, etc)
 		else {

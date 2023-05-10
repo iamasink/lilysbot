@@ -40,6 +40,20 @@ export class Bot extends Client {
 			this.commands.set(command.data.name, command)
 		})
 
+		// // register context commands
+		// const contextcommandfilepath = path.join(__dirname, '..', 'contextmenu')
+		// console.log(contextcommandfilepath)
+		// const contextcommandFiles: string[] = readdirSync(contextcommandfilepath).filter(
+		// 	(file) => file.endsWith('.js') || file.endsWith('.ts')
+		// )
+		// console.log(contextcommandFiles)
+
+		// commandFiles.forEach(async file => {
+		// 	console.log(file)
+		// 	const command: ApplicationCommand = (await import(`../commands/${file}`)).default as ApplicationCommand
+		// 	this.commands.set(command.data.name, command)
+		// })
+
 		// register events
 		const filepath = path.join(__dirname, '..', 'events')
 		console.log(filepath)

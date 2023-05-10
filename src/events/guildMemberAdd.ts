@@ -35,7 +35,7 @@ export default new Event({
 		log.log(guild, `${member.id}, \`${member.user.tag}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
 			.then(async msg => {
 				if (!msg) return
-				let interaction = await commands.run(msg, "info", null, "user", [
+				let interaction = await commands.run(msg, "slash", "info", null, "user", [
 					{
 						name: 'target',
 						type: 6,

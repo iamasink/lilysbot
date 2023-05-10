@@ -252,6 +252,7 @@ export default {
 	},
 	async run(
 		interaction: any,
+		type: "slash" | "messagecontext" | "usercontext",
 		commandName = (interaction as CommandInteraction).commandName,
 		group?: any,
 		subcommand?: any,
@@ -338,7 +339,25 @@ export default {
 
 			//console.log(newInteraction.options)
 			//console.log("running command")
-			await command.execute(newInteraction) // trys to run the command
+			if (!type) type = "slash"
+			switch (type) {
+				case "slash": {
+					await command.execute(newInteraction) // trys to run the command
+					break
+				}
+				case "messagecontext": {
+					await command.menu(newInteraction) // trys to run the command
+
+					break
+				}
+				case "usercontext": {
+					await command.menu(newInteraction) // trys to run the command
+					break
+				}
+				default: {
+					throw new Error("you fucked up")
+				}
+			}
 			return newInteraction
 		} catch (error) {
 			console.error(error)

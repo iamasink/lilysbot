@@ -18,7 +18,7 @@ export default new Event({
 			info = `\nthey aren't pending.`
 
 		}
-		log.log(member.guild, `${member.id} has been updated.` + info)
+		// log.log(member.guild, `${member.id} has been updated.` + info)
 
 	},
 }

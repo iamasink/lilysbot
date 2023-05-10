@@ -457,6 +457,11 @@ export default {
 						.catch(err => console.log(err))
 				} else {
 					i.reply({ content: `These buttons aren't for you!`, ephemeral: true })
+						.then(msg => {
+							setTimeout(() => {
+								msg.delete()
+							}, 1000)
+						})
 				}
 			});
 

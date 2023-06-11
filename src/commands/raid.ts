@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, GuildFeature, SlashCommandBuilder } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import embeds from '../utils/embeds'
+import format from '../utils/format'
 
 export default new ApplicationCommand({
 	permissions: ["botowner"],
@@ -55,7 +56,7 @@ export default new ApplicationCommand({
 									await member.kick()
 								}
 								toban.push(member.user.id)
-								console.log(`kicked member ${member.user.tag}`)
+								console.log(`kicked member ${format.shittyUsername(member.user)}`)
 
 							}
 							break
@@ -64,7 +65,7 @@ export default new ApplicationCommand({
 							if (!member.user.avatarURL()) {
 								// await member.kick()
 								toban.push(member.user.id)
-								console.log(`kicked member: ${member.user.tag}`)
+								console.log(`kicked member: ${format.shittyUsername(member.user)}`)
 							}
 							break
 						}

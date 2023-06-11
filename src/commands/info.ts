@@ -180,7 +180,7 @@ export default new ApplicationCommand({
 				// create embed
 				const infoEmbed = new EmbedBuilder()
 					.setColor(user.hexAccentColor)
-					.setTitle(`__${user.username.replace(/[\\"']/g, '\\$&')}#${user.discriminator}__`)
+					.setTitle(`__${format.shittyUsername(user).replace(/[\\"']/g, '\\$&')}__`)
 					.setThumbnail(thumb)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
 					.setDescription(`<@${user.id}>`)
@@ -203,7 +203,7 @@ export default new ApplicationCommand({
 						if (invite) {
 							const invitedById = invite.inviterId
 							const invitedBy = await client.users.fetch(invitedById) || null
-							const invited = invitedBy.tag ? `\`${invitedBy.tag}\` <@${invitedById}>` : `*Unknown*`
+							const invited = format.shittyUsername(invitedBy) ? `\`${format.shittyUsername(invitedBy)}\` <@${invitedById}>` : `*Unknown*`
 							guildtext += `\n**Invited by:** ${invited} ${invite.code.slice(0, 4)}`
 						}
 

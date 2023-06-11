@@ -36,7 +36,7 @@ export default new Event({
 
 		// Perform a coherence check to make sure that there's *something*
 		if (!kickLog) {
-			console.log(`${member.user.tag} left the guild, most likely of their own will.`)
+			console.log(`${format.shittyUsername(member.user)} left the guild, most likely of their own will.`)
 			action = "left"
 		}
 		else {
@@ -47,8 +47,8 @@ export default new Event({
 			// Update the output with a bit more information
 			// Also run a check to make sure that the log returned was for the same kicked member
 			if (target.id === member.id) {
-				log.log(guild, `${member.user.tag} left the guild; kicked by ${executor.tag}?`);
-				console.log(`${member.user.tag} left the guild; kicked by ${executor.tag}?`);
+				log.log(guild, `${format.shittyUsername(member.user)} left the guild; kicked by ${format.shittyUsername(executor)}?`);
+				console.log(`${format.shittyUsername(member.user)} left the guild; kicked by ${format.shittyUsername(executor)}?`);
 				if (await settings.get(guild, "leave_kick_message")) {
 					action = "was kicked"
 				} else {
@@ -56,8 +56,8 @@ export default new Event({
 				}
 
 			} else {
-				console.log(`${member.user.tag} left the guild, audit log fetch was inconclusive.`);
-				log.log(guild, `${member.user.tag} left the guild, audit log fetch was inconclusive.`);
+				console.log(`${format.shittyUsername(member.user)} left the guild, audit log fetch was inconclusive.`);
+				log.log(guild, `${format.shittyUsername(member.user)} left the guild, audit log fetch was inconclusive.`);
 				action = "vanished??"
 			}
 		}
@@ -65,7 +65,7 @@ export default new Event({
 		if (await settings.get(guild, "leave_message") && action != "false") {
 			const embed = new EmbedBuilder()
 				.setColor('#ff0000')
-				.setTitle(`${member.user.tag} ${action}.`)
+				.setTitle(`${format.shittyUsername(member.user)} ${action}.`)
 				.setDescription(`They were a member for ${format.time(Date.now() - member.joinedTimestamp)}.\nJoined on <t:${member.joinedTimestamp.toString().slice(0, -3)}:f>`)
 				.setThumbnail(member.user.avatarURL({ forceStatic: false }))
 			member.guild.systemChannel.send({ embeds: [embed] })

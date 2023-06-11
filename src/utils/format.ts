@@ -1,3 +1,5 @@
+import { User } from "discord.js"
+
 export default {
 	bar(min: number, current: number, max: number, length = 10, border = false, chars = [`#`, `.`, `[`, `]`]) {
 		const progress = (current - min) / (max - min)
@@ -87,5 +89,12 @@ export default {
 			text = text.substring(0, length - 1) + "...";
 		}
 		return text
+	},
+	shittyUsername(user: User) {
+		if (user.discriminator == "0") {
+			return user.username
+		} else {
+			return `${user.username}#${user.discriminator}`
+		}
 	}
 }

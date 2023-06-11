@@ -3,6 +3,7 @@ import Event from "../types/Event"
 import log from "../utils/log"
 import webhooks from "../utils/webhooks"
 import { RawAttachmentData } from "discord.js/typings/rawDataTypes"
+import format from "../utils/format"
 
 // Emitted whenever a message is deleted
 export default new Event({
@@ -28,7 +29,7 @@ export default new Event({
 		// Perform a coherence check to make sure that there's *something*
 		if (!deletionLog) {
 			// Discord does not emit an audit log if the person who deleted the message is a bot deleting a single message or is the author of the message itself.
-			const msg = `A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}>, but we don't know by who (probably themselves).`
+			const msg = `A message by ${format.shittyUsername(message.author)} <@${message.author.id}> was deleted in <#${message.channel.id}>, but we don't know by who (probably themselves).`
 			console.log(msg)
 			log.log(message.guild, msg)
 
@@ -42,8 +43,8 @@ export default new Event({
 			// Update the output with a bit more information
 			// Also run a check to make sure that the log returned was for the same author's message
 			if (target.id === message.author.id) {
-				console.log(`A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor.tag}.`)
-				log.log(message.guild, `A message by ${message.author.tag} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor.tag}.`)
+				console.log(`A message by ${format.shittyUsername(message.author)} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${format.shittyUsername(executor)}.`)
+				log.log(message.guild, `A message by ${format.shittyUsername(message.author)} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${format.shittyUsername(executor)}.`)
 			}
 		}
 

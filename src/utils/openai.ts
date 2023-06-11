@@ -14,6 +14,10 @@ const openai = new OpenAIApi(configuration)
 
 export default {
 	async chatgptFuck(message: Message) {
+		if (message.author.id == "454357482102587393") {
+			return
+		}
+
 		console.log("hi")
 		if (!chatallowedguilds.includes(message.guild.id)) {
 			return

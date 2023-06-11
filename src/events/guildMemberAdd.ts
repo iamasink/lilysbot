@@ -6,6 +6,7 @@ import log from "../utils/log"
 import commands from "../utils/commands"
 import invites from "../utils/invites"
 import settings from "../utils/settings"
+import format from "../utils/format"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
@@ -32,7 +33,7 @@ export default new Event({
 		let inviterUser = await client.users.fetch(inviter.id)
 
 
-		log.log(guild, `${member.id}, \`${member.user.tag}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
+		log.log(guild, `${member.id}, \`${format.shittyUsername(member.user)}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
 			.then(async msg => {
 				if (!msg) return
 				let interaction = await commands.run(msg, "slash", "info", null, "user", [

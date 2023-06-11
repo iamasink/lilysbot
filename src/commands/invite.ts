@@ -96,7 +96,7 @@ export default new ApplicationCommand({
 					if (hasExpired && uses === 0 && !showall) continue
 
 
-					tempoutput += `${name}\`${code}\`, by \`${inviter.tag}\` (<@${inviter.id}>),`
+					tempoutput += `${name}\`${code}\`, by \`${format.shittyUsername(inviter)}\` (<@${inviter.id}>),`
 
 					let guildinvite: Invite
 

@@ -2,6 +2,7 @@ import { Events, Interaction, Message, User } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import database from "../utils/database"
+import format from "../utils/format"
 
 // Emitted whenever ?
 export default new Event({
@@ -11,7 +12,7 @@ export default new Event({
 		console.log(olduser.tag)
 		console.log(newuser.tag)
 
-		if (olduser.tag !== newuser.tag) {
+		if (format.shittyUsername(olduser) !== format.shittyUsername(newuser)) {
 			database.set(`.users.${newuser.id}.usernames.${Date.now()}`, { from: olduser.tag, to: newuser.tag })
 		} else {
 			console.log("not saving usernames cuz theyre the same lol")

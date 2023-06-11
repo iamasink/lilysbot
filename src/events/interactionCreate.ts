@@ -3,6 +3,7 @@ import Event from "../types/Event"
 import { client } from "../index"
 import commands from "../utils/commands"
 import embeds from "../utils/embeds"
+import format from "../utils/format"
 
 
 // Emitted when an interaction is created.
@@ -12,7 +13,7 @@ export default new Event({
 		let location: string
 		if (interaction.channel) location = interaction.channel.name
 		else location = "dms"
-		console.log(`${interaction.user.tag} in #${location} triggered an interaction.`)
+		console.log(`${format.shittyUsername(interaction.user)} in #${location} triggered an interaction.`)
 
 		//const guildID = interaction.guild.id
 

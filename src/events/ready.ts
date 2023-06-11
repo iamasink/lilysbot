@@ -26,7 +26,7 @@ export default new Event({
 			status: 'dnd',
 		})
 
-		console.log(res)
+		// console.log(res)
 
 		setTimeout(async () => {
 			// update the database cache with all invites, some may have been lost if the bot was offline.
@@ -64,7 +64,7 @@ export default new Event({
 				"online",
 			]
 
-			console.log("updating activity")
+			// console.log("updating activity")
 			let randomActivity = Math.floor(Math.random() * activities.length)
 			let randomStatus = Math.floor(Math.random() * activities.length)
 			let activity = activities[randomActivity]
@@ -78,7 +78,7 @@ export default new Event({
 				status: status
 			})
 
-			console.log(res)
+			// console.log(res)
 
 
 			// log ip

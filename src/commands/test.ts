@@ -1,27 +1,14 @@
-import {
-	SlashCommandBuilder,
-	ChatInputCommandInteraction,
-	ReactionEmoji,
-	CommandInteractionOptionResolver,
-	ContextMenuCommandBuilder,
-	ApplicationCommandType,
-	ContextMenuCommandInteraction,
-	AnySelectMenuInteraction
-} from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
-import calc from '../utils/calc'
 import { client } from '..'
-import settings from '../utils/settings'
-import { RootNodesUnavailableError } from 'redis'
-import { stripIndents } from 'common-tags'
 
 export default new ApplicationCommand({
 	permissions: ["Administrator"],
-	data: new ContextMenuCommandBuilder()
+	data: new SlashCommandBuilder()
 		.setName('test')
-		.setType(ApplicationCommandType.Message)
-	,
-	async menu(interaction: AnySelectMenuInteraction): Promise<void> {
-		interaction.reply("hi!")
+		.setDescription('description'),
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+		console.log(interaction.user)
+		console.log(await client.users.fetch(interaction.user, { force: true }))
 	},
-}) 
+})

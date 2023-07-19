@@ -150,9 +150,9 @@ export default {
 				console.log(error.message)
 			}
 			message.reply(
-				stripIndents`an error occurred
-					\`${error}\`
-					give me money <https://cash.app/lillliieieiee>`
+				stripIndents`an error occurred :(
+				\`${error}\`
+				`
 			)
 		}
 	}

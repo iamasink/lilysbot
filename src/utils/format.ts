@@ -1,4 +1,4 @@
-import { User } from "discord.js"
+import { Guild, GuildMember, User, UserPremiumType } from "discord.js"
 
 export default {
 	bar(min: number, current: number, max: number, length = 10, border = false, chars = [`#`, `.`, `[`, `]`]) {
@@ -95,6 +95,27 @@ export default {
 			return user.username
 		} else {
 			return `${user.username}#${user.discriminator}`
+		}
+	},
+	displayName(user: any) {
+		if (user.guild) {
+			console.log(user)
+			console.log("guild")
+			if (user.nickname) {
+				return user.nickname
+			}
+			else if (user.displayName) {
+				return user.displayName
+			} else {
+				return user.username
+			}
+		} else {
+			console.log("not guild")
+			if (user.displayName) {
+				return user.displayName
+			} else {
+				return user.username
+			}
 		}
 	}
 }

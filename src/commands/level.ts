@@ -105,7 +105,7 @@ export default new ApplicationCommand({
 						const level = calc.level(xp)
 						const xpLower = calc.xp(level)
 						const xpHigher = calc.xp(level + 1)
-						output += `\`#${rank}\` - ${(member.displayName || member.user.username)} ${(member)} - Level ${calc.level(xp)} (${format.numberCommas(xp)} xp)\n`
+						output += `\`#${rank}\` - ${(format.displayName(member))} ${(member)} - Level ${calc.level(xp)} (${format.numberCommas(xp)} xp)\n`
 						output += `\`[${format.bar(0, progress, 1, 25)}]\`\n${format.numberCommas(level)} (${format.numberCommas(xpLower)} xp) - ${format.numberCommas(level + 1)} (${format.numberCommas(xpHigher)} xp)\n`
 						rank++
 					} else {

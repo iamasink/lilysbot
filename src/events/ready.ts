@@ -52,6 +52,8 @@ export default new Event({
 
 		// update the activity on an interval
 		setInterval(async () => {
+			// console.log("minutel")
+
 			const activities: ActivityOptions[] = [
 				{ type: ActivityType.Watching, name: `you and ${client.users.cache.size - 1} others <33`, },
 				{ type: ActivityType.Watching, name: `you.`, },
@@ -69,7 +71,7 @@ export default new Event({
 			let randomStatus = Math.floor(Math.random() * activities.length)
 			let activity = activities[randomActivity]
 			let status = statuses[randomStatus]
-			const glances = (await axios.get('http://localhost:61208/api/3/all')).data
+			// const glances = (await axios.get('http://localhost:61208/api/3/all')).data
 
 			//activity.name = activity.name + ` | Load: ${glances.cpu.total}`
 
@@ -92,6 +94,25 @@ export default new Event({
 					database.set(`.botdata.lastip`, newip)
 				}
 			}
+
+
+
 		}, 60 * 1000);
+
+		// // temp
+		// setInterval(async () => {
+		// 	console.log("checking rate limits")
+		// 	if (true) {
+		// 		const lastcount = await database.get(`.botdata.temp.lastcount`)
+		// 		const data = (await axios.get(`https://api.github.com/rate_limit`)).data
+		// 		const newcount = data.rate.remaining
+		// 		// console.log(newip)
+		// 		if (lastcount != newcount) {
+		// 			const messageChannel = client.channels.cache.get(botlogchannel) as TextChannel;
+		// 			messageChannel.send({ embeds: embeds.messageEmbed("Rate limit!", `From: \`${lastcount}\`\nTo: \`${newcount}\`\nResets: <t:${data.rate.reset}>`) })
+		// 			database.set(`.botdata.temp.lastcount`, newcount)
+		// 		}
+		// 	}
+		// }, 15 * 1000)
 	},
 })

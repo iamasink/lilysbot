@@ -35,7 +35,7 @@
     "discord.js": "^14.11.0",
     "ffmpeg-static": "^5.1.0",
     "gifencoder": "^2.0.1",
-    "openai": "^3.2.1",
+    "openai": "^3.3.0",
     "parse-torrent": "^9.0.0",
     "redis": "^4.6.7",
     "rss-parser": "^3.13.0",

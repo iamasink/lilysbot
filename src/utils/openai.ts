@@ -1,16 +1,16 @@
 import { openaitoken, chatallowedguilds } from '../config.json'
 
-import { ChatCompletionRequestMessage, ChatCompletionRequestMessageRoleEnum, Configuration, OpenAIApi } from 'openai'
+import OpenAI from 'openai'
 import format from '../utils/format'
 import { GuildTextBasedChannel, Message } from 'discord.js';
 import { client } from '..';
 import { stripIndents } from 'common-tags';
 
 
-const configuration = new Configuration({
-	apiKey: openaitoken,
-});
-const openai = new OpenAIApi(configuration)
+
+const openai = new OpenAI({
+	apiKey: openaitoken
+})
 
 export default {
 	async chatgptFuck(message: Message) {
@@ -25,7 +25,7 @@ export default {
 		message.channel.sendTyping()
 
 		console.log(message)
-		let chatMessages: Array<ChatCompletionRequestMessage> = [
+		let chatMessages: Array<OpenAI.Chat.CreateChatCompletionRequestMessage> = [
 			{
 				role: "system",
 				//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
@@ -116,7 +116,7 @@ export default {
 
 
 		try {
-			const completion = await openai.createChatCompletion({
+			const completion = await openai.chat.completions.create({
 				model: "gpt-3.5-turbo",
 				messages: chatMessages,
 				temperature: 1.3 + (Math.random() * 0.25),
@@ -132,14 +132,14 @@ export default {
 				user: message.author.id
 			})
 			console.log(completion.data)
-			const toSend = completion.data.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here")
+			const toSend = completion.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here")
 			if (toSend.length > 1950) {
 				let messages = format.splitMessage(toSend, 1950, " ")
 				for (let i = 0, len = messages.length; i < len; i++) {
 					message.channel.send(messages[i])
 				}
 			} else {
-				message.reply(completion.data.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here"))
+				message.reply(completion.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here"))
 			}
 
 		} catch (error) {

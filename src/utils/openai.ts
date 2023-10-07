@@ -2,9 +2,10 @@ import { openaitoken, chatallowedguilds } from '../config.json'
 
 import OpenAI from 'openai'
 import format from '../utils/format'
-import { GuildTextBasedChannel, Message } from 'discord.js';
+import { GuildTextBasedChannel, Message, Role } from 'discord.js';
 import { client } from '..';
 import { stripIndents } from 'common-tags';
+import { ChatCompletionMessage, ChatCompletionMessageParam, ChatCompletionRole } from 'openai/resources/chat';
 
 
 
@@ -39,7 +40,7 @@ export default {
 			}
 		]
 
-		let messagerole: ChatCompletionRequestMessageRoleEnum
+		let messagerole: ChatCompletionRole
 		let messagename: string
 		if (message.reference) {
 
@@ -131,7 +132,7 @@ export default {
 				//logit_bias:
 				user: message.author.id
 			})
-			console.log(completion.data)
+			console.log(completion)
 			const toSend = completion.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here")
 			if (toSend.length > 1950) {
 				let messages = format.splitMessage(toSend, 1950, " ")

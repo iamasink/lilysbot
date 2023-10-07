@@ -2,12 +2,12 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import { openaitoken } from '../config.json'
 
-import { Configuration, OpenAIApi } from 'openai'
 
-const configuration = new Configuration({
+import OpenAI from 'openai'
+
+const openai = new OpenAI({
 	apiKey: openaitoken,
 });
-const openai = new OpenAIApi(configuration)
 
 
 export default new ApplicationCommand({
@@ -29,7 +29,7 @@ export default new ApplicationCommand({
 
 			await interaction.deferReply()
 
-			const completion = await openai.createChatCompletion({
+			const completion = await openai.chat.completions.create({
 				model: "gpt-3.5-turbo",
 				messages: [
 					{
@@ -53,8 +53,8 @@ export default new ApplicationCommand({
 				//logit_bias:
 				user: interaction.user.id
 			})
-			console.log(completion.data)
-			await interaction.editReply(completion.data.choices[0].message)
+			console.log(completion)
+			await interaction.editReply(completion.choices[0].message)
 		} else {
 			interaction.reply("no")
 		}

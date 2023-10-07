@@ -54,6 +54,7 @@ export default new Event({
 		setInterval(async () => {
 			// console.log("minutel")
 
+
 			const activities: ActivityOptions[] = [
 				{ type: ActivityType.Watching, name: `you and ${client.users.cache.size - 1} others <33`, },
 				{ type: ActivityType.Watching, name: `you.`, },

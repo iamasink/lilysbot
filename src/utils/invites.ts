@@ -20,9 +20,9 @@ async function updateInviteCache(guild: Guild) {
 	})
 	for (let i in oldinvites) {
 		if (guildinvites.has(i)) {
-			console.log(`${guild} - not expired ${i}`)
+			// console.log(`${guild} - not expired ${i}`)
 		} else {
-			console.log(`${guild} - expired ${i}`)
+			// console.log(`${guild} - expired ${i}`)
 			database.set(`.guilds.${guild.id}.invites.${i}.expired`, true)
 		}
 	}

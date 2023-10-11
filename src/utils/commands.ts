@@ -347,12 +347,12 @@ export default {
 					break
 				}
 				case "messagecontext": {
-					await command.menu(newInteraction) // trys to run the command
+					await command.menuMessage(newInteraction) // trys to run the command
 
 					break
 				}
 				case "usercontext": {
-					await command.menu(newInteraction) // trys to run the command
+					await command.menuUser(newInteraction) // trys to run the command
 					break
 				}
 				default: {

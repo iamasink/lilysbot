@@ -186,7 +186,7 @@ export default new ApplicationCommand({
 					.setDescription(`<@${user.id}>`)
 					//.setDescription(`<@${user.id}>\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)})`)
 					.addFields({ name: "ID", value: `${user.id}` })
-					.addFields({ name: "Created at", value: `<t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)}` })
+					.addFields({ name: "Created at", value: `<t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)} ago)` })
 
 
 				//.setTimestamp()

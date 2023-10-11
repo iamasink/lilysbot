@@ -17,13 +17,16 @@ export default new ApplicationCommand({
 		.setName("User Info")
 		.setType(ApplicationCommandType.User)
 	,
-	async menu(interaction) {
+	async menuUser(interaction) {
 		if (!interaction.guild) {
 			interaction.reply({ embeds: embeds.warningEmbed("This isn't available in DMs.") })
 			return
 		}
 
-		const member = (interaction.member as GuildMember)
+
+		const member = await interaction.guild.members.fetch(interaction.targetId)
+		console.log(member)
+
 
 		await commands.run(interaction, "slash", "info", null, "user", [
 			{
@@ -34,5 +37,5 @@ export default new ApplicationCommand({
 				member: await interaction.guild.members.fetch(member.id)
 			}
 		])
-	}
+	},
 })

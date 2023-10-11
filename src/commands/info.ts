@@ -5,7 +5,8 @@ import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from ".."
 import embeds from "../utils/embeds"
 import axios from "axios"
-import { stripIndent } from "common-tags"
+import { stripIndent, stripIndents } from "common-tags"
+import moment from "moment"
 
 // function fetchPromise(toFetch) {
 // 	return new Promise((resolve, reject) => {
@@ -177,6 +178,7 @@ export default new ApplicationCommand({
 				}
 				console.log(`thumb = ${thumb}`)
 
+
 				// create embed
 				const infoEmbed = new EmbedBuilder()
 					.setColor(user.hexAccentColor)
@@ -186,7 +188,13 @@ export default new ApplicationCommand({
 					.setDescription(`<@${user.id}>`)
 					//.setDescription(`<@${user.id}>\n**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)})`)
 					.addFields({ name: "ID", value: `${user.id}` })
-					.addFields({ name: "Created at", value: `<t:${user.createdTimestamp.toString().slice(0, -3)}:f>\n(${format.time(Date.now() - user.createdTimestamp)} ago)` })
+					// <t:..:f> creates a discord timestamp, using the createdTimestamp of the user. the last 3 characters are stripped because it is in ms. Is this a bad way to do it? dunno
+					// moment(time).diff(moment()) gets the difference between two times. calling just moment() gets the current time
+					.addFields({
+						name: "Created at",
+						value: stripIndents`<t:${user.createdTimestamp.toString().slice(0, -3)}:f>
+											(${format.timeDiff(moment(), moment(user.createdTimestamp))} ago)`
+					})
 
 
 				//.setTimestamp()
@@ -199,7 +207,12 @@ export default new ApplicationCommand({
 						const invites: object = await database.get(`.guilds.${member.guild.id}.invites`)
 						const invite = invites[invitedLink]
 
-						var guildtext = `**Joined at:** <t:${member.joinedTimestamp.toString().slice(0, -3)}:f> (${format.time(Date.now() - member.joinedTimestamp)} ago)`
+						var guildtext = stripIndents`**Joined at:** 
+													<t:${member.joinedTimestamp.toString().slice(0, -3)}:f>
+													(${format.timeDiff(moment(), moment(user.createdTimestamp))} ago)`
+						if (member.nickname) {
+							guildtext += stripIndents`\n**Nickname:** ${member.nickname}`
+						}
 						if (invite) {
 							const invitedById = invite.inviterId
 							const invitedBy = await client.users.fetch(invitedById) || null

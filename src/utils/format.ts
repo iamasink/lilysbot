@@ -1,4 +1,5 @@
 import { Guild, GuildMember, User, UserPremiumType } from "discord.js"
+import format from "./format"
 
 export default {
 	bar(min: number, current: number, max: number, length = 10, border = false, chars = [`#`, `.`, `[`, `]`]) {
@@ -46,6 +47,33 @@ export default {
 		return output
 	},
 	/**
+	 * Get the difference between two dates, as a string in format x years, y months, z days
+	 *
+	 * @param {moment.Moment} timea The later time (or it'll be negative. im sorry)
+	 * @param {moment.Moment} timeb The earlier time
+	 * @return {string} Returns a string
+	 */
+	timeDiff(timea: moment.Moment, timeb: moment.Moment) {
+
+		var years = timea.diff(timeb, 'year');
+		timeb.add(years, 'years');
+
+		var months = timea.diff(timeb, 'months');
+		timeb.add(months, 'months');
+
+		var days = timea.diff(timeb, 'days');
+
+		var output = ""
+		if (years) output += format.pluralize(years, "year") + ", "
+		if (months) output += format.pluralize(months, "month") + ", "
+		output += format.pluralize(days, "day")
+
+		return output
+	},
+	pluralize(number: number, string: string, suffix = 's') {
+		return `${number} ${string}${number !== 1 ? suffix : ''}`
+	},
+	/**
 	 * split text up
 	 *
 	 * @param {string} text
@@ -56,8 +84,6 @@ export default {
 	 * @return {*} 
 	 */
 	splitMessage(text: string, maxLength = 2000, char = '\n', prepend = '', append = '') {
-
-
 		if (text.length <= maxLength) return [text]
 		let splitText = [text]
 		if (Array.isArray(char)) {

@@ -37,7 +37,7 @@
     "gifencoder": "^2.0.1",
     "openai": "^4.11.1",
     "parse-torrent": "^9.0.0",
-    "redis": "^4.6.7",
+    "redis": "^4.6.9",
     "rss-parser": "^3.13.0",
     "snoowrap": "^1.23.0",
     "string-similarity": "^4.0.4"

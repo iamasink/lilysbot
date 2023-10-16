@@ -1,4 +1,4 @@
-import { Guild, GuildResolvable, TextChannel, GuildBasedChannel, Message, MessagePayload, MessageCreateOptions } from "discord.js"
+import { Guild, GuildResolvable, TextChannel, GuildBasedChannel, Message, MessagePayload, MessageCreateOptions, GuildEmojiRoleManager, GuildTextBasedChannel } from 'discord.js';
 import database from "./database"
 import { client } from ".."
 
@@ -22,5 +22,13 @@ export default {
 	},
 	async channel(guild: Guild): Promise<string> {
 		return await database.get(`.guilds.${guild.id}.settings.log_channel`)
+	},
+	async channel2(a: GuildResolvable): Promise<GuildTextBasedChannel> {
+		const guild = client.guilds.resolve(a)
+		const logchannelid = await database.get(`.guilds.${guild.id}.settings.log_channel`)
+		const logchannel = guild.channels.resolve(logchannelid)
+		if (!logchannel.isTextBased()) return
+		return logchannel
+
 	}
 }

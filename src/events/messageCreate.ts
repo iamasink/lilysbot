@@ -29,7 +29,7 @@ export default new Event({
 		// if bot pinged
 
 
-		// handle the stuff for pings and that for ai chatbot uwu
+		// handle the stuff for pings and that for ai chatbot
 		if (
 			message.mentions.has(client.user)
 			|| Math.random() < 0.001 && (message.channel as GuildTextBasedChannel).name == "general" && message.content.length > 10

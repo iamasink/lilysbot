@@ -5,6 +5,7 @@ import database from "../utils/database"
 import messageCreate from "./messageCreate"
 import embeds from "../utils/embeds"
 import { type } from "os"
+import openai from "../utils/openai"
 
 // Emitted whenever a reaction is added to a message
 export default new Event({
@@ -29,6 +30,7 @@ export default new Event({
 		console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`)
 		// The reaction is now also fully available and the properties will be reflected accurately:
 		console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
+		console.log(`${reaction.emoji.name}`)
 
 		if (reaction.emoji.name == "⭐") {
 			const starboardChannelId = await database.get(`.guilds.${guild.id}.settings.starboard_channel`)
@@ -89,6 +91,11 @@ export default new Event({
 					await database.set(`.guilds.${guild.id}.starboard`, previousStars)
 				}
 			}
+		} else if (reaction.emoji.id == "1161735847629041684") {
+
+
+			// reaction.message.reply(`you ${pronouns.name} 😂😂😂😂 have won the internet today`)
+			// console.log("reddit!!")
 		}
 	},
 }

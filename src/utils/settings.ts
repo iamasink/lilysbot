@@ -2,6 +2,13 @@ import { Guild, GuildResolvable, Snowflake } from "discord.js"
 import database from "./database"
 import { client } from ".."
 
+interface setting {
+	name: string
+	value: string
+	description: string
+	type: "channel" | "toggle" | "role"
+	default: boolean
+}
 
 const settingsList: setting[] = [
 	{

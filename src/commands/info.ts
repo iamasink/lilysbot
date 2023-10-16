@@ -209,7 +209,7 @@ export default new ApplicationCommand({
 
 						var guildtext = stripIndents`**Joined at:** 
 													<t:${member.joinedTimestamp.toString().slice(0, -3)}:f>
-													(${format.timeDiff(moment(), moment(user.createdTimestamp))} ago)`
+													(${format.timeDiff(moment(), moment(member.joinedTimestamp))} ago)`
 						if (member.nickname) {
 							guildtext += stripIndents`\n**Nickname:** ${member.nickname}`
 						}

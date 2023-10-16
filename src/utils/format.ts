@@ -123,25 +123,43 @@ export default {
 			return `${user.username}#${user.discriminator}`
 		}
 	},
-	displayName(user: any) {
-		if (user.guild) {
-			console.log(user)
-			console.log("guild")
-			if (user.nickname) {
-				return user.nickname
-			}
-			else if (user.displayName) {
-				return user.displayName
-			} else {
-				return user.username
-			}
-		} else {
-			console.log("not guild")
-			if (user.displayName) {
-				return user.displayName
-			} else {
-				return user.username
+	// displayName(user: any) {
+	// 	if (user.guild) {
+	// 		console.log(user)
+	// 		console.log("guild")
+	// 		if (user.nickname) {
+	// 			return user.nickname
+	// 		}
+	// 		else if (user.displayName) {
+	// 			return user.displayName
+	// 		} else {
+	// 			return user.username
+	// 		}
+	// 	} else {
+	// 		console.log("not guild")
+	// 		if (user.displayName) {
+	// 			return user.displayName
+	// 		} else {
+	// 			return user.username
+	// 		}
+	// 	}
+	// },
+	async pronouns(user: GuildMember) {
+		const roles = (await user.fetch()).roles
+		const pronouns = roles.cache.filter(role => {
+			switch (role.name.replace(" ", "").toLowerCase()) {
+				case "she/her": {
+					return "she/her"
+				}
+				case "he/him": {
+					return "he/him"
+				}
+				case "they/them": {
+					return "they/them"
+				}
 			}
 		}
+		).random()
+		return pronouns
 	}
 }

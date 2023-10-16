@@ -38,7 +38,7 @@ export default new ApplicationCommand({
 			.setName('number')
 			.setDescription(`Number of images`)
 			.setMinValue(1)
-			.setMaxValue(100)
+			.setMaxValue(10)
 		)
 		.addIntegerOption(option => option
 			.setName('delay')

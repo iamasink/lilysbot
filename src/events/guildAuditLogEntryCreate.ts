@@ -1,10 +1,11 @@
-import { Events, Interaction, Message, AuditLogEvent, Guild } from 'discord.js';
+import { Events, Interaction, Message, AuditLogEvent, Guild, ChannelSelectMenuBuilder } from 'discord.js';
 import Event from "../types/Event"
 import { client } from "../index"
 import database from '../utils/database';
 import settings from '../utils/settings';
 import { Channel } from 'diagnostics_channel';
 import log from '../utils/log';
+import { stripIndents } from 'common-tags';
 
 const types = {
 	GuildUpdate: 1,
@@ -71,15 +72,37 @@ export default new Event({
 	async execute(auditLogEntry: AuditLogEvent, guild: Guild) {
 		console.log(auditLogEntry.toString())
 		const channel = await log.channel2(guild)
-		if (auditLogEntry)
+		if (auditLogEntry) {
 
-			// const message = `${auditLogEntry["executorId"]}`
 			// i am most likely not doing this in any decent manner but
 			// if (auditLogEntry['action_type'])
 
+			let target = ``
+			if (auditLogEntry['targetId']) {
+				target = `${await client.users.fetch(auditLogEntry['executorId'])} => ${await client.users.fetch(auditLogEntry['targetId'])}`
+			} else {
+				target = `${await client.users.fetch(auditLogEntry['executorId'])}`
+			}
 
+			let reason = ``
+			if (auditLogEntry['reason']) {
+				reason = `For reason: ${auditLogEntry['reason']}\n`
+			}
 
-			channel.send(JSON.stringify(auditLogEntry,))
+			let changes = ``
+			if (auditLogEntry['changes']) {
+				for (let i = 0, len = auditLogEntry['changes'].length; i < len; i++) {
+					const change = auditLogEntry['changes'][i]
+					const old = change["old"] || "(none)"
+					const newthing = change["new"] || "(none)"
+					changes += stripIndents`\n${change["key"]}:
+										${old} => ${newthing}\n`
+				}
+				// changes = auditLogEntry['changes']
+			}
+
+			channel.send({ content: `${target}:\n${reason}${changes}\n\n${JSON.stringify(auditLogEntry)}`, allowedMentions: { repliedUser: false, users: [] } })
+		}
 
 
 	},

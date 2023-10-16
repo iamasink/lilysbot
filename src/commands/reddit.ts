@@ -38,7 +38,7 @@ export default new ApplicationCommand({
 			.setName('number')
 			.setDescription(`Number of images`)
 			.setMinValue(1)
-			.setMaxValue(10)
+			.setMaxValue(2)
 		)
 		.addIntegerOption(option => option
 			.setName('delay')
@@ -55,7 +55,8 @@ export default new ApplicationCommand({
 		await interaction.deferReply()
 		let subreddit = interaction.options.getString('subreddit')
 		if (subreddit[1] === `/`) subreddit = subreddit.slice(2)
-		const number = interaction.options.getInteger('number') || 1
+		// const number = interaction.options.getInteger('number') || 1
+		const number = 1
 		for (let i = 0; i < number; i++) {
 			let url = ``
 			let link = ``

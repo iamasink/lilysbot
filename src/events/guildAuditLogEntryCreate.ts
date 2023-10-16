@@ -73,13 +73,13 @@ export default new Event({
 		const channel = await log.channel2(guild)
 		if (auditLogEntry)
 
-			const message = `${auditLogEntry["executorId"]}`
-		// i am most likely not doing this in any decent manner but
-		// if (auditLogEntry['action_type'])
+			// const message = `${auditLogEntry["executorId"]}`
+			// i am most likely not doing this in any decent manner but
+			// if (auditLogEntry['action_type'])
 
 
 
-		channel.send(JSON.stringify(auditLogEntry,))
+			channel.send(JSON.stringify(auditLogEntry,))
 
 
 	},

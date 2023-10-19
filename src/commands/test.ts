@@ -10,5 +10,6 @@ export default new ApplicationCommand({
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		console.log(interaction.user)
 		console.log(await client.users.fetch(interaction.user, { force: true }))
+
 	},
 })

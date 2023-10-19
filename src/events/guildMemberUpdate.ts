@@ -9,16 +9,29 @@ import database from "../utils/database"
 // Emitted whenever a user is 'updated' in a guild.
 export default new Event({
 	name: Events.GuildMemberUpdate,
-	async execute(member: GuildMember) {
-		console.log(member)
+	async execute(oldMember: GuildMember, newMember: GuildMember) {
+		console.log(`a member was updated in ${newMember.guild}`)
 		let info = ``
-		if (member.pending) {
+		if (oldMember.pending) {
 			info = `\nthey are pending.`
 		} else {
 			info = `\nthey aren't pending.`
 
 		}
 		// log.log(member.guild, `${member.id} has been updated.` + info)
+
+		let o1 = oldMember
+
+		let o2 = newMember
+
+		let diff = Object.keys(o2).reduce((diff, key) => {
+			if (o1[key] === o2[key]) return diff
+			return {
+				...diff,
+				[key]: o2[key]
+			}
+		}, {})
+		console.log(diff)
 
 	},
 }

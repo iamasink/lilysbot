@@ -77,19 +77,19 @@ export default new ApplicationCommand({
 			case 'list': {
 				await interaction.reply({ ephemeral: true, embeds: embeds.messageEmbed("listing invites...") })
 				const invitelist = await database.get(`.guilds.${interaction.guild.id}.invites`)
-				console.log(invitelist)
+				// console.log(invitelist)
 				var output = ""
 
 				for (let i in invitelist) {
-					console.log(i)
+					// console.log(i)
 					const invite = invitelist[i]
 					const code = i
 					const name = invite.name ? `${invite.name} - ` : ""
 					const hasExpired = invite.expired
 					const uses = invite.uses
 					const showall = interaction.options.getBoolean("showall")
-					console.log(code, name, hasExpired, uses)
-					console.log(invite.inviterId)
+					// console.log(code, name, hasExpired, uses)
+					// console.log(invite.inviterId)
 					const inviter = await interaction.client.users.fetch(invite.inviterId)
 					var tempoutput = ``
 
@@ -115,7 +115,7 @@ export default new ApplicationCommand({
 					tempoutput += `uses: ${uses}`
 					if (!hasExpired) {
 						guildinvite = await interaction.guild.invites.fetch(code)
-						console.log(guildinvite)
+						// console.log(guildinvite)
 						var maxUses = guildinvite.maxUses.toString()
 						if (maxUses == "0") maxUses = `∞`
 						tempoutput += `/${maxUses}`
@@ -155,7 +155,7 @@ export default new ApplicationCommand({
 				const code = interaction.options.getString('code')
 				const invites = await interaction.guild.invites.fetch()
 
-				console.log(code)
+				// console.log(code)
 
 
 				const invite = invites.find(invite => invite.code === code)
@@ -210,14 +210,14 @@ export default new ApplicationCommand({
 	},
 	async autocomplete(interaction: AutocompleteInteraction) {
 		const focusedOption = interaction.options.getFocused(true)
-		console.log(focusedOption)
+		// console.log(focusedOption)
 		switch (focusedOption.name) {
 			case 'code': {
 
 				break
 			}
 			default: {
-				console.log("uh oh stinky")
+				// console.log("uh oh stinky")
 				throw new Error("homosexual behaviour detected")
 			}
 		}
@@ -230,9 +230,9 @@ export default new ApplicationCommand({
 			return invites[key]
 		})
 		for (let i in invitesArray) {
-			console.log("awaw")
-			console.log(i)
-			console.log(invitesArray[i])
+			// console.log("awaw")
+			// console.log(i)
+			// console.log(invitesArray[i])
 		}
 		let arrayWithNames = invitesArray.map(i => {
 			let output = i.code
@@ -243,20 +243,20 @@ export default new ApplicationCommand({
 		})
 
 		const matches = findBestMatch(focusedOption.value, arrayWithNames)
-		console.log(matches)
+		// console.log(matches)
 		let filtered = []
 
 		if (matches.bestMatch.rating === 0) {
 			filtered = arrayWithNames.sort((a, b) => {
 				return b.length - a.length
 			})
-			console.log(filtered)
+			// console.log(filtered)
 		} else {
 			let sorted = matches.ratings.sort((a, b) => {
 				return b.rating - a.rating
 			})
-			console.log("sorted:")
-			console.log(sorted)
+			// console.log("sorted:")
+			// console.log(sorted)
 			filtered = sorted.map(i => i.target)
 		}
 
@@ -266,12 +266,12 @@ export default new ApplicationCommand({
 		}
 		var response = shortfiltered.map(choice => {
 			const name = choice
-			console.log(name)
+			// console.log(name)
 			const value = choice.split(' ')[0]
 
 			return { name: name, value: value }
 		})
-		console.log(response)
+		// console.log(response)
 		await interaction.respond(response)
 	},
 })

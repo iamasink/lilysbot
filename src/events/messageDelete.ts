@@ -29,7 +29,7 @@ export default new Event({
 		// Perform a coherence check to make sure that there's *something*
 		if (!deletionLog) {
 			// Discord does not emit an audit log if the person who deleted the message is a bot deleting a single message or is the author of the message itself.
-			const msg = `A message by ${format.shittyUsername(message.author)} <@${message.author.id}> was deleted in <#${message.channel.id}>, but we don't know by who (probably themselves).`
+			const msg = `A message by ${format.shittyUsername(message.author)} <@${message.author.id}> was deleted in <#${message.channel.id}>`
 			console.log(msg)
 			log.log(message.guild, msg)
 

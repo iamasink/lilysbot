@@ -70,39 +70,47 @@ const types = {
 export default new Event({
 	name: Events.GuildAuditLogEntryCreate,
 	async execute(auditLogEntry: AuditLogEvent, guild: Guild) {
-		console.log(auditLogEntry.toString())
-		const channel = await log.channel2(guild)
-		if (auditLogEntry) {
+		// console.log(auditLogEntry.toString())
+		// const channel = await log.channel2(guild)
+		// if (auditLogEntry) {
 
-			// i am most likely not doing this in any decent manner but
-			// if (auditLogEntry['action_type'])
+		// 	// i am most likely not doing this in any decent manner but
+		// 	// if (auditLogEntry['action_type'])
 
-			let target = ``
-			if (auditLogEntry['targetId']) {
-				target = `${await client.users.fetch(auditLogEntry['executorId'])} => ${await client.users.fetch(auditLogEntry['targetId'])}`
-			} else {
-				target = `${await client.users.fetch(auditLogEntry['executorId'])}`
-			}
+		// 	let targetText = ``
+		// 	if (auditLogEntry['targetId']) {
+		// 		targetText = `${await client.users.fetch(auditLogEntry['executorId'])} => ${await client.users.fetch(auditLogEntry['targetId'])}`
+		// 	} else {
+		// 		targetText = `${await client.users.fetch(auditLogEntry['executorId'])}`
+		// 	}
 
-			let reason = ``
-			if (auditLogEntry['reason']) {
-				reason = `For reason: ${auditLogEntry['reason']}\n`
-			}
+		// 	let reasonText = ``
+		// 	if (auditLogEntry['reason']) {
+		// 		reasonText = `For reason: ${auditLogEntry['reason']}\n`
+		// 	}
 
-			let changes = ``
-			if (auditLogEntry['changes']) {
-				for (let i = 0, len = auditLogEntry['changes'].length; i < len; i++) {
-					const change = auditLogEntry['changes'][i]
-					const old = change["old"] || "(none)"
-					const newthing = change["new"] || "(none)"
-					changes += stripIndents`\n${change["key"]}:
-										${old} => ${newthing}\n`
-				}
-				// changes = auditLogEntry['changes']
-			}
+		// 	let changesText = ``
+		// 	const changes = auditLogEntry['changes']
+		// 	if (changes) {
+		// 		if (changes['$add']) { // if changes has an $add property
+		// 			return // dont cuz its annoying <3
 
-			channel.send({ content: `${target}:\n${reason}${changes}\n\n${JSON.stringify(auditLogEntry)}`, allowedMentions: { repliedUser: false, users: [] } })
-		}
+		// 		} else {
+
+		// 			for (let i = 0, len = auditLogEntry['changes'].length; i < len; i++) {
+		// 				const change = auditLogEntry['changes'][i]
+		// 				const old = change["old"] || "(none)"
+		// 				const newthing = change["new"] || "(none)"
+		// 				changesText += stripIndents`\n${change["key"]}:
+		// 													${old} => ${newthing}\n`
+		// 			}
+		// 			// changes = auditLogEntry['changes']
+
+		// 		}
+		// 	}
+
+		// 	channel.send({ content: `${targetText}:\n${reasonText}${changesText}\n\n${JSON.stringify(auditLogEntry)}`, allowedMentions: { repliedUser: false, users: [] } })
+		// }
 
 
 	},

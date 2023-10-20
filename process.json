@@ -1,0 +1,5 @@
+{
+    "script": "dist/index.js",
+    "watch": ["dist"],
+    "name": "Wiwwie"
+}

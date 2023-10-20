@@ -218,7 +218,7 @@ export default new ApplicationCommand({
 			}
 			default: {
 				// console.log("uh oh stinky")
-				throw new Error("homosexual behaviour detected")
+				throw new Error("something went wrong, you can't autocomplete this??")
 			}
 		}
 

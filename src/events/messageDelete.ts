@@ -67,7 +67,7 @@ export default new Event({
 		} else {
 			files = []
 			note = "\n__Files:__"
-			message.attachments.map(e => note += `\n[${e.name || e.url}](${e.url})`)
+			message.attachments.map(e => note += `\n[${format.markdownEscape(e.name) || format.markdownEscape(e.url)}](${e.url})`)
 		}
 
 		let content: string = ""

@@ -161,5 +161,8 @@ export default {
 		}
 		).random()
 		return pronouns
+	},
+	markdownEscape(text: string) {
+		return text.replace(/((\_|\*|\~|\`|\|){2})/g, '\\$1');
 	}
 }

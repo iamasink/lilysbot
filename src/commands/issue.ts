@@ -28,7 +28,7 @@ export default new ApplicationCommand({
         const reportInputTitle = new TextInputBuilder()
             .setCustomId('errorReportModalTitleField')
             // The label is the prompt the user sees for this input
-            .setLabel("What went wrong?")
+            .setLabel("Title")
             // Short means only a single line of text
             .setStyle(TextInputStyle.Short)
             .setRequired(true)
@@ -37,7 +37,7 @@ export default new ApplicationCommand({
         const reportInputDescription = new TextInputBuilder()
             .setCustomId('errorReportModalDescriptionField')
             // The label is the prompt the user sees for this input
-            .setLabel("What went wrong?")
+            .setLabel("Description")
             // Short means only a single line of text
             // Paragraph means multiple lines etc
             .setStyle(TextInputStyle.Paragraph)

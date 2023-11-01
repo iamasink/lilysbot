@@ -36,7 +36,7 @@
     "ffmpeg-static": "^5.1.0",
     "gifencoder": "^2.0.1",
     "moment": "^2.29.4",
-    "openai": "^4.11.1",
+    "openai": "^4.12.1",
     "parse-torrent": "^9.0.0",
 		"prism-media": "^2.0.0-alpha.0",
     "redis": "^4.6.7",

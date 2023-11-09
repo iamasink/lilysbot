@@ -83,7 +83,7 @@ export default {
 	 * @param {string} [append=''] append to every message (i dont think it does it to the last one)
 	 * @return {*} 
 	 */
-	splitMessage(text: string, maxLength = 2000, char = '\n', prepend = '', append = '') {
+	splitMessage(text: string, maxLength = 2000, char = '\n', prepend = '', append = ''): string[] {
 		if (text.length <= maxLength) return [text]
 		let splitText = [text]
 		if (Array.isArray(char)) {
@@ -163,6 +163,16 @@ export default {
 		return pronouns
 	},
 	markdownEscape(text: string) {
-		return text.replace(/((\_|\*|\~|\`|\|){2})/g, '\\$1');
+		return text.replace(/((\_|\*|\~|\`|\|){1,2})/g, '\\$1');
+	},
+	async usernameBrackets(user: User) {
+		return `${user.username} (${user.displayName})`
+	},
+	removeDiscrimForNewUsernames(text: string) {
+		if (text.endsWith("#0")) {
+			return text.substring(0, text.length - 2)
+		} else {
+			return text
+		}
 	}
 }

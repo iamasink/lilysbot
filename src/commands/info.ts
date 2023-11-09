@@ -64,10 +64,9 @@ export default new ApplicationCommand({
 						{ name: 'avatar', value: 'avatar' },
 						{ name: 'guild avatar', value: 'guild avatar' },
 						{ name: 'banner', value: 'banner' },
-						{ name: 'hide', value: 'hide' }
-
+						{ name: 'hide', value: 'hide' },
+						{ name: 'username history', value: 'usernames' },
 					)
-
 				)
 		)
 		.addSubcommand(subcommand =>
@@ -79,7 +78,9 @@ export default new ApplicationCommand({
 			subcommand
 				.setName('bot')
 				.setDescription('Info about the bot')
-		),
+		)
+
+	,
 
 	async execute(interaction: ChatInputCommandInteraction) {
 		//console.log(`intercation: ${JSON.stringify(interaction)}`)
@@ -163,6 +164,12 @@ export default new ApplicationCommand({
 						imagename = null
 						break
 					}
+					case 'usernames': {
+						image = null
+						imagename = null
+
+						break
+					}
 					default: { // if no option was specified, default to banner || avatar
 						if (b) {
 							image = user.bannerURL({ forceStatic: false })
@@ -182,7 +189,7 @@ export default new ApplicationCommand({
 				// create embed
 				const infoEmbed = new EmbedBuilder()
 					.setColor(user.hexAccentColor)
-					.setTitle(`__${format.shittyUsername(user).replace(/[\\"']/g, '\\$&')}__`)
+					.setTitle(`__${format.markdownEscape(user.username)}__`)
 					.setThumbnail(thumb)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
 					.setDescription(`<@${user.id}>`)
@@ -199,7 +206,8 @@ export default new ApplicationCommand({
 
 				//.setTimestamp()
 				//.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/Gu1Ggxt.png' })
-				if (interaction.options.getString('show') != 'hide') {
+				if (interaction.options.getString('show') != 'hide' && interaction.options.getString('show') != "usernames") {
+
 					infoEmbed.addFields({ name: '__Profile__', value: `${a}${av}${gav}${b}\n`, })
 
 					if (interaction.guild.members.resolve(user)) {
@@ -226,6 +234,32 @@ export default new ApplicationCommand({
 					if (image) infoEmbed.addFields({ name: `\u200b`, value: `**Showing ${imagename}:**` })
 					if (image) infoEmbed.setImage(`${image}?size=4096`)
 				}
+				if (interaction.options.getString('show') == "usernames") {
+					const usernames = await database.get(`.users.${user.id}.usernames`)
+					let text = `\n`
+					console.log(usernames)
+					for (let key in usernames) {
+						if (usernames.hasOwnProperty(key)) {
+							const data = usernames[key]
+							if (data.from == data.to) continue
+							text += `<t:${key.slice(0, -3)}>\n\`${format.removeDiscrimForNewUsernames(data.from)}\`  **→**  \`${format.removeDiscrimForNewUsernames(data.to)}\`\n`
+						}
+					}
+
+
+					let msgs = format.splitMessage(text, 1000, "\n")
+					for (let i = 0, len = msgs.length; i < len; i++) {
+						if (i == 0) {
+							infoEmbed.addFields({ name: "__Known Username History__", value: msgs[i] })
+						} else {
+							infoEmbed.addFields({ name: `__Known Username History (${i + 1})__`, value: msgs[i] })
+						}
+
+
+					}
+
+				}
+
 
 				// reply with the embed
 				interaction.reply({ embeds: [infoEmbed] })

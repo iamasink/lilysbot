@@ -80,7 +80,7 @@ export default new ApplicationCommand({
                     auth: config.github.token
                 })
 
-                let title = format.cutToLength(`Issue from /issue - ${userissuetitle}`, 250)
+                let title = format.cutToLength(`${userissuetitle}`, 250)
 
                 octokit.issues.create({ owner: "iamasink", repo: "lilysbot", title: title, body: content, labels: ["from discord"] })
                     .then(async res => {

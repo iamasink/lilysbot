@@ -8,7 +8,7 @@ import format from "../utils/format"
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 
 export default new ApplicationCommand({
-	permissions: ["Administrator"],
+	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName('command')
 		.setDescription('Configure commands')

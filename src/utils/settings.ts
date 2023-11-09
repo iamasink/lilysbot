@@ -40,9 +40,9 @@ const settingsList: setting[] = [
 		default: true
 	},
 	{
-		name: "Member Kick Message",
+		name: "Member Kick / Ban Message",
 		value: "leave_kick_message",
-		description: "Whether to show a message when a member leaves, when a member is kicked.",
+		description: "Whether to show a message when a member leaves, when a member is kicked or banned.",
 		type: "toggle",
 		default: true
 	},

@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import { client } from '..'
+import format from '../utils/format'
 
 export default new ApplicationCommand({
 	permissions: ["Administrator"],
@@ -8,8 +9,6 @@ export default new ApplicationCommand({
 		.setName('test')
 		.setDescription('description'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		console.log(interaction.user)
-		console.log(await client.users.fetch(interaction.user, { force: true }))
-
+		interaction.reply(`${format.markdownEscape("_hi_")}`)
 	},
 })

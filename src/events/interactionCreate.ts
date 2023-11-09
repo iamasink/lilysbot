@@ -4,6 +4,7 @@ import { client } from "../index"
 import commands from "../utils/commands"
 import embeds from "../utils/embeds"
 import format from "../utils/format"
+import database from "../utils/database"
 
 
 // Emitted when an interaction is created.
@@ -30,17 +31,21 @@ export default new Event({
 
 
 
-			// checks if the command is an aliased (guild) command
-			//const dbpath = `.guilds.${guildID}.commands.aliases`
-			//const aliases = await database.get(dbpath) || {}
-			// console.log(`aliases: ${JSON.stringify(aliases)}`)
-			// const aliasedCommand = aliases[interaction.commandName]
-			// //console.log(aliasedCommand)
-			// if (aliasedCommand) {
-			// 	commands.run(interaction, aliasedCommand.commandname, aliasedCommand.group, aliasedCommand.subcommand, aliasedCommand.defaultoptions)
-			//} else {
-			commands.run(interaction, "slash")
-			//}
+			//checks if the command is an aliased (guild) command
+			if (interaction.inGuild()) {
+				const dbpath = `.guilds.${interaction.guild.id}.commands.aliases`
+				const aliases = await database.get(dbpath) || {}
+				console.log(`aliases: ${JSON.stringify(aliases)}`)
+				const aliasedCommand = aliases[interaction.commandName]
+				//console.log(aliasedCommand)
+				if (aliasedCommand) {
+					return commands.run(interaction, "slash", aliasedCommand.commandname, aliasedCommand.group, aliasedCommand.subcommand, aliasedCommand.defaultoptions)
+				} else {
+					return commands.run(interaction, "slash")
+				}
+			} else {
+				return commands.run(interaction, "slash")
+			}
 
 		}
 

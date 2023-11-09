@@ -39,6 +39,8 @@ export default new ApplicationCommand({
 			.setDescription("string to eval")
 			.setRequired(true)),
 	async execute(interaction: ChatInputCommandInteraction) {
+		console.log(interaction.options['_hoistedOptions'])
+		console.log("hi!!!")
 		if (interaction.user.id !== "303267459824353280") throw new Error(`oy <@${interaction.user.id}> you're not allowed bitch`)
 
 		await interaction.deferReply()

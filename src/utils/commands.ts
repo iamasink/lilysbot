@@ -338,7 +338,7 @@ export default {
 				return
 			}
 
-			//console.log(newInteraction.options)
+			// console.log(newInteraction)
 			//console.log("running command")
 			if (!type) type = "slash"
 			switch (type) {

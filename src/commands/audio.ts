@@ -23,23 +23,39 @@ import axios from 'axios'
 import embeds from '../utils/embeds'
 import { Octokit } from "@octokit/rest";
 import config from "../config.json"
-import { AudioPlayerStatus, EndBehaviorType, VoiceConnectionStatus, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel } from '@discordjs/voice'
-import { OpusEncoder } from '@discordjs/opus'
-import * as prism from 'prism-media';
-import { createWriteStream } from 'node:fs';
-import { pipeline } from 'node:stream';
+import { AudioPlayerStatus, VoiceConnectionStatus, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel } from '@discordjs/voice'
+
 
 export default new ApplicationCommand({
 	permissions: ["KickMembers"],
 	data: new SlashCommandBuilder()
 		.setName('audio')
 		.setDescription('testy')
-		.addStringOption(option => option
-			.setName("id")
-			.setDescription("bweh"))
+		.addSubcommand(command => command
+			.setName("play")
+			.setDescription("play")
+			.addStringOption(option => option
+				.setName("url")
+				.setDescription("url"))
+		)
+		.addSubcommand(command => command
+			.setName("stop")
+			.setDescription("stop")
+		)
+		.addSubcommand(command => command
+			.setName("pause")
+			.setDescription("pause")
+		)
+		.addSubcommand(command => command
+			.setName("leave")
+			.setDescription("leave")
+		)
+		.addSubcommand(command => command
+			.setName("join")
+			.setDescription("join")
+		)
 	,
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		const userid = interaction.options.getString("id")
 
 
 		const connection = joinVoiceChannel({
@@ -83,39 +99,69 @@ export default new ApplicationCommand({
 			state = "paused"
 		})
 
-		const receiver = connection.receiver
 
-		const opusStream = receiver.subscribe(userid, {
-			end: {
-				behavior: EndBehaviorType.AfterSilence,
-				duration: 10000,
-			},
-		});
+		switch (interaction.options.getSubcommand()) {
+			case ('play'): {
+				const url = interaction.options.get("url")
 
-		const oggStream = new prism.opus.OggLogicalBitstream({
-			opusHead: new prism.opus.OpusHead({
-				channelCount: 2,
-				sampleRate: 48000,
-			}),
-			pageSizeControl: {
-				maxPackets: 10,
-			},
-		});
 
-		const username = (await interaction.client.users.fetch(userid)).username
-		const filename = `rec/${Date.now()}-${username}.ogg`;
+				// Subscribe the connection to the audio player (will play audio on the voice connection)
+				const audioResource = createAudioResource("/mnt/storage/media/data/media/music/Porter Robinson/Nurture/15 - fullmoon lullaby.flac", {
+					metadata: {
+						title: 'A good song!',
+					}
+				})
+				console.log(audioResource)
 
-		const out = createWriteStream(filename);
+				audioPlayer.play(audioResource)
+				const subscription = connection.subscribe(audioPlayer)
 
-		console.log(`👂 Started recording ${filename}`);
-
-		pipeline(opusStream, oggStream, out, (err) => {
-			if (err) {
-				console.warn(`❌ Error recording file ${filename} - ${err.message}`);
-			} else {
-				console.log(`✅ Recorded ${filename}`);
+				connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+					try {
+						await Promise.race([
+							entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+							entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+						]);
+						// Seems to be reconnecting to a new channel - ignore disconnect
+					} catch (error) {
+						console.log(error)
+						// Seems to be a real disconnect which SHOULDN'T be recovered from
+						connection.destroy();
+					}
+				})
+				return
 			}
-		});
+			case ('stop'): {
+				interaction.reply("stoping")
+
+				return
+			}
+			case ('pause'): {
+				if (state == "paused") {
+
+					interaction.reply("pauseing")
+					audioPlayer.unpause();
+
+				} else {
+					interaction.reply("pauseing")
+					audioPlayer.pause();
+				}
+				return
+			}
+			case ('leave'): {
+				interaction.reply("leaveing")
+				audioPlayer.stop();
+				connection.destroy()
+				return
+			}
+			case ('join'): {
+				interaction.reply("joining")
+
+			}
+			default: {
+				throw new Error("brokey")
+			}
+		}
 
 
 	},

@@ -51,7 +51,7 @@ export default new Event({
 			} else {
 				// dont sent if not enough reactions
 				// TODO: change this 1 to a customizable optionx	
-				if (reaction.count > 1) {
+				if (reaction.count > 0) {
 
 					// send message in starboard channel
 					const author = await guild.members.fetch(message.author.id)
@@ -68,6 +68,10 @@ export default new Event({
 						.setDescription(description || "\u200b")
 						.setTimestamp(message.createdTimestamp)
 						.setFields({ name: "Jump to message:", value: message.url })
+					// if (message.embeds) {
+					// 	console.log(message.embeds[0])
+					// 	embed.setImage(message.embeds[0].url)
+					// }
 
 					let image = undefined
 					if (message.attachments.size) {

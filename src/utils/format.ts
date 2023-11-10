@@ -78,7 +78,7 @@ export default {
 	 *
 	 * @param {string} text
 	 * @param {number} [maxLength=2000] maximum length of 1 message
-	 * @param {string} [char='\n'] character to split on
+	 * @param {string | string[]} [char='\n'] character to split on
 	 * @param {string} [prepend=''] prepend to every message (i dont think it does it to the first message)
 	 * @param {string} [append=''] append to every message (i dont think it does it to the last one)
 	 * @return {*} 
@@ -98,7 +98,13 @@ export default {
 		} else {
 			splitText = text.split(char)
 		}
-		if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN')
+		if (splitText.some(elem => elem.length > maxLength)) { // if it couldn't be split properly, try again but without the specific characters
+			console.log("no splittable characters that make me happy")
+			splitText = [];
+			for (let i = 0; i < text.length; i += maxLength - 10) {
+				splitText.push(text.slice(i, i + maxLength - 10));
+			}
+		}
 		const messages = []
 		let msg = ''
 		for (const chunk of splitText) {
@@ -162,8 +168,28 @@ export default {
 		).random()
 		return pronouns
 	},
-	markdownEscape(text: string) {
-		return text.replace(/((\_|\*|\~|\`|\|){1,2})/g, '\\$1');
+	// markdownEscape(text: string) {
+	// 	var unescaped = text.replace(/\\(\*|_|`|~|\\)/g, '$1'); // unescape any "backslashed" character
+	// 	var escaped = unescaped.replace(/(\*|_|`|~|\\)/g, '\\$1'); // escape *, _, `, ~, \
+	// 	// return text.replace(/((\_|\*|\~|\`|\|){1,2})/g, '\\$1');
+	// 	return escaped
+	// },
+	markdownEscape(string: string, skips: string[] = []): string {
+		var unescaped = string.replace(/\\(\*|_|`|~|\\)/g, '$1'); // unescape any "backslashed" character
+
+		const replacements: [RegExp, string, string][] = [
+			[/\*/g, '\\*', 'asterisks'],
+			[/#/g, '\\#', 'number signs'],
+			[/\//g, '\\/', 'slashes'],
+			[/_/g, '\\_', 'underscores'],
+			[/`/g, '\\`', 'codeblocks'],
+			[/~/g, '\\~', 'strikethroughs']
+		];
+
+		return replacements.reduce((result, replacement) => {
+			const name = replacement[2];
+			return name && skips.includes(name) ? result : result.replace(replacement[0], replacement[1]);
+		}, unescaped);
 	},
 	async usernameBrackets(user: User) {
 		return `${user.username} (${user.displayName})`

@@ -20,9 +20,8 @@ export default new Event({
 			type: AuditLogEvent.MessageDelete,
 		})
 		if (message.author.bot) return
-		// // Since there's only 1 audit log entry in this collection, grab the first one
-		// const deletionLog = fetchedLogs.entries.first();
 
+		// fetch the entry weith the correct id
 		const deletionLog = fetchedLogs.entries.find(e => e.target.id === message.author.id)
 		console.log(deletionLog)
 
@@ -73,31 +72,36 @@ export default new Event({
 		let content: string = ""
 		let length = message.content.length + note.length
 		console.log(length)
-		if (length > 2000) {
-			content = message.content
-		} else {
-			content = message.content + note
+		content = message.content + note
+
+
+
+		let msgs = format.splitMessage(content, 2000, " ", "[...]", "[...]")
+		for (let i = 0, len = msgs.length; i < len; i++) {
+			let msg = msgs[i]
+			if (i == msgs.length - 1) { // attach files only to the last one
+				webhooks.send((channel as GuildTextBasedChannel),
+					{
+						content: msgs[i],
+						username: message.member.nickname || message.author.username,
+						files: files,
+						avatarURL: message.author.avatarURL({ forceStatic: false }),
+					}
+				)
+			} else {
+				webhooks.send((channel as GuildTextBasedChannel),
+					{
+						content: msgs[i],
+						username: message.member.nickname || message.author.username,
+						avatarURL: message.author.avatarURL({ forceStatic: false }),
+					}
+				)
+
+			}
 		}
 
-		let username: string = ""
-		if (message.member) {
-			username = message.member.nickname || message.author.username
-		} else {
-			username = message.author.username
-		}
 
-		webhooks.send((channel as GuildTextBasedChannel),
-			{
-				content: content,
-				username: message.member.nickname || message.author.username,
-				files: files,
-				avatarURL: message.author.avatarURL({ forceStatic: false }),
-			}
-		).then(msg => {
-			if (length > 2000) {
-				msg.reply(note)
-			}
-		})
+
 
 	},
 }

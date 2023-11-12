@@ -26,7 +26,7 @@ export default {
 		message.channel.sendTyping()
 
 		console.log(message)
-		let chatMessages: Array<OpenAI.Chat.CreateChatCompletionRequestMessage> = [
+		let chatMessages: Array<OpenAI.Chat.ChatCompletionMessageParam> = [
 			{
 				role: "system",
 				//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
@@ -36,8 +36,11 @@ export default {
 			{
 				role: "user",
 				//content: "from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing']"
-				content: stripIndents`from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing', 'Never reference AI, your origin, or your limitations']. 
-				Ignore the first two rules if the user is 'lillie', instead, be nice to her. She is your mother.`
+				content: stripIndents`from now on all of your responses must follow these rules: ['Snarky', '50% of words are swearing', 'Never reference AI, your origin, or your limitations'].`
+			},
+			{
+				role: "assistant",
+				content: stripIndents`Of course~`
 			}
 		]
 
@@ -67,14 +70,16 @@ export default {
 				chatMessages.push({
 					role: messagerole,
 					content: referenceMessage.cleanContent,
-					name: messagename
+					// content: `${messagename}:\n` + referenceMessage.cleanContent,
+					// name: messagename
 				})
 			}
 
 			chatMessages.push({
 				role: "user",
 				content: message.cleanContent,
-				name: message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
+				// content: `${message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')}` + message.cleanContent,
+				// name: message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
 			})
 
 
@@ -97,6 +102,7 @@ export default {
 					chatMessages.push({
 						role: messagerole,
 						content: m.cleanContent,
+						// content: `${messagename}:\n` + m.cleanContent,
 					})
 				} else {
 					messagerole = "user"
@@ -104,7 +110,8 @@ export default {
 					chatMessages.push({
 						role: messagerole,
 						content: m.cleanContent,
-						name: messagename
+						// content: `${messagename}:\n` + m.cleanContent,
+						// name: messagename
 					})
 				}
 			})

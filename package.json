@@ -30,7 +30,7 @@
     "@octokit/rest": "^20.0.2",
     "axios": "^1.6.1",
     "@types/string-similarity": "^4.0.1",
-    "bl": "^6.0.0",
+    "bl": "^6.0.8",
     "common-tags": "^1.8.2",
     "discord.js": "^14.13.0",
     "ffmpeg-static": "^5.1.0",

@@ -28,7 +28,7 @@
     "@discordjs/rest": "^2.0.1",
     "@discordjs/voice": "^0.16.0",
     "@octokit/rest": "^20.0.2",
-    "axios": "^1.6.1",
+    "axios": "^1.6.4",
     "@types/string-similarity": "^4.0.1",
     "bl": "^6.0.0",
     "common-tags": "^1.8.2",

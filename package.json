@@ -39,7 +39,7 @@
     "openai": "^4.18.0",
     "parse-torrent": "^9.0.0",
     "prism-media": "^2.0.0-alpha.0",
-    "redis": "^4.6.7",
+    "redis": "^4.6.12",
     "rss-parser": "^3.13.0",
     "string-similarity": "^4.0.4",
     "libsodium-wrappers": "^0.7.10",

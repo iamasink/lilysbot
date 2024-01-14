@@ -158,11 +158,11 @@ export default {
 			} else {
 				console.log(error.message)
 			}
-			message.reply(
-				stripIndents`an error occurred :(
-				\`${error}\`
-				`
-			)
+			// message.reply(
+			// 	stripIndents`an error occurred :(
+			// 	\`${error}\`
+			// 	`
+			// )
 		}
 	}
 }

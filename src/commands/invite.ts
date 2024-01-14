@@ -1,9 +1,22 @@
-import { AutocompleteInteraction, CategoryChannel, ChannelType, ChatInputCommandInteraction, Invite, SlashCommandBuilder, TextChannel } from 'discord.js'
+import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, CategoryChannel, ChannelType, ChatInputCommandInteraction, ComponentType, Invite, Message, SlashCommandBuilder, TextChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import database from '../utils/database'
 import embeds from '../utils/embeds'
 import format from '../utils/format'
 import { findBestMatch } from 'string-similarity'
+import { stripIndents } from 'common-tags'
+
+
+
+
+interface gayassinvite {
+	inviterId: string,
+	uses: number,
+	expired: boolean,
+	code: string
+	name?: string
+}
+
 
 export default new ApplicationCommand({
 	permissions: ["Administrator"],
@@ -70,7 +83,20 @@ export default new ApplicationCommand({
 			.addIntegerOption(option => option
 				.setName('maxuses')
 				.setDescription('Maximum number of uses. Defaults to infinite'))
-		),
+		)
+
+		.addSubcommand(command => command
+			.setName("details")
+			.setDescription("get details for an invite")
+			.addStringOption(option => option
+				.setName("code")
+				.setDescription("the invite to query")
+				.setRequired(true)
+				.setAutocomplete(true))
+
+		)
+
+	,
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 
 		switch (interaction.options.getSubcommand()) {
@@ -157,8 +183,10 @@ export default new ApplicationCommand({
 
 				// console.log(code)
 
-
+				// find the invite in the server, it must be from the server and not from the database because this only removes invites from servers. database info stays :)
 				const invite = invites.find(invite => invite.code === code)
+
+				// warn for stuff
 				if (!invite) {
 					interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite`) })
 					return
@@ -168,8 +196,77 @@ export default new ApplicationCommand({
 					return
 				}
 
-				invite.delete()
-				interaction.reply({ ephemeral: true, embeds: embeds.successEmbed(`Invite Deleted`, `Invite \`${code}\` deleted`) })
+				// create actionrow with confirm, delete button
+				const row: any = new ActionRowBuilder()
+					.addComponents(
+						new ButtonBuilder()
+							.setCustomId("invite-confirmdelete")
+							.setLabel("Delete")
+							.setStyle(ButtonStyle.Danger),
+					)
+					.addComponents(
+						new ButtonBuilder()
+							.setCustomId("invite-canceldelete")
+							.setLabel("Cancel")
+							.setStyle(ButtonStyle.Secondary),
+					)
+
+				// create confirm reply, fetch the message
+				let msg = await interaction.reply({
+					embeds: embeds.warningEmbed("Are you sure?", `Are you sure you want to delete invite \`${code}\`?`),
+					components: [row],
+					ephemeral: true,
+					fetchReply: true
+				})
+
+				console.log(msg)
+
+				// collect for button interactions for time from fetched interaction msg
+				const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 0.1 * 60 * 1000 });
+
+				let message
+
+				// when a button is collected
+				collector.on('collect', async i => {
+					// double check its the correct user (is this needed? its ephemeral)
+					if (i.user.id === interaction.user.id) {
+						console.log(`${i.user.id} clicked on the ${i.customId} button.`)
+
+						// complete action based on input
+						if (i.customId == "invite-confirmdelete") {
+
+							invite.delete()
+							message = { embeds: embeds.successEmbed(`Invite Deleted`, `Invite \`${code}\` deleted`), components: [] }
+
+						}
+						else if (i.customId == "invite-canceldelete") {
+
+
+							message = { embeds: embeds.messageEmbed(`Invite Deletion Canceled`, `Invite \`${code}\``), components: [] }
+
+						}
+						else {
+							return
+						}
+
+
+						if (interaction.replied) {
+							// edit the original confirmation message
+							await interaction.editReply(message)
+							// stop the collector with reason "done"
+							collector.stop("done")
+						}
+
+					}
+				})
+
+				// when collector ends, from .stop() or from timeout,
+				collector.on('end', async (collected, reason) => {
+					// if the reason was from collector.stop("done"), return
+					if (reason == "done") return
+					// otherwise cancel the message
+					msg.edit({ embeds: embeds.messageEmbed(`Invite Deletion Canceled`, `Invite \`${code}\``), components: [] })
+				})
 
 				break
 
@@ -203,12 +300,91 @@ export default new ApplicationCommand({
 					})
 				break
 			}
+
+			case 'details': {
+				const guild = interaction.guild
+				const code = interaction.options.getString('code')
+
+				const invites = await interaction.guild.invites.fetch()
+				const invite: Invite = invites.find(invite => invite.code === code)
+				if (!await database.get(`.guilds.${guild.id}.invites.${code}`)) {
+					interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite Code`) })
+					return
+				}
+				const dbInvite: gayassinvite = await database.get(`.guilds.${guild.id}.invites.${code}`)
+				// if (!invite) {
+				// 	interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite.`) })
+				// 	return
+				// }
+				console.log(invite)
+
+				const invitedusers = []
+
+				const dbusers = await database.get(`.guilds.${guild.id}.users`)
+				for (let u in dbusers) {
+					if (dbusers.hasOwnProperty(u)) {
+						if (dbusers[u].invitedLink == code) {
+							invitedusers.push(u)
+						}
+					}
+				}
+
+				console.log(invitedusers)
+
+
+
+
+
+
+				// if (invite) {
+				// 	const inviter = invite.inviter || "null"
+				// 	const channel = await interaction.client.channels.fetch(invite.channelId)
+				// 	finalinviter.push`r:\`${inviter}\``
+				// }
+
+				// if (dbInvite) {
+				// 	const dbInviter = await interaction.client.users.fetch(dbInvite.inviterId)
+				// 	finalinviter.push`d:\`${dbInviter}\``
+				// }
+				// let invitermessage = finalinviter.join(" | ")
+
+
+				// const invitedUsers = []
+
+				// let message = `__${invite.code } __`
+
+				// console.log(invitermessage)
+
+				// // message +=
+				// // 	stripIndents`
+				// // 		by: ${inviter || "?" || "?"}
+				// // 		to channel: ${channel || "?"}
+				// // 		temporary: ${invite.temporary || "?"}
+				// // 		maxAge: ${invite.maxAge || "?"}
+				// // 		uses: ${invite.uses || "?"}
+				// // 		maxUses: ${invite.maxUses || "?"}
+				// // 		createdTimestamp: ${invite.createdTimestamp || "?"}
+				// // 		expiresTimestamp: ${invite.expiresTimestamp || "?"}
+				// // 		`
+
+
+
+
+				// interaction.reply({
+				// 	content: message,
+				// 	ephemeral: true
+				// })
+
+
+				break
+			}
 			default: {
 				break
 			}
 		}
 	},
 	async autocomplete(interaction: AutocompleteInteraction) {
+
 		const focusedOption = interaction.options.getFocused(true)
 		// console.log(focusedOption)
 		switch (focusedOption.name) {
@@ -226,7 +402,7 @@ export default new ApplicationCommand({
 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
 
 		//convert to array of objects (from object of objects)
-		var invitesArray = Object.keys(invites).map(key => {
+		var invitesArray: gayassinvite[] = Object.keys(invites).map(key => {
 			return invites[key]
 		})
 		for (let i in invitesArray) {
@@ -234,6 +410,8 @@ export default new ApplicationCommand({
 			// console.log(i)
 			// console.log(invitesArray[i])
 		}
+
+		// add the name of each invite and username to the invites as a new array
 		let arrayWithNames = invitesArray.map(i => {
 			let output = i.code
 			if (i.name) {

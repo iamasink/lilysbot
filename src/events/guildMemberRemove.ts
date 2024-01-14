@@ -5,6 +5,8 @@ import database from "../utils/database"
 import log from "../utils/log"
 import format from "../utils/format"
 import settings from "../utils/settings"
+import axios from "axios"
+import { url } from "inspector"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
@@ -101,7 +103,8 @@ export default new Event({
 				const gifs = ["https://media.tenor.com/7VY8WFpRZZcAAAAC/explosions-spontaneous-explosion.gif",
 					"https://media.tenor.com/g9TJiULXIZQAAAAd/air-strike.gif",
 					"https://media.tenor.com/2L8cGGO6_MIAAAAd/operation-teapot-nuke.gif",
-					"https://media.tenor.com/eEs1jRy5UXgAAAAC/house-explosion.gif"]
+					"https://media.tenor.com/eEs1jRy5UXgAAAAC/house-explosion.gif",
+					"https://media.tenor.com/Xk-mBqoSLX0AAAAC/kaguya-boom.gif"]
 				const gif = gifs[Math.floor(Math.random() * gifs.length)]
 				embed.setImage(gif)
 			}

@@ -5,6 +5,7 @@ import commands from "../utils/commands"
 import embeds from "../utils/embeds"
 import format from "../utils/format"
 import database from "../utils/database"
+import config from "../config.json"
 
 
 // Emitted when an interaction is created.
@@ -50,15 +51,55 @@ export default new Event({
 		}
 
 		else if (interaction.isAutocomplete()) {
-			console.log(interaction)
+			// console.log(interaction)
 
 			const command = client.commands.get(interaction.commandName)
+			// handle discord permissions
+			const acceptedPermissions = []
+			const deniedPermissions = []
+			const permlist = command.permissions || []
+			//console.log(command.permissions)
+
+
+
+			// for every permission set in the command, check it
+			for (let i = 0; i < permlist.length; i++) {
+				if (permlist[i] == "botowner") {
+					if (interaction.user.id !== config.permissions.botowner) {
+						return
+					}
+				} else {
+					console.log(i)
+					if ((interaction.member.permissions as any).has(permlist[i])) {
+						console.log("yes")
+						acceptedPermissions.push(permlist[i])
+					} else {
+						console.log("no")
+						deniedPermissions.push(permlist[i])
+					}
+				}
+			}
+			for (let i = 0; i < deniedPermissions.length; i++) {
+				// permissionsText += `\n🚫 ** ${new PermissionsBitField(deniedPermissions[i],).toArray()}**` // get text name for each permission
+			}
+			for (let i = 0; i < acceptedPermissions.length; i++) {
+				// permissionsText += `\n✅ ** ${new PermissionsBitField(acceptedPermissions[i],).toArray()}**`
+			}
+
+			if (deniedPermissions.length > 0) {
+				// console.log(interaction)
+				await interaction.respond([{ name: "🚫 No Permission!", value: "" }])
+				console.log(`denied! ${interaction.user}`)
+				return
+			}
 
 			console.log(command)
 			if (!command) {
 				console.error(`No command matching ${interaction.commandName} was found.`)
 				return
 			}
+
+
 
 			try {
 				await command.autocomplete(interaction)

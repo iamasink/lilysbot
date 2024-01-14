@@ -19,7 +19,11 @@ export default new Event({
 			limit: 1,
 			type: AuditLogEvent.MessageDelete,
 		})
-		if (message.author.bot) return
+		if (message.webhookId) {
+			console.log("webhook id " + message.webhookId)
+			return
+		}
+		if (message.author && message.author.bot) return
 
 		// fetch the entry weith the correct id
 		const deletionLog = fetchedLogs.entries.find(e => e.target.id === message.author.id)

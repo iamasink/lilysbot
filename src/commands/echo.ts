@@ -10,6 +10,6 @@ export default new ApplicationCommand({
 			.setDescription("The message to echo")
 			.setRequired(true)),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		interaction.reply(interaction.options.getString("message"))
+		interaction.reply({ content: interaction.options.getString("message"), allowedMentions: { users: [], repliedUser: false } })
 	},
 })

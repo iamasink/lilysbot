@@ -308,7 +308,7 @@ export default {
 					if (interaction.user.id !== config.permissions.botowner) {
 						interaction.reply({
 							ephemeral: true,
-							embeds: embeds.warningEmbed("You don't have permission to perform this command", `🚫 **Bot Owner**`,),
+							embeds: embeds.warningEmbed(`You don't have permission to perform the command **${commandName}**`, `🚫 **Bot Owner**`,),
 						})
 						return
 					}
@@ -333,7 +333,7 @@ export default {
 			if (deniedPermissions.length > 0) {
 				interaction.reply({
 					ephemeral: true,
-					embeds: embeds.warningEmbed("You don't have permission to perform this command", `${permissionsText}`,),
+					embeds: embeds.warningEmbed(`You don't have permission to perform the command **${commandName}**`, `${permissionsText}`,),
 				})
 				return
 			}

@@ -5,10 +5,12 @@ services:
     # image:
     build: .
     depends_on: [redis-stack]
-    develop:
-      watch:
-        - path: .
-          action: rebuild
+    restart: unless-stopped
+    # develop:
+    #   watch:
+    #     - path: .
+    #       action: rebuild
+
   redis-stack:
     image: redis/redis-stack:6.2.6-v9
     container_name: redis
@@ -16,8 +18,8 @@ services:
       - 6379:6379
       - 8001:8001
     volumes:
-      - /home/lily/app/redis/data:/data
-      - /home/lily/app/redis/config/redis.conf:/redis.conf
-    restart: always
+      - PATH/TO/REDIS/data:/data
+      - PATH/TO/REDIS/config/redis.conf:/redis.conf
+    restart: unless-stopped
     environment:
       - TZ=Europe/London

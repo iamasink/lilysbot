@@ -1,0 +1,6 @@
+---
+services:
+  lilysbot:
+    container_name: lilysbot
+    # image:
+    build: .

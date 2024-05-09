@@ -38,7 +38,7 @@ export default new Event({
 			if (message.channel.id == "645053287208452112") return
 			if (message.content.includes("@everyone")) return
 			if (message.author != client.user) {
-				openai.chatgptFuck(message)
+				openai.openaiMessage(message)
 			}
 		}
 

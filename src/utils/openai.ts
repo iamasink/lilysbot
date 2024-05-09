@@ -1,4 +1,4 @@
-import { openaitoken, chatallowedguilds } from '../config.json'
+import { openaifeatures, openaitoken, chatallowedguilds } from '../config.json'
 
 import OpenAI from 'openai'
 import format from '../utils/format'
@@ -14,7 +14,9 @@ const openai = new OpenAI({
 })
 
 export default {
-	async chatgptFuck(message: Message) {
+	async openaiMessage(message: Message) {
+		if (!openaifeatures) return new Error("testyyyy")
+
 		if (message.author.id == "454357482102587393") {
 			return
 		}
@@ -85,7 +87,7 @@ export default {
 
 
 		} else {
-			console.log("sex")
+			console.log("hmm")
 			const messages = await message.channel.messages.fetch({ limit: 3 })
 			for (let i = 0, len = messages.size; i < len; i++) {
 

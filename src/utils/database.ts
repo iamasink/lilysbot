@@ -1,11 +1,12 @@
 import * as redis from 'redis';
 import { client } from ".."
+import { redisurl } from "../config.json"
 const key = "lilybot"
 let db
 
 async function connect() {
-	console.log("connecting to database...")
-	db = redis.createClient({ url: "redis://localhost:6379" })
+	console.log(`connecting to database (url: ${redisurl})`)
+	db = redis.createClient({ url: redisurl })
 	db.on("error", async (err) => {
 		console.log(`Redis error: ${err}`)
 	})

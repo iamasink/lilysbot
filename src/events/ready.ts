@@ -1,4 +1,4 @@
-import { ActivityOptions, ActivityType, Events, PresenceData, PresenceStatusData, TextChannel } from 'discord.js'
+import { ActivityOptions, ActivityType, Events, PresenceData, PresenceStatusData, TextBasedChannel, TextChannel } from 'discord.js'
 import Event from '../types/Event'
 import { client } from "../index"
 import database from '../utils/database'
@@ -86,19 +86,26 @@ export default new Event({
 
 			// log ip
 			if (botlogchannel) {
-				const lastip = await database.get(`.botdata.lastip`)
-				const newip = (await axios.get(`http://icanhazip.com/`)).data
-				// console.log(newip)
-				if (lastip != newip) {
-					const messageChannel = client.channels.cache.get(botlogchannel) as TextChannel;
-					messageChannel.send({ embeds: embeds.messageEmbed("IP Changed!", `From: \`${lastip}\`\nTo: \`${newip}\``) })
-					database.set(`.botdata.lastip`, newip)
+				try {
+
+					const lastip = await database.get(`.botdata.lastip`)
+					const newip = (await axios.get(`http://icanhazip.com/`)).data
+					// console.log(newip)
+					if (lastip != newip) {
+						const messageChannel = client.channels.cache.get(botlogchannel) as TextChannel;
+						messageChannel.send({ embeds: embeds.messageEmbed("IP Changed!", `From: \`${lastip}\`\nTo: \`${newip}\``) })
+						database.set(`.botdata.lastip`, newip)
+					}
+				} catch (e) {
+					console.log(e)
 				}
 			}
 
 
 
 		}, 60 * 1000);
+
+
 
 		// // temp
 		// setInterval(async () => {

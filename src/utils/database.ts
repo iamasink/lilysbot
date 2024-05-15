@@ -43,12 +43,15 @@ async function set(path: string, data: any) {
 	}
 	catch (e) {
 		let newpath
-		// console.log("s" + e.toString())
-		// console.log("n" + e.name)
-		// console.log("m" + e.message)
-		// console.log("c" + e.cause)
+		console.log("s" + e.toString())
+		console.log("n" + e.name)
+		console.log("m" + e.message)
+		console.log("c" + e.cause)
+
+		console.log(path)
+		console.log(data)
 		switch (e.message) {
-			case 'ERR new objects must be created at the root': {
+			case 'ERR new objects must be created at the root': { // what was this for?
 				console.log("error root")
 				newpath = path.split(".")
 				newpath.pop()

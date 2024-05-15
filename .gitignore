@@ -4,4 +4,4 @@ config.json
 .vscode
 dist
 old commands
-docker-compose-dev.yml
+docker-compose.yml

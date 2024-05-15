@@ -96,7 +96,8 @@ export default new ApplicationCommand({
 		.addSubcommand(command => command
 			.setName('list')
 			.setDescription('list all commands')
-		),
+		)
+	,
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		switch (interaction.options.getSubcommandGroup()) {

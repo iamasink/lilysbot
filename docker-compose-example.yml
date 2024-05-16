@@ -8,18 +8,18 @@ services:
     restart: unless-stopped
     # develop:
     #   watch:
-    #     - path: .
+    #     - path: ./dist
     #       action: rebuild
 
   redis-stack:
-    image: redis/redis-stack:6.2.6-v9
+    image: redis/redis-stack:latest
     container_name: redis
     ports:
       - 6379:6379
       - 8001:8001
     volumes:
-      - PATH/TO/REDIS/data:/data
-      - PATH/TO/REDIS/config/redis.conf:/redis.conf
+      - /PATH/TO/REDIS/DATA:/data
     restart: unless-stopped
     environment:
       - TZ=Europe/London
+      - REDIS_ARGS=--save 60 100 --appendonly yes

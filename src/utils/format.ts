@@ -1,5 +1,6 @@
 import { Guild, GuildMember, User, UserPremiumType } from "discord.js"
 import format from "./format"
+import moment from "moment"
 
 export default {
 	bar(min: number, current: number, max: number, length = 10, border = false, chars = [`#`, `.`, `[`, `]`]) {

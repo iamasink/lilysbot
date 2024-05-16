@@ -75,6 +75,9 @@ export default new ApplicationCommand({
 						value = await toggleSelector(interaction, option.name)
 						break
 					}
+					// case 'list': {
+					// 	value = await stringSelector(interaction, option.name)
+					// }
 					default: {
 						throw new Error(`invalid type: ${option.type}`)
 					}
@@ -101,7 +104,7 @@ export default new ApplicationCommand({
 					const description = e.description
 					let currentValue: string = ""
 					const value = await settings.get(interaction.guild, `${e.value}`)
-					if (value) {
+					if (value != null) {
 						switch (type) {
 							case 'channel': {
 								currentValue = `<#${value}>`
@@ -110,6 +113,9 @@ export default new ApplicationCommand({
 							case 'role': {
 								currentValue = `< @& ${value}>`
 								break
+							}
+							case 'toggle': {
+								currentValue = `${value}`
 							}
 							default: {
 								currentValue = `\`${value}\``

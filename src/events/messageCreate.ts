@@ -31,15 +31,18 @@ export default new Event({
 		// handle the stuff for pings and that for ai chatbot
 		if (
 			message.mentions.has(client.user)
-			|| Math.random() < 0.001 && (message.channel as GuildTextBasedChannel).name == "general" && message.content.length > 10
 			//|| message.channel.id == "1085933094328090745"
 		) {
-
 			if (message.channel.id == "645053287208452112") return
 			if (message.content.includes("@everyone")) return
 			if (message.author != client.user) {
 				openai.openaiMessage(message)
 			}
+		}
+		else if (Math.random() < 0.001 && (message.channel as GuildTextBasedChannel).name == "general" && message.content.length > 10) {
+			if (message.channel.id == "645053287208452112") return
+			if (message.content.includes("@everyone")) return
+			openai.openaiMessage(message, true)
 		}
 
 		// if disboard bump

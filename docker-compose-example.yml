@@ -10,7 +10,8 @@ services:
     #   watch:
     #     - path: ./dist
     #       action: rebuild
-
+    environment:
+      - REDIS_URL=redis://redis-stack:6379
   redis-stack:
     image: redis/redis-stack:latest
     container_name: redis

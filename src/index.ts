@@ -36,6 +36,7 @@ export const client = new Bot({
 
 console.log("test")
 
+
 async function test() {
 	const channel = await client.channels.fetch("1008017419664638048", {
 		allowUnknownGuild: true,
@@ -45,6 +46,16 @@ async function test() {
 		channel.send("hello world")
 	}
 }
+
+function signalHandler(signal) {
+	console.log(`Shutting down due to ${signal}. Goodbaii!! 👋 `)
+	process.exit()
+}
+
+process.on('SIGINT', signalHandler)
+process.on('SIGTERM', signalHandler)
+process.on('SIGQUIT', signalHandler)
+
 
 client.start()
 //test()

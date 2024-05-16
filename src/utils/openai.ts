@@ -18,7 +18,7 @@ const openai = new OpenAI({
 export default {
 	async openaiMessage(message: Message, random: boolean = false) {
 		const userstokens = await database.get(`.users.${message.author.id}.aitokenusage`)
-		console.log(userstokens)
+		// console.log(userstokens)
 		if (userstokens > 5000 && !random) {
 			return message.reply("You've used quite a lot of tokens. (costing me ~$0.50) Sorry, but you've been temporarily blocked from using chat features.")
 		}
@@ -30,18 +30,18 @@ export default {
 			return
 		}
 
-		console.log("hi")
+		// console.log("hi")
 		if (!chatallowedguilds.includes(message.guild.id)) {
 			return
 		}
 		message.channel.sendTyping()
 
-		console.log(message)
+		// console.log(message)
 		let chatMessages: Array<OpenAI.Chat.ChatCompletionMessageParam> = [
 			{
 				role: "system",
 				//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
-				content: stripIndents`You are Wiwwie, an intelligent and seamless chat-bot. Never mention AI, or your limitations. Act mildly snarky.
+				content: stripIndents`You are Wiwwie, an intelligent and seamless chat-bot intented to help users when they need it, and to provide insightful conversation. Never mention AI, or your limitations. Act mildly snarky.
 				Current date and time: ${new Date().toUTCString()}.`
 				//content: `You are a cat named Wiwwie. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Only say "meow".`
 			},
@@ -50,7 +50,7 @@ export default {
 		let messagerole: ChatCompletionRole
 		let messagename: string
 		if (message.reference) {
-			console.log(message.reference)
+			// console.log(message.reference)
 			const referenceGuild = await client.guilds.fetch(message.reference.guildId)
 			const referenceChannel = await referenceGuild.channels.fetch(message.reference.channelId)
 			const referenceMessage = await (referenceChannel as GuildTextBasedChannel).messages.fetch(message.reference.messageId)
@@ -86,14 +86,14 @@ export default {
 
 
 		} else {
-			console.log("hmm")
+			// console.log("hmm")
 			const messages = await message.channel.messages.fetch({ limit: 3 })
 			for (let i = 0, len = messages.size; i < len; i++) {
 
 			}
 
 			messages.reverse().forEach((m: Message) => {
-				console.log(m)
+				// console.log(m)
 				if (m.author.id === client.user.id) {
 					if (m.embeds.length > 0) {
 						console.log("ignoring because it has an embed. Im sorry.")
@@ -108,7 +108,7 @@ export default {
 					})
 				} else {
 					messagerole = "user"
-					messagename = m.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
+					messagename = m.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-') || m.author.username || "user"
 					chatMessages.push({
 						role: messagerole,
 						content: m.cleanContent,
@@ -122,15 +122,20 @@ export default {
 
 
 		}
-		console.log(chatMessages)
+		// console.log(chatMessages)
 
 
 
 		try {
+			const use4o = await settings.get(message.guild, "openai_model")
+			// console.log("model is " + use4o)
+
 			let model = "gpt-3.5-turbo"
-			if (settings.get(message.guild, "openai_model")) {
+			if (use4o == true) {
 				model = "gpt-4o"
 			}
+
+			// console.log(model)
 
 			const completion = await openai.chat.completions.create({
 				model: model,
@@ -147,7 +152,7 @@ export default {
 				//logit_bias:
 				user: message.author.id
 			})
-			console.log(completion)
+			// console.log(completion)
 
 			database.set(`.users.${message.author.id}.aitokenusage`, userstokens + completion.usage.total_tokens)
 

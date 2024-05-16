@@ -3,7 +3,6 @@ import ApplicationCommand from '../types/ApplicationCommand'
 import embeds from '../utils/embeds'
 import database from '../utils/database'
 import settings from '../utils/settings'
-import { compareTwoStrings } from 'string-similarity'
 const settingsList = settings.settingsList
 
 const choices = settingsList.map(setting => {
@@ -44,9 +43,9 @@ export default new ApplicationCommand({
 		console.log(`choices: ${JSON.stringify(choices)}`)
 		switch (interaction.options.getSubcommand()) {
 			case 'set': {
-				const setting = interaction.options.getString("setting")
-				console.log(setting)
-				const option: setting = await settingsList[settingsList.findIndex(e => e.value === setting)]
+				const settingName = interaction.options.getString("setting")
+				console.log(settingName)
+				const option: setting = settingsList[settingsList.findIndex(e => e.value === settingName)]
 				console.log(JSON.stringify(option))
 				let value = ""
 				switch (option.type) {

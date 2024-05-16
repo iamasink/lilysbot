@@ -1,0 +1,33 @@
+{
+	"clientId": "clientid",
+	"guildId": "guildid",
+	"token": "discordtoken",
+	"footer": "Lily's Bot",
+	"permissions": {
+		"botowner": "303267459824353280"
+	},
+	"levels": {
+		"threshold": 50
+	},
+	"reddit": {
+		"clientId": "clientid",
+		"clientSecret": "secret",
+		"username": "username",
+		"password": "password"
+	},
+	"github": {
+		"token": "ghp_abcdefg"
+	},
+	"test": {
+		"authorization": ""
+	},
+	"openaitoken": "sk-proj-openaikeyshmlkgfhlmjk.",
+	"openaifeatures": true,
+	"chatallowedguilds": [
+		"1234567890123456789",
+		"1234567890123456789",
+		"1234567890123456789"
+	],
+	"botlogchannel": "1234567890123456789",
+	"redisurl": "redis://redis-stack:6379"
+}

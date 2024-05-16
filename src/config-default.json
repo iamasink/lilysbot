@@ -1,4 +1,5 @@
 {
+	"_comment": "Rename this file to config.json",
 	"clientId": "clientid",
 	"guildId": "guildid",
 	"token": "discordtoken",

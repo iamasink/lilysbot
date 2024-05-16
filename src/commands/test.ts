@@ -13,6 +13,7 @@ export default new ApplicationCommand({
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const info = database.set(".info2", `data ${moment().format()}`)
 
+		console.log(client.commands.get("settings"))
 	},
 })
 

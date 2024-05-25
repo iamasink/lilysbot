@@ -337,9 +337,11 @@ export default new ApplicationCommand({
 			case 'bot': {
 				const client = interaction.client
 				const user = client.user
-				console.log(client)
-				const glances = (await axios.get('http://localhost:61208/api/3/all')).data
-				console.log(glances)
+				// console.log(client)
+
+				const users: object = await database.get(".users")
+				console.log(Object.keys(users).length)
+
 
 				const infoEmbed = new EmbedBuilder()
 					.setColor(`#f9beca`)
@@ -349,22 +351,28 @@ export default new ApplicationCommand({
 					.setDescription(`**ID**: ${user.id}\n**Created at**: <t:${user.createdTimestamp.toString().slice(0, -3)}:f>`)
 					.addFields(
 						{
-							name: '__Stats__', value: `**Guilds**: ${client.guilds.cache.size}\n**Total Channels**: ${client.channels.cache.size}\n**Total Members**: ${client.users.cache.size}\n`
+							name: '__Stats__', value:
+								stripIndents`**Guilds**: ${client.guilds.cache.size}
+							**Total Channels**: ${client.channels.cache.size}
+							**Total Members**: ${client.users.cache.size}
+							**Total Members2**: ${""}`
 						},
-						{
-							name: '__System Info__', value:
-								stripIndent`
-								**Load**: ${glances.load.min1.toFixed(2)} ${glances.load.min5.toFixed(2)} ${glances.load.min15.toFixed(2)} 
-								**Uptime**: ${glances.uptime}
-								**CPU**:
-								　　*Cores*: ${glances.core.phys} | ${glances.core.log}
-								　　*Usage*: ${glances.cpu.total}
-								**Memory**:
-								　　*Used*: ${(glances.mem.used / 1073741824).toFixed(2)}G / ${(glances.mem.total / 1073741824).toFixed(2)}G
-								　　*Percent*: ${glances.mem.percent}
-								　　\`${format.bar(0, glances.mem.used, glances.mem.total, 25, true)}\`
-								`
-						},
+						// {
+						// 	name: '__System Info__', value:
+						// 		stripIndent`
+
+						// 		`
+						// 	// **Load**: ${glances.load.min1.toFixed(2)} ${glances.load.min5.toFixed(2)} ${glances.load.min15.toFixed(2)} 
+						// 	// **Uptime**: ${glances.uptime}
+						// 	// **CPU**:
+						// 	// 　　*Cores*: ${glances.core.phys} | ${glances.core.log}
+						// 	// 　　*Usage*: ${glances.cpu.total}
+						// 	// **Memory**:
+						// 	// 　　*Used*: ${(glances.mem.used / 1073741824).toFixed(2)}G / ${(glances.mem.total / 1073741824).toFixed(2)}G
+						// 	// 　　*Percent*: ${glances.mem.percent}
+						// 	// 　　\`${format.bar(0, glances.mem.used, glances.mem.total, 25, true)}\`
+
+						// },
 					)
 				//
 				interaction.reply({ embeds: [infoEmbed] })

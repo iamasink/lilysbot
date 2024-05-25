@@ -19,9 +19,7 @@ export default {
 	async openaiMessage(message: Message, random: boolean = false) {
 		const userstokens = await database.get(`.users.${message.author.id}.aitokenusage`)
 		// console.log(userstokens)
-		if (userstokens > 5000 && !random) {
-			return message.reply("You've used quite a lot of tokens. (costing me ~$0.50) Sorry, but you've been temporarily blocked from using chat features.")
-		}
+
 
 
 		if (!openaifeatures) return new Error("open ai is disabled")
@@ -31,9 +29,14 @@ export default {
 		}
 
 		// console.log("hi")
-		if (!chatallowedguilds.includes(message.guild.id)) {
-			return
+		if (!message.inGuild()) return
+		if (!chatallowedguilds.includes(message.guild.id)) return
+
+
+		if (userstokens > 15000 && !random) {
+			return message.reply("You've used this quite a lot! Sorry, but you've been temporarily blocked from using chat features.")
 		}
+
 		message.channel.sendTyping()
 
 		// console.log(message)

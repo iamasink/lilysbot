@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified nya~\" && exit 1",
     "start": "ts-node src/index.ts",
     "deploy": "ts-node src/deploy-commands.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "npx nodemon src/index.ts"
   },
   "repository": {
     "type": "git",

@@ -53,6 +53,8 @@ COPY --from=dependencies /usr/src/bot/node_modules ./node_modules
 # Copy the compiled application code
 COPY --from=builder /usr/src/bot/dist ./dist
 
+ENV NODE_ENV=prod
+
 # Start the bot
 CMD ["node", "dist/index.js"]
 

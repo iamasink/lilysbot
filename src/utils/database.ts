@@ -1,29 +1,26 @@
 import * as redis from 'redis';
 import { client } from ".."
 
+let isReady: boolean
+
 
 const key = "lilybot"
-let db
+let db: redis.RedisClientType
 
 async function connect() {
+	if (isReady) return true
+
 	console.log(`connecting to database (url: ${process.env.REDIS_URL})`)
 	db = redis.createClient({ url: process.env.REDIS_URL })
 	db.on("error", async (err) => {
 		console.log(`Redis error: ${err}`)
 	})
-	await db.connect()
-	console.log("Connected to redis!")
-
-	client.guilds.cache.each(async g => {
-		await check(`.guilds.${g.id}`)
-		await check(`.guilds.${g.id}.commands`)
-		await check(`.guilds.${g.id}.commands.global`)
-		await check(`.guilds.${g.id}.commands.aliases`)
-		await check(`.guilds.${g.id}.users`)
-		await check(`.guilds.${g.id}.roles`)
-		await check(`.guilds.${g.id}.roles.lists`)
-		await check(`.guilds.${g.id}.roles.menus`)
+	db.on("ready", () => {
+		isReady = true
+		console.log("Redis is ready!")
+		return
 	})
+	await db.connect()
 }
 
 

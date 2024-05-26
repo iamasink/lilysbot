@@ -1,24 +1,3 @@
-# FROM node:lts-iron as base
-
-# # Create the bot's directory
-# RUN mkdir -p /usr/src/bot
-# WORKDIR /usr/src/bot
-
-# COPY package.json /usr/src/bot
-# RUN npm install
-
-# FROM node:lts-iron as prod
-
-# RUN rm -rf /usr/src/bot/dist
-# COPY dist /usr/src/bot/dist
-
-# # Start the bot.
-# CMD ["node", "dist/index.js"]
-
-
-
-
-
 # Stage 1: Install dependencies
 FROM node:lts-iron AS dependencies
 
@@ -29,7 +8,7 @@ WORKDIR /usr/src/bot
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --omit-dev
 
 # Stage 2: Compile TypeScript code
 FROM dependencies AS builder

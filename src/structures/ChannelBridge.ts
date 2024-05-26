@@ -1,19 +1,22 @@
-class ChannelBridge {
-    channel1: any;
-    channel2: any;
+import { Snowflake } from "discord.js";
 
-    constructor(channel1: any, channel2: any) {
+class ChannelBridge {
+    channel1: Snowflake;
+    channel2: Snowflake;
+
+    constructor(channel1: Snowflake, channel2: Snowflake) {
         this.channel1 = channel1;
         this.channel2 = channel2;
     }
 
-    isPartOfBridge(channelId: string): boolean {
-        return this.channel1.id === channelId || this.channel2.id === channelId;
+    isPartOfBridge(channelId: Snowflake): boolean {
+        console.log(channelId)
+        return this.channel1 === channelId || this.channel2 === channelId;
     }
 
-    getOppositeChannel(channelId: string): any {
-        if (this.channel1.id === channelId) return this.channel2;
-        if (this.channel2.id === channelId) return this.channel1;
+    getOppositeChannel(channelId: Snowflake): Snowflake | null {
+        if (this.channel1 === channelId) return this.channel2;
+        if (this.channel2 === channelId) return this.channel1;
         return null;
     }
 }

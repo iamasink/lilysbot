@@ -3,7 +3,7 @@ import Event from '../types/Event'
 import { client } from "../index"
 import database from '../utils/database'
 import openai from '../utils/openai'
-
+import BridgeManager from '../structures/BridgeManager'
 
 
 
@@ -17,15 +17,9 @@ export default new Event({
 
 		const guild = message.guild
 		const user = message.author
-		//const channel = (await guild.channels.fetch(message.channel.id) as GuildTextBasedChannel)
-
-		// console.log(`A message was created in ${guild}: ${message}`)
-
-		//console.log(message.mentions.users)
-		//console.log(client.user.id)
 
 
-		// if bot pinged
+		client.bridgeManager.handleBridgedMessage(message)
 
 
 		// handle the stuff for pings and that for ai chatbot

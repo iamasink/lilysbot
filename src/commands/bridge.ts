@@ -22,21 +22,33 @@ export default new ApplicationCommand({
         )
         .addSubcommand(subcommand =>
             subcommand
+                .setName('remove')
+                .setDescription('Remove a bridge between two channels')
+                .addStringOption(option => option
+                    .setName("channel1")
+                    .setDescription("The first channel ID")
+                    .setRequired(true))
+                .addStringOption(option => option
+                    .setName("channel2")
+                    .setDescription("The second channel ID")
+                    .setRequired(false))
+        )
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName('list')
                 .setDescription('List all bridged channels')
         ),
     async execute(interaction: ChatInputCommandInteraction) {
         if (interaction.options.getSubcommand() === 'create') {
-            const channel1Id = interaction.options.getString("channel1", true);
-            const channel2Id = interaction.options.getString("channel2", true);
+            const channel1 = interaction.options.getString("channel1", true);
+            const channel2 = interaction.options.getString("channel2", true);
 
             try {
-                const channel1 = await client.channels.fetch(channel1Id);
-                const channel2 = await client.channels.fetch(channel2Id);
+
 
                 if (channel1 && channel2) {
                     client.bridgeManager.addBridge(channel1, channel2);
-                    await interaction.reply(`Bridge created between ${channel1Id} and ${channel2Id}`);
+                    await interaction.reply(`Bridge created between ${channel1} and ${channel2}`);
                 } else {
                     await interaction.reply('Invalid channel IDs');
                 }
@@ -57,10 +69,15 @@ export default new ApplicationCommand({
             bridges.forEach((bridge, index) => {
                 const channel1 = bridge.channel1;
                 const channel2 = bridge.channel2;
-                output += `Bridge ${index + 1}: Channel 1: ${channel1.id}\nChannel 2: ${channel2.id}\n`
+                output += `Bridge ${index + 1}: Channel 1: ${channel1}\nChannel 2: ${channel2}\n`
             });
 
             await interaction.reply({ content: output });
+        } else if (interaction.options.getSubcommand() === 'remove') {
+            const channel1 = interaction.options.getString("channel1", true);
+            const channel2 = interaction.options.getString("channel2") || null
+            client.bridgeManager.removeBridge(channel1, channel2)
+            interaction.reply("✅")
         }
     }
 });

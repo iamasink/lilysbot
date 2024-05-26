@@ -1,8 +1,4 @@
-import {
-	Client,
-	ClientEvents,
-	Collection,
-} from "discord.js"
+import { Client, Collection } from "discord.js"
 import { token } from "../config.json"
 import { readdirSync } from "fs"
 import path from "node:path"
@@ -10,12 +6,18 @@ import ApplicationCommand from "../types/ApplicationCommand"
 import Event from "../types/Event"
 import commands from "../utils/commands"
 import database from "../utils/database"
+import BridgeManager from './BridgeManager'
 
 // Bot is a class which extends discord.js Client,
 // it is called in index.ts 
 export class Bot extends Client {
-	// commands is a collection of string and commandtypes i think
 	commands: Collection<string, ApplicationCommand> = new Collection()
+	bridgeManager: BridgeManager
+	constructor(options) {
+		super(options)
+		this.bridgeManager = new BridgeManager()
+	}
+
 	// function to login and start the bot
 	start() {
 		database.connect()
@@ -40,20 +42,6 @@ export class Bot extends Client {
 			this.commands.set(command.data.name, command)
 		})
 
-		// // register context commands
-		// const contextcommandfilepath = path.join(__dirname, '..', 'contextmenu')
-		// console.log(contextcommandfilepath)
-		// const contextcommandFiles: string[] = readdirSync(contextcommandfilepath).filter(
-		// 	(file) => file.endsWith('.js') || file.endsWith('.ts')
-		// )
-		// console.log(contextcommandFiles)
-
-		// commandFiles.forEach(async file => {
-		// 	console.log(file)
-		// 	const command: ApplicationCommand = (await import(`../commands/${file}`)).default as ApplicationCommand
-		// 	this.commands.set(command.data.name, command)
-		// })
-
 		// register events
 		const filepath = path.join(__dirname, '..', 'events')
 		console.log(filepath)
@@ -71,6 +59,5 @@ export class Bot extends Client {
 				this.on(event.name, (...args) => event.execute(...args))
 			}
 		})
-
 	}
-}	
+}

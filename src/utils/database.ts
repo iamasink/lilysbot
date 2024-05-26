@@ -6,14 +6,13 @@ const key = "lilybot"
 let db
 
 async function connect() {
-
 	console.log(`connecting to database (url: ${process.env.REDIS_URL})`)
 	db = redis.createClient({ url: process.env.REDIS_URL })
 	db.on("error", async (err) => {
 		console.log(`Redis error: ${err}`)
 	})
 	await db.connect()
-	// console.log((await db.json.get(`test`)))
+	console.log("Connected to redis!")
 
 	client.guilds.cache.each(async g => {
 		await check(`.guilds.${g.id}`)
@@ -25,7 +24,6 @@ async function connect() {
 		await check(`.guilds.${g.id}.roles.lists`)
 		await check(`.guilds.${g.id}.roles.menus`)
 	})
-
 }
 
 

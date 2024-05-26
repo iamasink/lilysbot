@@ -11,6 +11,7 @@ export default new ApplicationCommand({
 		.setName('test')
 		.setDescription('description'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+		throw new Error("Not implemented")
 
 	},
 })

@@ -1,5 +1,7 @@
-import { ChannelType, GatewayIntentBits, IntentsBitField, Partials } from "discord.js"
+import { ChannelType, GatewayIntentBits, IntentsBitField, Partials, TextBasedChannel } from "discord.js"
 import { Bot } from "./structures/Client"
+import { botlogchannel } from "./config.json"
+import format from "./utils/format"
 // create new client from class Bot with intents
 export const client = new Bot({
 	intents: [
@@ -52,9 +54,33 @@ function signalHandler(signal) {
 	process.exit()
 }
 
+async function errorhandler(error) {
+	console.log('Uncaught Exception...');
+	console.log(error.stack);
+	try {
+		const channel = await client.channels.fetch(botlogchannel);
+		if (channel) {
+			const messages = format.splitMessage("Wiwwie crashed\n```js\n" + error.stack + "\n```", 2000, '\n', '```js\n', '\n```')
+			for (let i = 0, len = messages.length; i < len; i++) {
+				await (channel as TextBasedChannel).send(messages[i])
+			}
+		} else {
+			throw new Error('No bot log channel');
+		}
+	} catch (e) {
+		console.log(e);
+	}
+	setTimeout(() => {
+		// we can't just process.exit() here, because it always returns 0 to the parent (docker)
+		throw new Error(error)
+	}, 1000); // Adjust the delay time as needed
+}
+
+
 process.on('SIGINT', signalHandler)
 process.on('SIGTERM', signalHandler)
 process.on('SIGQUIT', signalHandler)
+if (process.env.NODE_ENV === "prod") process.once('uncaughtException', errorhandler)
 
 
 client.start()

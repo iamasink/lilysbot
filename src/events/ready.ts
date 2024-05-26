@@ -14,6 +14,7 @@ export default new Event({
 	async execute(): Promise<void> {
 		// Runs when the bot logs in
 		console.log("Starting Bot")
+		console.log(`${process.env.NODE_ENV}`)
 
 		const users = client.users.cache.size
 		const guilds = await client.guilds.fetch()

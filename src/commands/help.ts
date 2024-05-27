@@ -9,7 +9,7 @@ export default new ApplicationCommand({
 	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName('help')
-		.setDescription('Help me!!'),
+		.setDescription('Display help information'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const embed = new EmbedBuilder()
 			.setColor("#f9beca")

@@ -30,7 +30,7 @@ export default new ApplicationCommand({
 	permissions: ["KickMembers"],
 	data: new SlashCommandBuilder()
 		.setName('audio')
-		.setDescription('testy')
+		.setDescription('Audio-related commands')
 		.addSubcommand(command => command
 			.setName("play")
 			.setDescription("play")

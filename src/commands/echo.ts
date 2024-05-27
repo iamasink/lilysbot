@@ -4,7 +4,7 @@ import ApplicationCommand from '../types/ApplicationCommand'
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName('echo')
-		.setDescription('Echos you')
+		.setDescription('Repeats your input')
 		.addStringOption(option => option
 			.setName("message")
 			.setDescription("The message to echo")

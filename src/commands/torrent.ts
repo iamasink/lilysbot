@@ -10,7 +10,7 @@ import ApplicationCommand from '../types/ApplicationCommand'
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName('torrent')
-		.setDescription('get info about a torrent')
+		.setDescription('Get info about a torrent')
 		.addSubcommand(command => command
 			.setName('get')
 			.setDescription('get info about a torrent. attach a .torrent file or enter a magnet link')

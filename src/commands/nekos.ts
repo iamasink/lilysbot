@@ -16,7 +16,7 @@ async function getJSONResponse(body) {
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName('nekos')
-		.setDescription('nekos.life')
+		.setDescription('Fetch images from nekos.life')
 		.addStringOption(option => option
 			.setName('image')
 			.setDescription('Type of image to retrieve')

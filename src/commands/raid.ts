@@ -7,7 +7,7 @@ export default new ApplicationCommand({
 	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName('raid')
-		.setDescription('fuck off')
+		.setDescription('Configure anti-raid measures')
 		.addSubcommand(command => command
 			.setName('kick')
 			.setDescription("kick members")

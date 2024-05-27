@@ -7,7 +7,7 @@ export default new ApplicationCommand({
 	permissions: ["Administrator"],
 	data: new SlashCommandBuilder()
 		.setName('purge')
-		.setDescription('bulk delete messages')
+		.setDescription('Bulk delete messages')
 		.addNumberOption(option => option
 			.setName('amount')
 			.setDescription('amount of messages to delete')

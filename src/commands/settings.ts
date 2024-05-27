@@ -13,7 +13,7 @@ export default new ApplicationCommand({
 	permissions: [new PermissionsBitField("Administrator")],
 	data: new SlashCommandBuilder()
 		.setName('settings')
-		.setDescription('Configure stuff')
+		.setDescription('Configure bot settings for this server')
 		.addSubcommand(command => command
 			.setName('set')
 			.setDescription('change a settings')

@@ -12,7 +12,7 @@ export default new ApplicationCommand({
     permissions: ["botowner"],
     data: new SlashCommandBuilder()
         .setName('issue')
-        .setDescription('report an issue'),
+        .setDescription('Report an issue'),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 
 

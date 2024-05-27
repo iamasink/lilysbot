@@ -51,7 +51,7 @@ function formatlink(link: string, name: string, linkappend: string = "", fallbac
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName('info')
-		.setDescription('Retrieves info...')
+		.setDescription('Retrieves info about a user, the guild or this bot')
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('user')

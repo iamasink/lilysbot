@@ -22,7 +22,7 @@ export default new ApplicationCommand({
 	permissions: ["Administrator"],
 	data: new SlashCommandBuilder()
 		.setName('invite')
-		.setDescription('Manage invites')
+		.setDescription('Manage server invites')
 		.addSubcommand(command => command
 			.setName('list')
 			.setDescription('list invites')

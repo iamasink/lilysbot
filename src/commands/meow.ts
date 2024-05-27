@@ -5,7 +5,7 @@ import axios from 'axios'
 export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName('meow')
-		.setDescription('gets a random cat image!!!!'),
+		.setDescription('Get a random cat image'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const catResult = await axios.get('https://aws.random.cat/meow')
 		console.log(catResult)

@@ -5,7 +5,7 @@ export default new ApplicationCommand({
 	permissions: ["Administrator"],
 	data: new SlashCommandBuilder()
 		.setName('error')
-		.setDescription('cause an error')
+		.setDescription('Trigger an error')
 		.addIntegerOption(option => option
 			.setName('value')
 			.setDescription('a')),

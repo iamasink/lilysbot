@@ -11,7 +11,7 @@ export default new ApplicationCommand({
 	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
 		.setName('command')
-		.setDescription('Configure commands')
+		.setDescription('Configure my commands')
 		.addSubcommandGroup(group => group
 			.setName('alias')
 			.setDescription('alias')
@@ -217,7 +217,12 @@ export default new ApplicationCommand({
 						const commandList = await commands.get()
 						for (let i = 0, len = commandList.length; i < len; i++) {
 							const command = commandList[i]
-							lines.push(`${command.data.name} - "${command.data.description}"`)
+							if (typeof command.execute === "function") {
+								console.log(command + typeof command.execute)
+								lines.push(`${command.data.name} - "${command.data.description}"`)
+							} else {
+								console.log("not a slash command")
+							}
 						}
 						const message = lines.join("\n")
 						const messages = format.splitMessage(message)

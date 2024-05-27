@@ -8,7 +8,8 @@ WORKDIR /usr/src/bot
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --omit-dev
+RUN npm install -g pnpm
+RUN pnpm install
 
 # Stage 2: Compile TypeScript code
 FROM dependencies AS builder

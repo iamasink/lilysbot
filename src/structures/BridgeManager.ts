@@ -39,6 +39,7 @@ class BridgeManager {
         }
         console.log(bridgedBridge)
         this.bridges.splice(this.bridges.indexOf(bridgedBridge), 1)
+        this.saveBridges()
     }
 
     saveBridges() {
@@ -123,7 +124,6 @@ class BridgeManager {
                                     avatarURL: message.author.avatarURL({ forceStatic: false }),
                                 }
                             )
-
                         }
                     }
                 } else {

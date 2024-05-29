@@ -4,6 +4,7 @@ import database from "../utils/database"
 import embeds from "../utils/embeds"
 import commands from "../utils/commands"
 import format from "../utils/format"
+import { stripIndent, stripIndents } from "common-tags"
 
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 
@@ -231,6 +232,14 @@ export default new ApplicationCommand({
 							else interaction.followUp(messages[i])
 						}
 						break
+					}
+					case 'parse': {
+						const text = interaction.options.getString("text")
+						const output = commands.textToCommandParser(text)
+						interaction.reply(
+							stripIndents`ok
+							output`
+						)
 					}
 				}
 			}

@@ -476,7 +476,7 @@ export default {
 		const words = text.split(" ")
 		if (words[0].startsWith("/")) words[0] = words[0].substring(1)
 		const commandName = words[0]
-		const commands = await module.exports.get()
+		const commands = client.commands
 		let group: any
 		let subcommand: any
 		let optionsStart: any
@@ -487,31 +487,38 @@ export default {
 
 		// parse group and subcommand
 		// if words[1] and words[2] aren't options
-		if (!words[1].endsWith(":") && !words[2].endsWith(":")) {
+		if (words[1] && !words[1].endsWith(":") && words[2] && !words[2].endsWith(":")) {
 			group = words[1]
 			subcommand = words[2]
 			optionsStart = 3
 		}
 		// if only words[1] isn't an option
-		else if (!words[1].endsWith(":") && words[2].endsWith(":")) {
+		else if (words[1] && !words[1].endsWith(":") && words[2] && words[2].endsWith(":")) {
 			group = null
 			subcommand = words[1]
 			optionsStart = 2
 		}
 		// if both are options
-		else {
+		else if (words[1] && words[1].endsWith(":") && words[2] && words[2].endsWith(":")) {
 			group = null
 			subcommand = null
 			optionsStart = 1
+
+		}
+		// if there are no options or subcommand
+		else {
+			group = null
+			subcommand = null
+			optionsStart = -1
 		}
 
-		for (let i = 0, len = commands.length; i < len; i++) {
-			console.log(commands[i].name)
+		for (let i = 0, len = commands.size; i < len; i++) {
+			console.log(commands[i])
 		}
 
 		// get command
 		console.log(`commandName = ${commandName}`)
-		const command = await commands.find((e: any) => e.name == commandName)
+		const command = await commands.find((e: ApplicationCommand) => e.data.name == commandName)
 		console.log(`command found: ${JSON.stringify(command)}`)
 
 		if (!command) throw new Error("Command not found")
@@ -521,43 +528,43 @@ export default {
 		console.log(`subcommand = ${subcommand}`)
 		console.log(`optionsStart = ${optionsStart}`)
 
-		// find group
-		const commandgroup =
-			(await command.options.find(
-				(e: any) => e.name == group && e.type == 2,
-			)) || command
-		console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
-		const commandsubcommand =
-			(await commandgroup.options.find(
-				(e: any) => e.name == subcommand && e.type == 1,
-			)) || commandgroup
-		console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
+		// // find group
+		// const commandgroup =
+		// 	(await command.options.find(
+		// 		(e: any) => e.name == group && e.type == 2,
+		// 	)) || command
+		// console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
+		// const commandsubcommand =
+		// 	(await commandgroup.options.find(
+		// 		(e: any) => e.name == subcommand && e.type == 1,
+		// 	)) || commandgroup
+		// console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
 
-		const foundoptions: any = []
-		// parse options
-		// for each word from optionsStart to end
-		for (let i = optionsStart, len = words.length; i < len; i++) {
-			if (words[i].endsWith(":")) {
-				// remove colon
-				const option = words[i].substring(0, words[i].length - 1)
-				console.log(`option = ${option}`)
-				// type 1 is an subcommand (not group)
+		// const foundoptions: any = []
+		// // parse options
+		// // for each word from optionsStart to end
+		// for (let i = optionsStart, len = words.length; i < len; i++) {
+		// 	if (words[i].endsWith(":")) {
+		// 		// remove colon
+		// 		const option = words[i].substring(0, words[i].length - 1)
+		// 		console.log(`option = ${option}`)
+		// 		// type 1 is an subcommand (not group)
 
-				// if it hasn't been chosen yet
-				if (!foundoptions.find((e: any) => e.name == option)) {
-					// if it exists in the command
-					if (
-						await commandsubcommand.options.find(
-							(e: { name: string; type: number }) =>
-								e.name == option && e.type == 3,
-						)
-					) {
-						console.log(`option found ${words[i]}, ${i}`)
-						foundoptions.push({ name: option, position: i })
-					}
-				}
-			}
-		}
+		// 		// if it hasn't been chosen yet
+		// 		if (!foundoptions.find((e: any) => e.name == option)) {
+		// 			// if it exists in the command
+		// 			if (
+		// 				await commandsubcommand.options.find(
+		// 					(e: { name: string; type: number }) =>
+		// 						e.name == option && e.type == 3,
+		// 				)
+		// 			) {
+		// 				console.log(`option found ${words[i]}, ${i}`)
+		// 				foundoptions.push({ name: option, position: i })
+		// 			}
+		// 		}
+		// 	}
+		// }
 		return [commandName, group, subcommand, options]
 	},
 }

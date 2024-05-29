@@ -31,7 +31,7 @@ export default new Event({
 		// // The reaction is now also fully available and the properties will be reflected accurately:
 		// console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
 		// console.log(`${reaction.emoji.name}`)
-		reaction.message.channel.send("")
+		// reaction.message.channel.send("")
 
 		if (reaction.emoji.name == "⭐") {
 			const starboardChannelId = await database.get(`.guilds.${guild.id}.settings.starboard_channel`)

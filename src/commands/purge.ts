@@ -53,14 +53,18 @@ export default new ApplicationCommand({
 
 		console.log(newMessages)
 
-		channel.bulkDelete(newMessages)
-			.then(async m => {
-				let note = ""
-				if (m.size < amount) note = `*Note: There weren't enough recent messages matching the parameters to delete **${amount}***`
-				await interaction.reply(`Bulk deleted **${m.size}** messages.\n${note}`)
-				log.log(interaction.guild, `${interaction.user} bulkdeleted ${m.size} messages in ${interaction.channel}`)
-				setTimeout(() => interaction.deleteReply(), 5000)
-			})
+		try {
+			channel.bulkDelete(newMessages, true)
+				.then(async m => {
+					let note = ""
+					if (m.size < amount) note = `*Note: There weren't enough recent messages matching the parameters to delete **${amount}***`
+					await interaction.reply(`Bulk deleted **${m.size}** messages.\n${note}`)
+					log.log(interaction.guild, `${interaction.user} bulkdeleted ${m.size} messages in ${interaction.channel}`)
+					setTimeout(() => interaction.deleteReply(), 5000)
+				})
+		} catch (e) {
+
+		}
 
 		// if (interaction.user.id !== "303267459824353280") {
 		// 	throw new Error(`<@${interaction.user.id}>, you're not allowed to do this <3`)

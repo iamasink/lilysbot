@@ -13,13 +13,15 @@ import type {
 	ButtonInteraction,
 	UserContextMenuCommandInteraction,
 	MessageContextMenuCommandInteraction,
-	ContextMenuCommandInteraction
+	ContextMenuCommandInteraction,
+	SlashCommandSubcommandGroupBuilder
 } from "discord.js"
 
 
 export default class ApplicationCommand {
 	permissions?: PermissionResolvable[] | ["botowner"]
 	data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any // this should be a type (not any) but i can't figure it out so whatevs
+	command: SlashCommandSubcommandGroupBuilder
 	execute?: (interaction: ChatInputCommandInteraction) => Promise<void> | void
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
 	menuUser?: (interaction: UserContextMenuCommandInteraction) => Promise<void> | void

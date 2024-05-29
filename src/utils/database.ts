@@ -4,7 +4,7 @@ import { client } from ".."
 let isReady: boolean
 
 
-const key = "lilybot"
+const key = "lilybot2"
 let db: redis.RedisClientType
 
 async function connect() {

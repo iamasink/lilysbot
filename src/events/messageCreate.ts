@@ -19,7 +19,7 @@ export default new Event({
 		const user = message.author
 
 
-		client.bridgeManager.handleBridgedMessage(message)
+		// client.bridgeManager.handleBridgedMessage(message)
 
 
 		// handle the stuff for pings and that for ai chatbot

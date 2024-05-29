@@ -15,7 +15,7 @@ export class Bot extends Client {
 	bridgeManager: BridgeManager
 	constructor(options) {
 		super(options)
-		this.bridgeManager = new BridgeManager()
+		// this.bridgeManager = new BridgeManager()
 	}
 
 	// function to login and start the bot

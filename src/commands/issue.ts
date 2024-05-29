@@ -59,9 +59,18 @@ export default new ApplicationCommand({
         await interaction.showModal(modal);
 
 
-        interaction.awaitModalSubmit({ time: 240 * 1000 })
+        interaction.awaitModalSubmit({ time: 5 * 60 * 1000 })
             .then(async i => {
-                interaction.deleteReply()
+                i.deferReply({ ephemeral: true })
+                console.log(" i recieved it ghsfdjg")
+                console.log(interaction)
+                console.log(i)
+
+                // try {
+                //     if (interaction.replied) interaction.deleteReply()
+                // } catch (e) {
+                //     console.log(e)
+                // }
                 const userissuetitle = i.fields.getTextInputValue('errorReportModalTitleField')
                 const userissuedesc = i.fields.getTextInputValue('errorReportModalDescriptionField')
                 const content = stripIndents`
@@ -70,10 +79,11 @@ export default new ApplicationCommand({
                 `
 
                 client.channels.fetch("767026023387758612").then((channel: GuildTextBasedChannel) => {
-                    console.log(channel.name)
+                    console.log("channel" + channel.name)
                     channel.send(content)
-                    return
+
                 })
+
 
                 // create an github issue from the error report
                 const octokit = new Octokit({
@@ -84,10 +94,10 @@ export default new ApplicationCommand({
 
                 octokit.issues.create({ owner: "iamasink", repo: "lilysbot", title: title, body: content, labels: ["from discord"] })
                     .then(async res => {
-                        await i.reply({ embeds: embeds.successEmbed(`Thank you for your submission!\nLink: ${res.data.html_url}`), ephemeral: true, fetchReply: true })
+                        await i.editReply({ embeds: embeds.successEmbed(`Thank you for your submission!\nLink: ${res.data.html_url}`) })
                     })
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log("error" + err))
 
 
     },

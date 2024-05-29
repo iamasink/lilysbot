@@ -3,22 +3,14 @@ import path from "node:path"
 import { clientId, token } from "../config.json"
 import { REST } from "@discordjs/rest"
 import {
-	APIActionRowComponent,
-	APIMessageActionRowComponent,
 	ActionRowBuilder,
-	BaseInteraction,
 	ButtonBuilder,
 	ButtonStyle,
-	ChatInputCommandInteraction,
 	CommandInteraction,
 	CommandInteractionOptionResolver,
 	ComponentType,
-	ContextMenuCommandInteraction,
 	GuildTextBasedChannel,
-	Interaction,
-	InteractionResponse,
 	Message,
-	MessageInteraction,
 	ModalActionRowComponentBuilder,
 	ModalBuilder,
 	PermissionsBitField,
@@ -241,6 +233,8 @@ async function getContextMenuCommands() {
 	// return commands
 }
 
+
+
 export default {
 	get() {
 		return getCommands()
@@ -255,9 +249,11 @@ export default {
 		interaction: any,
 		type: "slash" | "messagecontext" | "usercontext",
 		commandName = (interaction as CommandInteraction).commandName,
-		group?: any,
-		subcommand?: any,
-		options?: any,
+		group?: string,
+		subcommand?: string,
+		options?: (
+			any
+		)[],
 	) {
 		let newInteraction: any = interaction
 

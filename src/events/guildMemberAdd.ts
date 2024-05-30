@@ -13,27 +13,45 @@ export default new Event({
 	name: Events.GuildMemberAdd,
 	async execute(member: GuildMember) {
 		const guild = member.guild
+		console.log(member)
+		let note = "idk who invited them"
 
 		// To compare, we need to load the current invite list.
 		const newInvites = await guild.invites.fetch()
 		// This is the *existing* invites for the guild.
 		const oldInvites = await database.get(`.guilds.${guild.id}.invites`)
 		// Look through the invites, find the one for which the uses went up.
-		const invite = newInvites.find(i => i.uses > oldInvites[i.code].uses || 0)
+		let invite = newInvites.find(i => i.uses > oldInvites[i.code].uses || 0)
+		console.log("invite")
+		console.log(invite)
 		if (newInvites.filter(i => i.uses > oldInvites[i.code].uses).size > 1) {
 			console.log("cache is broken somehow, we can't know who invited this user.")
 			invites.updateInviteCache(guild)
-		} else {
+		} else if (!invite) {
+			console.log("the invite doesn't exist anymore, we can't know who invited this user.")
+			invites.updateInviteCache(guild)
+			// const newOldInvites: object = await database.get(`.guilds.${guild.id}.invites`)
+			// const newinvites = Object.values(newOldInvites)
+
+			// const newinvite = newinvites.find(i => i.uses > oldInvites[i.code].uses || 0)
+			// console.log(newinvite)
+			// database.set(`.guilds.${guild.id}.invites.${invite.code}.uses`, invite.uses)
+			// database.set(`.guilds.${guild.id}.users.${member.id}.invitedLink`, invite.code)
+		}
+		else {
 			// update invite cache
 			database.set(`.guilds.${guild.id}.invites.${invite.code}.uses`, invite.uses)
 			// set inviter code for member
 			database.set(`.guilds.${guild.id}.users.${member.id}.invitedLink`, invite.code)
+			const inviter = await client.users.fetch(invite.inviterId)
+			let inviterUser = await client.users.fetch(inviter.id)
+			const username = inviterUser.tag
+			const id = inviter.id
+			note = `They were invited by \`${username}\` (${inviter.id})`
 		}
-		const inviter = await client.users.fetch(invite.inviterId)
-		let inviterUser = await client.users.fetch(inviter.id)
 
 
-		log.log(guild, `${member.id}, \`${format.shittyUsername(member.user)}\` has joined guild ${guild}. They were invited by \`${inviterUser.tag}\` (${inviter.id})`)
+		log.log(guild, `${member.id}, \`${format.shittyUsername(member.user)}\` has joined guild ${guild}. ${note}`)
 			.then(async msg => {
 				if (!msg) return
 				let interaction = await commands.run(msg, "slash", "info", null, "user", [

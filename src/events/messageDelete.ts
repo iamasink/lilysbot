@@ -39,7 +39,7 @@ export default new Event({
 		} else {
 			// Now grab the user object of the person who deleted the message
 			// Also grab the target of this action to double-check things
-			const { executor, target } = deletionLog;
+			const { executor, target } = deletionLog
 
 			if (target.bot) return
 

@@ -80,7 +80,7 @@ export default new ApplicationCommand({
 
 				console.log(toban.length)
 				new Promise((resolveInner) => {
-					setTimeout(resolveInner, 1000);
+					setTimeout(resolveInner, 1000)
 				}).then(onfulfilled => {
 					interaction.editReply("finished")
 				})

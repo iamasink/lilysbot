@@ -1,4 +1,4 @@
-import { Events, Interaction, Message, User, Guild } from 'discord.js';
+import { Events, Interaction, Message, User, Guild } from 'discord.js'
 import Event from "../types/Event"
 import { client } from "../index"
 import database from "../utils/database"

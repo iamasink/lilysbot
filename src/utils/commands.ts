@@ -25,7 +25,7 @@ import embeds from "./embeds"
 import database from "./database"
 import config from "../config.json"
 import { setTimeout } from "node:timers"
-import { Octokit } from "@octokit/rest";
+import { Octokit } from "@octokit/rest"
 import format from "./format"
 
 function merge(a: any, b: any, prop: any) {
@@ -390,7 +390,7 @@ export default {
 				}
 			}
 
-			const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 2 * 60 * 1000 });
+			const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 2 * 60 * 1000 })
 
 			collector.on('collect', async i => {
 				if (i.user.id === interaction.user.id) {
@@ -416,16 +416,16 @@ export default {
 
 					// An action row only holds one text input,
 					// so you need one action row per text input.
-					const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInput);
+					const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInput)
 
 					// Add inputs to the modal
-					modal.addComponents(firstActionRow);
+					modal.addComponents(firstActionRow)
 
 					// Show the modal to the user
-					await i.showModal(modal);
+					await i.showModal(modal)
 
 					const filter = i => {
-						return i.user.id === interaction.user.id;
+						return i.user.id === interaction.user.id
 					}
 					i.awaitModalSubmit({ time: 240 * 1000, filter })
 						.then(async i => {
@@ -460,7 +460,7 @@ export default {
 							}, 1000)
 						})
 				}
-			});
+			})
 
 
 		}

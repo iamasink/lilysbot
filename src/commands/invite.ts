@@ -222,7 +222,7 @@ export default new ApplicationCommand({
 				console.log(msg)
 
 				// collect for button interactions for time from fetched interaction msg
-				const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 0.1 * 60 * 1000 });
+				const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 0.1 * 60 * 1000 })
 
 				let message
 

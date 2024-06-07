@@ -56,13 +56,13 @@ export default {
 	 */
 	timeDiff(timea: moment.Moment, timeb: moment.Moment) {
 
-		var years = timea.diff(timeb, 'year');
-		timeb.add(years, 'years');
+		var years = timea.diff(timeb, 'year')
+		timeb.add(years, 'years')
 
-		var months = timea.diff(timeb, 'months');
-		timeb.add(months, 'months');
+		var months = timea.diff(timeb, 'months')
+		timeb.add(months, 'months')
 
-		var days = timea.diff(timeb, 'days');
+		var days = timea.diff(timeb, 'days')
 
 		var output = ""
 		if (years) output += format.pluralize(years, "year") + ", "
@@ -101,9 +101,9 @@ export default {
 		}
 		if (splitText.some(elem => elem.length > maxLength)) { // if it couldn't be split properly, try again but without the specific characters
 			console.log("no splittable characters that make me happy")
-			splitText = [];
+			splitText = []
 			for (let i = 0; i < text.length; i += maxLength - 10) {
-				splitText.push(text.slice(i, i + maxLength - 10));
+				splitText.push(text.slice(i, i + maxLength - 10))
 			}
 		}
 		const messages = []
@@ -119,7 +119,7 @@ export default {
 	},
 	cutToLength(text: string, length: number) {
 		if (text.length > length) {
-			text = text.substring(0, length - 1) + "...";
+			text = text.substring(0, length - 1) + "..."
 		}
 		return text
 	},
@@ -176,7 +176,7 @@ export default {
 	// 	return escaped
 	// },
 	markdownEscape(string: string, skips: string[] = []): string {
-		var unescaped = string.replace(/\\(\*|_|`|~|\\)/g, '$1'); // unescape any "backslashed" character
+		var unescaped = string.replace(/\\(\*|_|`|~|\\)/g, '$1') // unescape any "backslashed" character
 
 		const replacements: [RegExp, string, string][] = [
 			[/\*/g, '\\*', 'asterisks'],
@@ -185,12 +185,12 @@ export default {
 			[/_/g, '\\_', 'underscores'],
 			[/`/g, '\\`', 'codeblocks'],
 			[/~/g, '\\~', 'strikethroughs']
-		];
+		]
 
 		return replacements.reduce((result, replacement) => {
-			const name = replacement[2];
-			return name && skips.includes(name) ? result : result.replace(replacement[0], replacement[1]);
-		}, unescaped);
+			const name = replacement[2]
+			return name && skips.includes(name) ? result : result.replace(replacement[0], replacement[1])
+		}, unescaped)
 	},
 	async usernameBrackets(user: User) {
 		return `${user.username} (${user.displayName})`

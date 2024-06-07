@@ -48,15 +48,15 @@ export default new ApplicationCommand({
 
         // An action row only holds one text input,
         // so you need one action row per text input.
-        const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInputTitle);
-        const secondActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInputDescription);
+        const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInputTitle)
+        const secondActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInputDescription)
 
         // Add inputs to the modal
-        modal.addComponents(firstActionRow);
-        modal.addComponents(secondActionRow);
+        modal.addComponents(firstActionRow)
+        modal.addComponents(secondActionRow)
 
         // Show the modal to the user
-        await interaction.showModal(modal);
+        await interaction.showModal(modal)
 
 
         interaction.awaitModalSubmit({ time: 5 * 60 * 1000 })

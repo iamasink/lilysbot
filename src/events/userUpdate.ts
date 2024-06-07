@@ -23,7 +23,7 @@ export default new Event({
 		}, {})
 		console.log(diff)
 
-		if (format.shittyUsername(olduser) !== format.shittyUsername(newuser)) {
+		if (format.oldUsername(olduser) !== format.oldUsername(newuser)) {
 			database.set(`.users.${newuser.id}.usernames.${Date.now()}`, { from: olduser.tag, to: newuser.tag })
 		} else {
 			// console.log("not saving usernames cuz theyre the same lol")

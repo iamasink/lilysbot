@@ -74,7 +74,7 @@ export default new ApplicationCommand({
                 const userissuetitle = i.fields.getTextInputValue('errorReportModalTitleField')
                 const userissuedesc = i.fields.getTextInputValue('errorReportModalDescriptionField')
                 const content = stripIndents`
-                Reported by: \`${format.shittyUsername(interaction.user)} (${interaction.user.id})\`
+                Reported by: \`${format.oldUsername(interaction.user)} (${interaction.user.id})\`
                 User's Message: \`\`\`${userissuedesc}\`\`\`
                 `
 

@@ -123,7 +123,7 @@ export default {
 		}
 		return text
 	},
-	shittyUsername(user: User) {
+	oldUsername(user: User) {
 		if (user.discriminator == "0") {
 			return user.username
 		} else {

@@ -51,7 +51,7 @@ export default new Event({
 		}
 
 
-		log.log(guild, `${member.id}, \`${format.oldUsername(member.user)}\` has joined guild ${guild}. ${note}`)
+		log.log(guild, `${member.id}, \`${member.user}\` has joined guild ${guild}. ${note}`)
 			.then(async msg => {
 				if (!msg) return
 				let interaction = await commands.run(msg, "slash", "info", null, "user", [

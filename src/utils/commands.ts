@@ -27,6 +27,7 @@ import config from "../config.json"
 import { setTimeout } from "node:timers"
 import { Octokit } from "@octokit/rest"
 import format from "./format"
+import { stripIndents } from "common-tags"
 
 function merge(a: any, b: any, prop: any) {
 	const reduced = a.filter(
@@ -431,7 +432,11 @@ export default {
 						.then(async i => {
 							interaction.deleteReply()
 							const usermessage = i.fields.getTextInputValue('errorReportModalField')
-							const content = `error: \`\`\`${error.toString()}\`\`\`\nOn command: \`${interaction.commandName}\`\nOptions: \`\`\`${JSON.stringify(interaction.options)}\`\`\`\nReported by: \`${format.oldUsername(interaction.user)} (${interaction.user.id})\`\nUser's Message: \`\`\`${usermessage}\`\`\``
+							const content = stripIndents`error: \`\`\`${error.toString()}\`\`\`
+							On command: \`${interaction.commandName}\`
+							Options: \`\`\`${JSON.stringify(interaction.options)}\`\`\`
+							Reported by: \`${format.oldUsername(interaction.user)} (${interaction.user.id})\`
+							User's Message: \`\`\`${usermessage}\`\`\``
 
 							client.channels.fetch("767026023387758612").then((channel: GuildTextBasedChannel) => {
 								console.log(channel.name)

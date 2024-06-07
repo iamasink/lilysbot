@@ -15,7 +15,7 @@ export default new Event({
 		let location: string
 		if (interaction.channel) location = interaction.channel.name
 		else location = "dms"
-		console.log(`${format.oldUsername(interaction.user)} in #${location} triggered an interaction.`)
+		console.log(`${interaction.user} in #${location} triggered an interaction.`)
 
 		//const guildID = interaction.guild.id
 

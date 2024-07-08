@@ -39,16 +39,9 @@ git clone https://github.com/iamasink/lilysbot.git
  ```bash
  cd lilysbot
  ```
- - Ensure you have a redis-stack database running (you can just run `docker compose up redis-stack`)
- - Set environment variables in package.json's nodemonConfig.env
-
-
-
-
-
-
-nya
- - Run with nodemon
+ - Ensure you have a redis-stack database running (you can just run `docker compose up redis-stack`)  
+ - Set environment variables in package.json's nodemonConfig.env  
+ - Run with nodemon  
  ```bash
  npx nodemon src/index.ts
  ```

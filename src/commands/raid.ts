@@ -56,7 +56,7 @@ export default new ApplicationCommand({
 									await member.kick()
 								}
 								toban.push(member.user.id)
-								console.log(`kicked member ${format.oldUsername(member.user)}`)
+								console.log(`kicked member ${member.user.username}`)
 
 							}
 							break
@@ -65,7 +65,7 @@ export default new ApplicationCommand({
 							if (!member.user.avatarURL()) {
 								// await member.kick()
 								toban.push(member.user.id)
-								console.log(`kicked member: ${format.oldUsername(member.user)}`)
+								console.log(`kicked member: ${member.user.username}`)
 							}
 							break
 						}

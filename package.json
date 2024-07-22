@@ -39,7 +39,7 @@
     "redis": "^4.6.15",
     "rss-parser": "^3.13.0",
     "string-similarity": "^4.0.4",
-    "@node-redis/client": "~1.0.6"
+    "@node-redis/client": "^1.0.6"
   },
   "devDependencies": {
     "@types/common-tags": "^1.8.4",

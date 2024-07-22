@@ -2,12 +2,12 @@ import { openaifeatures, openaitoken, chatallowedguilds } from '../config.json'
 
 import OpenAI from 'openai'
 import format from '../utils/format'
-import { GuildTextBasedChannel, Message, Role } from 'discord.js';
-import { client } from '..';
-import { stripIndents } from 'common-tags';
-import { ChatCompletionMessage, ChatCompletionMessageParam, ChatCompletionRole } from 'openai/resources/chat';
-import database from './database';
-import settings from './settings';
+import { GuildTextBasedChannel, Message, Role } from 'discord.js'
+import { client } from '..'
+import { stripIndents } from 'common-tags'
+import { ChatCompletionMessage, ChatCompletionMessageParam, ChatCompletionRole } from 'openai/resources/chat'
+import database from './database'
+import settings from './settings'
 
 
 
@@ -110,14 +110,16 @@ export default {
 						// content: `${messagename}:\n` + m.cleanContent,
 					})
 				} else {
-					messagerole = "user"
-					messagename = m.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-') || m.author.username || "user"
-					chatMessages.push({
-						role: messagerole,
-						content: m.cleanContent,
-						// content: `${messagename}:\n` + m.cleanContent,
-						// name: messagename
-					})
+					if (m.member) {
+						messagerole = "user"
+						messagename = m.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-') || m.author.username || "user"
+						chatMessages.push({
+							role: messagerole,
+							content: m.cleanContent,
+							// content: `${messagename}:\n` + m.cleanContent,
+							// name: messagename
+						})
+					}
 				}
 			})
 

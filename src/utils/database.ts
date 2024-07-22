@@ -1,11 +1,11 @@
-import * as redis from 'redis';
+import * as redis from 'redis'
 import { client } from ".."
 
 let isReady: boolean
 
 
 const key = "lilybot"
-let db: redis.RedisClientType
+let db: any
 
 async function connect() {
 	if (isReady) return true

@@ -32,22 +32,23 @@
     "axios": "^1.6.4",
     "bl": "^6.0.8",
     "common-tags": "^1.8.2",
-    "discord.js": "^14.15.2",
+    "discord.js": "^14.15.3",
     "moment": "^2.29.4",
     "openai": "^4.18.0",
     "parse-torrent": "^9.0.0",
-    "redis": "^4.6.7",
+    "redis": "^4.6.15",
     "rss-parser": "^3.13.0",
-    "string-similarity": "^4.0.4"
+    "string-similarity": "^4.0.4",
+    "@node-redis/client": "~1.0.6"
   },
   "devDependencies": {
     "@types/common-tags": "^1.8.4",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.11",
     "@types/parse-torrent": "^5.8.4",
     "@types/string-similarity": "^4.0.2",
-    "nodemon": "^3.1.1",
+    "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   },
   "nodemonConfig": {
     "env": {

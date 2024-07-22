@@ -91,23 +91,20 @@ export default new ApplicationCommand({
 				if (time) {
 					throw new Error("time isn't implemented yet")
 				}
-				console.log(interaction.guild.features)
-				const currentfeatures = interaction.guild.features
-				const newfeatures = currentfeatures.filter(e => e !== "INVITES_DISABLED")
-				newfeatures.push("INVITES_DISABLED")
-				console.log(newfeatures)
-				await interaction.guild.edit({ features: [...newfeatures] })
-				console.log(interaction.guild.features)
+				interaction.guild.disableInvites(true)
+
+				// old logic for old discordjs version
+				// const currentfeatures = interaction.guild.features
+				// const newfeatures = currentfeatures.filter(e => e !== "INVITES_DISABLED")
+				// newfeatures.push("INVITES_DISABLED")
+				// console.log(newfeatures)
+				// await interaction.guild.edit({ features: [...newfeatures] })
+				// console.log(interaction.guild.features)
 				interaction.reply({ embeds: embeds.messageEmbed(":pause_button: Invites have been paused for this server", null, null, "#ff0000") })
 				break
 			}
 			case 'resumeinvites': {
-				console.log(interaction.guild.features)
-				const currentfeatures = interaction.guild.features
-				const newfeatures = currentfeatures.filter(e => e !== "INVITES_DISABLED")
-				console.log(newfeatures)
-				await interaction.guild.edit({ features: [...newfeatures] })
-				console.log(interaction.guild.features)
+				interaction.guild.disableInvites(false)
 				interaction.reply({ embeds: embeds.successEmbed(":arrow_forward: Invites have been resumed for this server") })
 				break
 			}

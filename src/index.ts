@@ -55,25 +55,25 @@ function signalHandler(signal) {
 }
 
 async function errorhandler(error) {
-	console.log('Uncaught Exception...');
-	console.log(error.stack);
+	console.log('Uncaught Exception...')
+	console.log(error.stack)
 	try {
-		const channel = await client.channels.fetch(botlogchannel);
+		const channel = await client.channels.fetch(botlogchannel)
 		if (channel) {
 			const messages = format.splitMessage("Wiwwie crashed\n```js\n" + error.stack + "\n```", 2000, '\n', '```js\n', '\n```')
 			for (let i = 0, len = messages.length; i < len; i++) {
 				await (channel as TextBasedChannel).send(messages[i])
 			}
 		} else {
-			throw new Error('No bot log channel');
+			throw new Error('No bot log channel')
 		}
 	} catch (e) {
-		console.log(e);
+		console.log(e)
 	}
 	setTimeout(() => {
 		// we can't just process.exit() here, because it always returns 0 to the parent (docker)
 		throw new Error(error)
-	}, 1000); // Adjust the delay time as needed
+	}, 1000) // Adjust the delay time as needed
 }
 
 
@@ -81,7 +81,7 @@ process.on('SIGINT', signalHandler)
 process.on('SIGTERM', signalHandler)
 process.on('SIGQUIT', signalHandler)
 if (process.env.NODE_ENV === "prod") process.once('uncaughtException', errorhandler)
-
+if (process.env.NODE_ENV === "prod") process.once('unhandledRejection', errorhandler)
 
 client.start()
 //test()

@@ -79,7 +79,7 @@ async function refreshGuildCommands(guildId: any) {
 		const aliasName = i
 		//console.log(`${aliasName} => ${commandName}`)
 		let command = new SlashCommandBuilder()
-		console.log(typeof require(`../commands/${commandName}`).data)
+		// console.log(typeof require(`../commands/${commandName}`).data)
 		console.log(await client.commands.get(commandName).data.toJSON())
 		//const data = require(`../commands/${commandName}`).data.toJSON() //~~ty emily for fixing this ily <3<3<3<3<3<3<3~~ this was a terrible solution lol
 		const data = await client.commands.get(commandName).data.toJSON()

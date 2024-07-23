@@ -466,8 +466,6 @@ export default {
 						})
 				}
 			})
-
-
 		}
 	},
 	async textToCommandParser(text = "") {

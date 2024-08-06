@@ -4,6 +4,7 @@ import { client } from "../index"
 import database from "../utils/database"
 import format from "../utils/format"
 import log from "../utils/log"
+import user from '../utils/user'
 
 // Emitted whenever a user has information changed like username etc
 export default new Event({
@@ -14,6 +15,7 @@ export default new Event({
 
 		let o2 = newuser
 
+		// calculate the differences between the new and old user
 		let diff = Object.keys(o2).reduce((diff, key) => {
 			if (o1[key] === o2[key]) return diff
 			return {
@@ -25,6 +27,7 @@ export default new Event({
 
 		if (format.oldUsername(olduser) !== format.oldUsername(newuser)) {
 			database.set(`.users.${newuser.id}.usernames.${Date.now()}`, { from: olduser.tag, to: newuser.tag })
+			// user.updateUsername(newuser)
 		} else {
 			// console.log("not saving usernames cuz theyre the same lol")
 		}

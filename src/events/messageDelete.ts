@@ -26,15 +26,29 @@ export default new Event({
 		if (message.author && message.author.bot) return
 
 		// fetch the entry weith the correct id
-		const deletionLog = fetchedLogs.entries.find(e => e.target.id === message.author.id)
-		console.log(deletionLog)
+		let deletionLog
+		if (message.author) {
+			deletionLog = fetchedLogs.entries.find(e => e.target.id === message.author.id)
+			console.log(deletionLog)
+		}
 
 		// Perform a coherence check to make sure that there's *something*
 		if (!deletionLog) {
+			console.log("no deletionlog")
+			console.log(message)
+			let msg: string
 			// Discord does not emit an audit log if the person who deleted the message is a bot deleting a single message or is the author of the message itself.
-			const msg = `A message by ${message.author.username} <@${message.author.id}> was deleted in <#${message.channel.id}>`
-			console.log(msg)
-			log.log(message.guild, msg)
+			if (message.author) {
+				msg = `A message by ${message.author.username} <@${message.author.id}> was deleted in <#${message.channel.id}>`
+				console.log(msg)
+				log.log(message.guild, msg)
+			} else {
+				msg = `A message by ??? was deleted in <#${message.channel.id}>`
+				console.log(msg)
+				log.log(message.guild, msg)
+				return
+			}
+
 
 		} else {
 			// Now grab the user object of the person who deleted the message

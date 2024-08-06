@@ -472,8 +472,18 @@ export default {
 		console.log(text)
 
 		// split text by spaces
-		const words = text.split(" ")
+		let words: string[] = text.split(" ")
 		if (words[0].startsWith("/")) words[0] = words[0].substring(1)
+		words = words.flatMap(word => {
+			if (word.includes(':')) {
+				const [firstPart, secondPart] = word.split(':')
+				return [`${firstPart}:`, secondPart]
+			} else {
+				// if theres no colon, return the word as is
+				return [word]
+			}
+		})
+		console.log(words)
 		const commandName = words[0]
 		const commands = client.commands
 		let group: any
@@ -527,43 +537,79 @@ export default {
 		console.log(`subcommand = ${subcommand}`)
 		console.log(`optionsStart = ${optionsStart}`)
 
-		// // find group
-		// const commandgroup =
-		// 	(await command.options.find(
-		// 		(e: any) => e.name == group && e.type == 2,
-		// 	)) || command
-		// console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
-		// const commandsubcommand =
-		// 	(await commandgroup.options.find(
-		// 		(e: any) => e.name == subcommand && e.type == 1,
-		// 	)) || commandgroup
-		// console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
+		command.data.options.forEach((e: any) => {
+			console.log("Full object:")
+			console.dir(e, { depth: null })  // Log the entire object with full depth
 
-		// const foundoptions: any = []
-		// // parse options
-		// // for each word from optionsStart to end
-		// for (let i = optionsStart, len = words.length; i < len; i++) {
-		// 	if (words[i].endsWith(":")) {
-		// 		// remove colon
-		// 		const option = words[i].substring(0, words[i].length - 1)
-		// 		console.log(`option = ${option}`)
-		// 		// type 1 is an subcommand (not group)
+			// Check if the type is accessible directly
+			console.log(`Direct type: ${e.type}`)
 
-		// 		// if it hasn't been chosen yet
-		// 		if (!foundoptions.find((e: any) => e.name == option)) {
-		// 			// if it exists in the command
-		// 			if (
-		// 				await commandsubcommand.options.find(
-		// 					(e: { name: string; type: number }) =>
-		// 						e.name == option && e.type == 3,
-		// 				)
-		// 			) {
-		// 				console.log(`option found ${words[i]}, ${i}`)
-		// 				foundoptions.push({ name: option, position: i })
-		// 			}
-		// 		}
-		// 	}
-		// }
-		return [commandName, group, subcommand, options]
+			// Check if the type is accessible through any method
+			if (typeof e.getType === 'function') {
+				console.log(`Type via getType(): ${e.getType()}`)
+			}
+
+			// Log properties
+			console.log(`Properties: ${Object.keys(e)}`)
+		})
+
+
+		// find group, if nothing can be found, use the whole command (this subcommand has no group)
+		const commandgroup = (await command.data.options.find((e: any) => {
+			// console.log(`${e.name} = ${JSON.stringify(e)}`)
+			console.log(e)
+			console.log(e.name)
+			console.log(e.toJSON().type)
+			if (e.name == group && e.toJSON().type == 2) return true
+		})) || command.data
+		console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
+		// const commandsubcommand = (await commandgroup.options.find((e: any) => e.name == subcommand && e.type == 1)) || commandgroup
+		const commandsubcommand = (await commandgroup.options.find((e: any) => {
+			// console.log(`${e.name} = ${JSON.stringify(e)}`)
+			console.log(e)
+			console.log(e.name)
+			console.log(e.toJSON().type)
+			if (e.name == subcommand && e.toJSON().type == 1) return true
+		})) || commandgroup
+		console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
+
+		const foundoptions: { name: string, position: number, type: number, value: string }[] = []
+		// parse options
+		// for each word from optionsStart to end
+		console.log(words)
+		console.log(optionsStart)
+		for (let i = optionsStart, len = words.length; i < len; i++) {
+			if (words[i].endsWith(":")) {
+				// remove colon
+				const option = words[i].substring(0, words[i].length - 1)
+				console.log(`option = ${option}`)
+				// type 1 is an subcommand (not group)
+
+				// if it hasn't been chosen yet
+				if (!foundoptions.find((e: any) => e.name == option)) {
+					// if it exists in the command
+					const command = await commandsubcommand.options.find((e: any) => e.name == option && e.toJSON().type >= 3 && e.toJSON().type <= 11)
+					if (command) {
+						console.log(`option found ${words[i]}, ${i}`)
+						foundoptions.push({ name: option, position: i, type: command.toJSON().type, value: undefined })
+					}
+				} else {
+					console.log("already processed", option)
+				}
+			}
+		}
+		console.log(foundoptions)
+		for (let i = 0, len = foundoptions.length; i < len; i++) {
+			const currentoption = foundoptions[i]
+			// find the next option, unless its out of bounds
+			const nextposition = i + 1 < len ? foundoptions[i + 1].position : words.length
+			// loop through all foundoptions
+			// find words from each options' "position" to the next "position", or end
+			currentoption.value = words.slice(currentoption.position + 1, nextposition).join(" ")
+			foundoptions[i] = currentoption
+		}
+		console.log(foundoptions)
+
+		return [commandName, group, subcommand, foundoptions]
 	},
 }

@@ -5,7 +5,7 @@ import embeds from "../utils/embeds"
 import commands from "../utils/commands"
 import format from "../utils/format"
 import { stripIndent, stripIndents } from "common-tags"
-
+import { permissions } from "../config.json"
 const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
 
 export default new ApplicationCommand({
@@ -97,6 +97,15 @@ export default new ApplicationCommand({
 		.addSubcommand(command => command
 			.setName('list')
 			.setDescription('list all commands')
+		)
+		.addSubcommand(command => command
+			.setName('parse')
+			.setDescription('wip')
+			.addStringOption(option => option
+				.setName('text')
+				.setDescription('text')
+				.setRequired(true)
+			)
 		)
 	,
 
@@ -234,12 +243,13 @@ export default new ApplicationCommand({
 						break
 					}
 					case 'parse': {
+						if (interaction.user.id !== permissions.botowner) return
+
 						const text = interaction.options.getString("text")
-						const output = commands.textToCommandParser(text)
-						interaction.reply(
-							stripIndents`ok
-							output`
-						)
+						const [commandName, group, subcommand, foundoptions] = await commands.textToCommandParser(text)
+						console.log([commandName, group, subcommand, foundoptions])
+						commands.run(interaction, "slash", commandName, group, subcommand, foundoptions)
+
 					}
 				}
 			}

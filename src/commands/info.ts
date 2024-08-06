@@ -224,7 +224,8 @@ export default new ApplicationCommand({
 						if (invite) {
 							const invitedById = invite.inviterId
 							const invitedBy = await client.users.fetch(invitedById) || null
-							const invited = invitedBy ? `\`${invitedBy}\` <@${invitedById}>` : `*Unknown*`
+							const invited = invitedBy ? `\`${invitedBy.username}\` <@${invitedById}>` : `*Unknown*`
+							// const invited = invitedBy ? `<@${invitedById}>` : `*Unknown*`
 							guildtext += `\n**Invited by:** ${invited} ${invite.code.slice(0, 4)}`
 						}
 

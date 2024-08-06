@@ -1,29 +1,24 @@
 import { Guild, GuildResolvable, Snowflake } from "discord.js"
 import database from "./database"
 import { client } from ".."
+import options from "../commands/options"
 
-interface setting {
-	name: string
-	value: string
-	description: string
-	type: "channel" | "toggle" | "role"
-	default: boolean
-}
 
-const settingsList: setting[] = [
+
+
+
+const settingsList: Setting[] = [
 	{
 		name: "Log Channel",
 		value: "log_channel",
 		description: "The channel where moderation logs should go.",
 		type: "channel",
-		default: null
 	},
 	{
 		name: "Starboard Channel",
 		value: "starboard_channel",
 		description: "The channel for starred messages.",
 		type: "channel",
-		default: null
 	},
 	{
 		name: "Welcome Message",
@@ -53,20 +48,22 @@ const settingsList: setting[] = [
 	// 	type: "toggle",
 	// 	default: true
 	// },
-	// {
-	// 	name: 
-	// 	value: 
-	// 	description: 
-	// 	type: 
-	// 	default: 
-	// }
 	{
-		name: "OpenAI model use 4o",
+		name: "OpenAI model",
 		value: "openai_model",
-		description: "The model the OpenAI Chat features will use. True = 4o, False = 3.5-turbo",
-		type: "toggle",
-		default: false
-	}
+		description: "The model the OpenAI Chat features will use.",
+		type: "string",
+		default: "gpt-3.5-turbo",
+		options: [{ value: "gpt-3.5-turbo" }, { value: "gpt-4o" }]
+	},
+	// {
+	// 	name: "test setting",
+	// 	value: "test_setting",
+	// 	description: "awawa",
+	// 	type: "string",
+	// 	default: null,
+	// 	options: [{ label: "uwu", value: "uwu" }]
+	// }
 ]
 
 

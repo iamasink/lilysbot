@@ -132,13 +132,13 @@ export default {
 
 
 		try {
-			const use4o = await settings.get(message.guild, "openai_model")
+			const model = await settings.get(message.guild, "openai_model")
 			// console.log("model is " + use4o)
 
-			let model = "gpt-3.5-turbo"
-			if (use4o == true) {
-				model = "gpt-4o"
-			}
+			// let model = "gpt-3.5-turbo"
+			// if (use4o == "4o") {
+			// 	model = "gpt-4o"
+			// }
 
 			// console.log(model)
 

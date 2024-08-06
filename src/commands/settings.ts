@@ -342,7 +342,6 @@ async function stringSelector(interaction: ChatInputCommandInteraction, setting:
 					interaction.editReply({ embeds: embeds.warningEmbed(title, `Nothing selected`), components: [] })
 					setTimeout(() => interaction.deleteReply(), 10000)
 					// reject(new Error("Nothing selected"))
-					reject()
 				})
 		})
 	})

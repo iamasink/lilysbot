@@ -9,7 +9,7 @@ import { stripIndents } from 'common-tags'
 
 
 
-interface gayassinvite {
+interface funnyinvite {
 	inviterId: string,
 	uses: number,
 	expired: boolean,
@@ -311,7 +311,7 @@ export default new ApplicationCommand({
 					interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite Code`) })
 					return
 				}
-				const dbInvite: gayassinvite = await database.get(`.guilds.${guild.id}.invites.${code}`)
+				const dbInvite: funnyinvite = await database.get(`.guilds.${guild.id}.invites.${code}`)
 				// if (!invite) {
 				// 	interaction.reply({ ephemeral: true, embeds: embeds.warningEmbed(`Invalid Invite.`) })
 				// 	return
@@ -402,7 +402,7 @@ export default new ApplicationCommand({
 		const invites = await database.get(`.guilds.${interaction.guild.id}.invites`)
 
 		//convert to array of objects (from object of objects)
-		var invitesArray: gayassinvite[] = Object.keys(invites).map(key => {
+		var invitesArray: funnyinvite[] = Object.keys(invites).map(key => {
 			return invites[key]
 		})
 		for (let i in invitesArray) {

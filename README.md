@@ -9,10 +9,10 @@ Created to help me with moderation, with features that no other bot quite satisf
     - /invite create  
         Create an invite with a friendly name, so you can see where users have been invited from.
          <details><summary>Screenshot</summary><img src="screenshots/image-3.png"></details>
-    - /invite list
+    - /invite list  
         List all invites, optionally including expired ones
- - Basic server XP system
- - OpenAI API integration 
+ - Basic server XP system  
+ - OpenAI API integration   
 
 
 # Running in docker

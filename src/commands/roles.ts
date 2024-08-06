@@ -245,10 +245,10 @@ export default new ApplicationCommand({
 											}
 
 
-											const actionRows: ActionRowBuilder<ButtonBuilder>[] = [];
+											const actionRows: ActionRowBuilder<ButtonBuilder>[] = []
 
 											for (let i = 0; i < list.length; i += 5) {
-												const buttons: ButtonBuilder[] = [];
+												const buttons: ButtonBuilder[] = []
 
 												for (let j = 0; j < 5; j++) {
 													if (i + j < list.length) {
@@ -265,7 +265,7 @@ export default new ApplicationCommand({
 													}
 												}
 
-												actionRows.push(new ActionRowBuilder<ButtonBuilder>().addComponents(...buttons));
+												actionRows.push(new ActionRowBuilder<ButtonBuilder>().addComponents(...buttons))
 											}
 
 											rows = actionRows
@@ -609,7 +609,7 @@ export default new ApplicationCommand({
 							console.log(tagList)
 							await interaction.reply({ embeds: embeds.messageEmbed(`Roles - ${tagList.length}`, tagList.join('\n')) })
 							await interaction.followUp({ embeds: embeds.messageEmbed(`Role Lists - ${count}`, roleliststext) })
-							// todo add rolelists
+							// TODO: add rolelists
 
 
 						} else {

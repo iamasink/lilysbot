@@ -22,7 +22,7 @@ function embed(
 	if (image) embed.setImage(image)
 	if (thumbnail) embed.setThumbnail(thumbnail)
 	if (footer) embed.setFooter(footer)
-	console.log(`embed: ${JSON.stringify(embed)}`)
+	// console.log(`embed: ${JSON.stringify(embed)}`)
 	return [embed]
 }
 

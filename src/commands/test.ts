@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ChannelSelectMenuBuilder, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder, TextBasedChannel } from 'discord.js'
+import { ActionRowBuilder, ApplicationCommandManager, ChannelSelectMenuBuilder, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder, TextBasedChannel } from 'discord.js'
 import ApplicationCommand from '../types/ApplicationCommand'
 import { client } from '..'
 import format from '../utils/format'
@@ -11,7 +11,8 @@ export default new ApplicationCommand({
 		.setName('test')
 		.setDescription('description'),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-
+		console.log(interaction)
 	},
 })
+
 

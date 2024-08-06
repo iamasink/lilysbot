@@ -1,4 +1,4 @@
-import { Client, Collection } from "discord.js"
+import { ApplicationCommandManager, Client, Collection, FetchApplicationCommandOptions } from "discord.js"
 import { token } from "../config.json"
 import { readdirSync } from "fs"
 import path from "node:path"
@@ -12,6 +12,8 @@ import BridgeManager from './BridgeManager'
 // it is called in index.ts 
 export class Bot extends Client {
 	commands: Collection<string, ApplicationCommand> = new Collection()
+	// commandManager: ApplicationCommandManager
+	// awaw: FetchApplicationCommandOptions
 	bridgeManager: BridgeManager
 	constructor(options) {
 		super(options)

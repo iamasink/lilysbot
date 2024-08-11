@@ -77,3 +77,11 @@ export default class ApplicationCommand {
 		this.button = options.button
 	}
 }
+
+export interface ApplicationCommandAlias {
+	commandName: string
+	defaultoptions: string[] 
+	group: string
+	subcommand: string
+	description: string
+}

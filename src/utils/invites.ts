@@ -1,12 +1,13 @@
 import { Guild } from "discord.js"
 import { client } from ".."
 import database from "./database"
+import { InviteSchema } from "../types/Database"
 
 async function updateInviteCache(guild: Guild) {
 	console.log(`updating invite cache for ${guild.name}`)
 
 	// Fetch all Guild Invites
-	const oldinvites = await database.get(`.guilds.${guild.id}.invites`)
+	const oldinvites = await database.get<InviteSchema>(`.guilds.${guild.id}.invites`)
 	const guildinvites = await guild.invites.fetch()
 
 	guildinvites.map(async (invite) => {

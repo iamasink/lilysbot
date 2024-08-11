@@ -19,7 +19,7 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js"
-import ApplicationCommand from "../types/ApplicationCommand"
+import ApplicationCommand, { ApplicationCommandAlias } from "../types/ApplicationCommand"
 import { client } from "../index"
 import embeds from "./embeds"
 import database from "./database"
@@ -29,9 +29,9 @@ import { Octokit } from "@octokit/rest"
 import format from "./format"
 import { stripIndents } from "common-tags"
 
-function merge(a: any, b: any, prop: any) {
+function merge<T, K extends keyof T>(a: T[], b: T[], prop: K) {
 	const reduced = a.filter(
-		(aitem: any) => !b.find((bitem: any) => aitem[prop] === bitem[prop]),
+		(aitem) => !b.find((bitem) => aitem[prop] === bitem[prop]),
 	)
 	return reduced.concat(b)
 }
@@ -58,7 +58,7 @@ async function refreshGlobalCommands() {
 		throw error
 	}
 }
-async function refreshGuildCommands(guildId: any) {
+async function refreshGuildCommands(guildId: string) {
 	const rest = new REST({ version: "10" }).setToken(token)
 	const commandList = []
 
@@ -68,7 +68,7 @@ async function refreshGuildCommands(guildId: any) {
 
 	//aliases = await process.db.json.get(`guilds`, dbpath) || {}
 
-	const aliases = (await database.get(dbpath)) || {}
+	const aliases = (await database.get<ApplicationCommandAlias>(dbpath)) || {}
 	const commands = []
 	for (const i in aliases) {
 		console.log(`i = ${i}`)

@@ -86,16 +86,16 @@ export default {
 			}
 		}
 	},
-	async get(guild: Guild, setting: string) {
+	async get<T>(guild: Guild, setting: string): Promise<T> {
 		if (!settingsList.map((e) => e.value).includes(setting))
 			throw new Error("invalid setting")
-		const value = await database.get(
-			`.guilds.${guild.id}.settings.${setting}`,
+		const value = await database.get<T>(
+			`.guilds.${guild.id}.settings.${setting}`
 		)
 		console.log(value)
 		return value
 	},
-	async set(guild: Guild, setting: string, value: any) {
+	async set<TValue>(guild: Guild, setting: string, value: TValue) {
 		if (!settingsList.map((e) => e.value).includes(setting))
 			throw new Error("invalid setting")
 		return await database.set(

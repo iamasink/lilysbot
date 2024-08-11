@@ -19,7 +19,7 @@ const openai = new OpenAI({
 
 export default {
 	async openaiMessage(message: Message, random: boolean = false) {
-		const userstokens = await database.get(
+		const userstokens = await database.get<number>(
 			`.users.${message.author.id}.aitokenusage`,
 		)
 		// console.log(userstokens)
@@ -139,7 +139,7 @@ export default {
 		// console.log(chatMessages)
 
 		try {
-			const model = await settings.get(message.guild, "openai_model")
+			const model = await settings.get<string>(message.guild, "openai_model")
 			// console.log("model is " + use4o)
 
 			// let model = "gpt-3.5-turbo"

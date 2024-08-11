@@ -6,7 +6,7 @@ interface BaseSetting {
 	name: string
 	value: string
 	description: string
-	default?: any
+	default?: string | boolean
 }
 
 interface SelectorOption {

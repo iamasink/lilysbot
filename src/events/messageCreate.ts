@@ -55,7 +55,7 @@ export default new Event({
 						.toString()
 						.slice(0, -3)}:t>`,
 				)
-				const currentXp = await database.get(
+				const currentXp = await database.get<number>(
 					`.guilds.${guild.id}.users.${message.interaction.user.id}.xp`,
 				)
 				const newXp = Math.floor(currentXp + 100)
@@ -103,7 +103,7 @@ export default new Event({
 		// 	return
 
 		// }
-		const currentXp = await database.get(
+		const currentXp = await database.get<number>(
 			`.guilds.${guild.id}.users.${user.id}.xp`,
 		)
 		// newXp is random between +5 and +15

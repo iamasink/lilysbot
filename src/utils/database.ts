@@ -100,9 +100,9 @@ export default {
 	 * Get data from the redis database
 	 *
 	 * @param {string} path The path to the data in JSON Path format (start with .)
-	 * @return {Promise<any>} Returns data from the path
+	 * @return {Promise<TData>} Returns data from the path
 	 */
-	async get(path: string): Promise<any> {
+	async get<TData>(path: string): Promise<TData> {
 		return get(path)
 	},
 	/**

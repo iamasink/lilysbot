@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js"
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import database from "../utils/database"
 import embeds from "../utils/embeds"
@@ -8,7 +8,6 @@ import { stripIndent, stripIndents } from "common-tags"
 import { permissions } from "../config.json"
 const {
 	SlashCommandBuilder,
-	SlashCommandSubcommandBuilder,
 	EmbedBuilder,
 } = require("discord.js")
 
@@ -17,11 +16,11 @@ export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName("command")
 		.setDescription("Configure my commands")
-		.addSubcommandGroup((group) =>
+		.addSubcommandGroup((group: SlashCommandSubcommandGroupBuilder) =>
 			group
 				.setName("alias")
 				.setDescription("alias")
-				.addSubcommand((command) =>
+				.addSubcommand((command: SlashCommandSubcommandBuilder) =>
 					command
 						.setName("create")
 						.setDescription("create an alias")
@@ -61,7 +60,7 @@ export default new ApplicationCommand({
 								.setDescription("override description"),
 						),
 				)
-				.addSubcommand((command) =>
+				.addSubcommand((command: SlashCommandSubcommandBuilder) =>
 					command
 						.setName("remove")
 						.setDescription("remove an alias")
@@ -76,7 +75,7 @@ export default new ApplicationCommand({
 					command.setName("list").setDescription("list all aliases"),
 				),
 		)
-		.addSubcommandGroup((group) =>
+		.addSubcommandGroup((group: SlashCommandSubcommandGroupBuilder) =>
 			group
 				.setName("command")
 				.setDescription("command")
@@ -103,7 +102,7 @@ export default new ApplicationCommand({
 						),
 				),
 		)
-		.addSubcommand((command) =>
+		.addSubcommand((command: SlashCommandSubcommandBuilder) =>
 			command
 				.setName("run")
 				.setDescription("run a command")

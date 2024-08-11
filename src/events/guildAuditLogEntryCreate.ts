@@ -1,11 +1,18 @@
-import { Events, Interaction, Message, AuditLogEvent, Guild, ChannelSelectMenuBuilder } from 'discord.js';
+import {
+	Events,
+	Interaction,
+	Message,
+	AuditLogEvent,
+	Guild,
+	ChannelSelectMenuBuilder,
+} from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
-import database from '../utils/database';
-import settings from '../utils/settings';
-import { Channel } from 'diagnostics_channel';
-import log from '../utils/log';
-import { stripIndents } from 'common-tags';
+import database from "../utils/database"
+import settings from "../utils/settings"
+import { Channel } from "diagnostics_channel"
+import log from "../utils/log"
+import { stripIndents } from "common-tags"
 
 const types = {
 	GuildUpdate: 1,
@@ -63,7 +70,7 @@ const types = {
 	AutoModerationFlagToChannel: 144,
 	AutoModerationUserCommunicationDisabled: 145,
 	CreatorMonetizationRequestCreated: 150,
-	CreatorMonetizationTermsAccepted: 151
+	CreatorMonetizationTermsAccepted: 151,
 }
 
 // Emitted whenever an audit log entry is created
@@ -73,30 +80,24 @@ export default new Event({
 		// console.log(auditLogEntry.toString())
 		// const channel = await log.channel2(guild)
 		// if (auditLogEntry) {
-
 		// 	// i am most likely not doing this in any decent manner but
 		// 	// if (auditLogEntry['action_type'])
-
 		// 	let targetText = ``
 		// 	if (auditLogEntry['targetId']) {
 		// 		targetText = `${await client.users.fetch(auditLogEntry['executorId'])} => ${await client.users.fetch(auditLogEntry['targetId'])}`
 		// 	} else {
 		// 		targetText = `${await client.users.fetch(auditLogEntry['executorId'])}`
 		// 	}
-
 		// 	let reasonText = ``
 		// 	if (auditLogEntry['reason']) {
 		// 		reasonText = `For reason: ${auditLogEntry['reason']}\n`
 		// 	}
-
 		// 	let changesText = ``
 		// 	const changes = auditLogEntry['changes']
 		// 	if (changes) {
 		// 		if (changes['$add']) { // if changes has an $add property
 		// 			return // dont cuz its annoying <3
-
 		// 		} else {
-
 		// 			for (let i = 0, len = auditLogEntry['changes'].length; i < len; i++) {
 		// 				const change = auditLogEntry['changes'][i]
 		// 				const old = change["old"] || "(none)"
@@ -105,13 +106,9 @@ export default new Event({
 		// 													${old} => ${newthing}\n`
 		// 			}
 		// 			// changes = auditLogEntry['changes']
-
 		// 		}
 		// 	}
-
 		// 	channel.send({ content: `${targetText}:\n${reasonText}${changesText}\n\n${JSON.stringify(auditLogEntry)}`, allowedMentions: { repliedUser: false, users: [] } })
 		// }
-
-
 	},
 })

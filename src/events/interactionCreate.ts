@@ -1,4 +1,14 @@
-import { ActionRowBuilder, Events, GuildTextBasedChannel, Interaction, Message, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js"
+import {
+	ActionRowBuilder,
+	Events,
+	GuildTextBasedChannel,
+	Interaction,
+	Message,
+	ModalActionRowComponentBuilder,
+	ModalBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+} from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import commands from "../utils/commands"
@@ -7,7 +17,6 @@ import format from "../utils/format"
 import database from "../utils/database"
 import config from "../config.json"
 
-
 // Emitted when an interaction is created.
 export default new Event({
 	name: Events.InteractionCreate,
@@ -15,14 +24,14 @@ export default new Event({
 		let location: string
 		if (interaction.channel) location = interaction.channel.name
 		else location = "dms"
-		console.log(`${interaction.user} in #${location} triggered an interaction.`)
+		console.log(
+			`${interaction.user} in #${location} triggered an interaction.`,
+		)
 
 		//const guildID = interaction.guild.id
 
-
 		if (interaction.isChatInputCommand()) {
 			console.log("chatinput")
-
 
 			//console.log(interaction)
 			//console.log(interaction.commandName)
@@ -30,27 +39,29 @@ export default new Event({
 			//console.log(interaction.client.commands)
 			//console.log(interaction.options)
 
-
-
 			//checks if the command is an aliased (guild) command
 			if (interaction.inGuild()) {
 				const dbpath = `.guilds.${interaction.guild.id}.commands.aliases`
-				const aliases = await database.get(dbpath) || {}
+				const aliases = (await database.get(dbpath)) || {}
 				console.log(`aliases: ${JSON.stringify(aliases)}`)
 				const aliasedCommand = aliases[interaction.commandName]
 				//console.log(aliasedCommand)
 				if (aliasedCommand) {
-					return commands.run(interaction, "slash", aliasedCommand.commandname, aliasedCommand.group, aliasedCommand.subcommand, aliasedCommand.defaultoptions)
+					return commands.run(
+						interaction,
+						"slash",
+						aliasedCommand.commandname,
+						aliasedCommand.group,
+						aliasedCommand.subcommand,
+						aliasedCommand.defaultoptions,
+					)
 				} else {
 					return commands.run(interaction, "slash")
 				}
 			} else {
 				return commands.run(interaction, "slash")
 			}
-
-		}
-
-		else if (interaction.isAutocomplete()) {
+		} else if (interaction.isAutocomplete()) {
 			// console.log(interaction)
 
 			const command = client.commands.get(interaction.commandName)
@@ -60,8 +71,6 @@ export default new Event({
 			const permlist = command.permissions || []
 			//console.log(command.permissions)
 
-
-
 			// for every permission set in the command, check it
 			for (let i = 0; i < permlist.length; i++) {
 				if (permlist[i] == "botowner") {
@@ -70,7 +79,9 @@ export default new Event({
 					}
 				} else {
 					console.log(i)
-					if ((interaction.member.permissions as any).has(permlist[i])) {
+					if (
+						(interaction.member.permissions as any).has(permlist[i])
+					) {
 						console.log("yes")
 						acceptedPermissions.push(permlist[i])
 					} else {
@@ -88,27 +99,27 @@ export default new Event({
 
 			if (deniedPermissions.length > 0) {
 				// console.log(interaction)
-				await interaction.respond([{ name: "🚫 No Permission!", value: "" }])
+				await interaction.respond([
+					{ name: "🚫 No Permission!", value: "" },
+				])
 				console.log(`denied! ${interaction.user}`)
 				return
 			}
 
 			console.log(command)
 			if (!command) {
-				console.error(`No command matching ${interaction.commandName} was found.`)
+				console.error(
+					`No command matching ${interaction.commandName} was found.`,
+				)
 				return
 			}
-
-
 
 			try {
 				await command.autocomplete(interaction)
 			} catch (error) {
 				console.error(error)
 			}
-		}
-
-		else if (interaction.isUserContextMenuCommand()) {
+		} else if (interaction.isUserContextMenuCommand()) {
 			// gets the (global) command data from the interaction
 			console.log(interaction.commandName)
 			const command = await client.commands.get(interaction.commandName)
@@ -118,10 +129,7 @@ export default new Event({
 				console.log(`${interaction} not a command.`)
 			}
 			commands.run(interaction, "usercontext")
-
-		}
-
-		else if (interaction.isMessageContextMenuCommand()) {
+		} else if (interaction.isMessageContextMenuCommand()) {
 			// gets the (global) command data from the interaction
 			console.log(interaction.commandName)
 			const command = await client.commands.get(interaction.commandName)
@@ -152,11 +160,11 @@ export default new Event({
 				if (command != null) {
 					command.menu(interaction)
 				} else {
-					console.log(`interaction ${interaction.customId} not command idk`)
+					console.log(
+						`interaction ${interaction.customId} not command idk`,
+					)
 				}
-			}
-
-			else if (interaction.isButton()) {
+			} else if (interaction.isButton()) {
 				// if () {
 				// 	commandName = interaction.message.interaction.commandName.split(" ")[0]
 				// 	const command = interaction.client.commands.get(commandName)
@@ -167,22 +175,21 @@ export default new Event({
 				// 		console.error(error)
 				// 		interaction.reply({ embeds: embeds.errorEmbed(`Running button interaction **${interaction.customId}** for **${commandName}**`, error), ephemeral: true })
 				// 	}
-				// } else 
-
+				// } else
 
 				// handle non command buttons (eg on error)
 				if (interaction.customId === "errorreport") {
-
 				} else {
 					if (command != null) {
 						command.button(interaction)
 					} else {
-						console.log(`interaction ${interaction.customId} not command idk`)
+						console.log(
+							`interaction ${interaction.customId} not command idk`,
+						)
 					}
 				}
-				//todo: handle role menus 
+				//todo: handle role menus
 			}
 		}
-	}
-}
-)
+	},
+})

@@ -5,8 +5,5 @@ import { client } from "../index"
 // Emitted whenever a guild kicks the client or the guild is deleted/left.
 export default new Event({
 	name: Events.GuildDelete,
-	async execute(guild: Guild) {
-
-	},
-}
-)
+	async execute(guild: Guild) {},
+})

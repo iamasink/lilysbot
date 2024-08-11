@@ -1,5 +1,3 @@
-
-
 import { Events, GuildMember, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
@@ -16,7 +14,6 @@ export default new Event({
 			info = `\nthey are pending.`
 		} else {
 			info = `\nthey aren't pending.`
-
 		}
 		// log.log(member.guild, `${member.id} has been updated.` + info)
 
@@ -28,11 +25,9 @@ export default new Event({
 			if (o1[key] === o2[key]) return diff
 			return {
 				...diff,
-				[key]: o2[key]
+				[key]: o2[key],
 			}
 		}, {})
 		console.log(diff)
-
 	},
-}
-)
+})

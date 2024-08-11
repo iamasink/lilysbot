@@ -9,7 +9,7 @@ async function updateInviteCache(guild: Guild) {
 	const oldinvites = await database.get(`.guilds.${guild.id}.invites`)
 	const guildinvites = await guild.invites.fetch()
 
-	guildinvites.map(async invite => {
+	guildinvites.map(async (invite) => {
 		const code = invite.code
 		const inviterId = invite.inviterId
 		const uses = invite.uses
@@ -26,21 +26,17 @@ async function updateInviteCache(guild: Guild) {
 			database.set(`.guilds.${guild.id}.invites.${i}.expired`, true)
 		}
 	}
-
 }
 
 export default {
 	async updateAllInviteCaches() {
 		console.log("updating all invite cache")
 		client.guilds.cache.forEach(async (guild) => {
-
 			updateInviteCache(guild)
 		})
-
 	},
-
 
 	async updateInviteCache(guild: Guild) {
 		updateInviteCache(guild)
-	}
+	},
 }

@@ -1,4 +1,13 @@
-import { EmbedBuilder, Events, GuildTextBasedChannel, Interaction, Message, MessageReaction, ReactionManager, User } from "discord.js"
+import {
+	EmbedBuilder,
+	Events,
+	GuildTextBasedChannel,
+	Interaction,
+	Message,
+	MessageReaction,
+	ReactionManager,
+	User,
+} from "discord.js"
 import Event from "../types/Event"
 import { client } from "../index"
 import database from "../utils/database"
@@ -19,7 +28,10 @@ export default new Event({
 			try {
 				await reaction.fetch()
 			} catch (error) {
-				console.error('Something went wrong when fetching the message:', error)
+				console.error(
+					"Something went wrong when fetching the message:",
+					error,
+				)
 				// Return as `reaction.message.author` may be undefined/null
 				return
 			}
@@ -31,34 +43,53 @@ export default new Event({
 		// console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
 
 		if (reaction.emoji.name == "⭐") {
-			const starboardChannelId = await database.get(`.guilds.${guild.id}.settings.starboard_channel`)
+			const starboardChannelId = await database.get(
+				`.guilds.${guild.id}.settings.starboard_channel`,
+			)
 			if (!starboardChannelId) return
-			const starboardChannel = (await guild.channels.fetch(starboardChannelId) as GuildTextBasedChannel)
+			const starboardChannel = (await guild.channels.fetch(
+				starboardChannelId,
+			)) as GuildTextBasedChannel
 
-			let previousStars: any[] = await database.get(`.guilds.${guild.id}.starboard`) || []
+			let previousStars: any[] =
+				(await database.get(`.guilds.${guild.id}.starboard`)) || []
 
 			// rename this when sane
-			const databaseThing = previousStars.find(i => i.originalMessage == message.id)
+			const databaseThing = previousStars.find(
+				(i) => i.originalMessage == message.id,
+			)
 
 			// if the message could be found in the database
 			if (databaseThing) {
-				console.log("this message has already been starred. it will not be resent and instead updated :)")
-				const oldMessage = await starboardChannel.messages.fetch(databaseThing.starMessage)
+				console.log(
+					"this message has already been starred. it will not be resent and instead updated :)",
+				)
+				const oldMessage = await starboardChannel.messages.fetch(
+					databaseThing.starMessage,
+				)
 				// TODO: change this 1 to a customizable option
 				if (reaction.count > 1) {
 					// this message has already been starred. it will not be resent and instead updated :)
-					oldMessage.edit({ content: `${reaction.count} ⭐ in ${message.channel}` })
+					oldMessage.edit({
+						content: `${reaction.count} ⭐ in ${message.channel}`,
+					})
 				} else {
 					oldMessage.delete()
 					// splice 1 element from the index of the found element :)
-					previousStars.splice(previousStars.findIndex(i => i.originalMessage == message.id), 1)
-					await database.set(`.guilds.${guild.id}.starboard`, previousStars)
+					previousStars.splice(
+						previousStars.findIndex(
+							(i) => i.originalMessage == message.id,
+						),
+						1,
+					)
+					await database.set(
+						`.guilds.${guild.id}.starboard`,
+						previousStars,
+					)
 				}
-
 			} else {
 				// a reaction was lost, so theres no way it should be sent probably
 			}
 		}
 	},
-}
-)
+})

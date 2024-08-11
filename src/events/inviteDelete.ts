@@ -9,8 +9,9 @@ export default new Event({
 	async execute(invite: Invite) {
 		console.log(`a invite was deleted: ${invite}`)
 		console.log(invite)
-		database.set(`.guilds.${invite.guild.id}.invites.${invite.code}.expired`, true)
-
+		database.set(
+			`.guilds.${invite.guild.id}.invites.${invite.code}.expired`,
+			true,
+		)
 	},
-}
-)
+})

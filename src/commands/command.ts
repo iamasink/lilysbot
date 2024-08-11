@@ -6,114 +6,133 @@ import commands from "../utils/commands"
 import format from "../utils/format"
 import { stripIndent, stripIndents } from "common-tags"
 import { permissions } from "../config.json"
-const { SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder } = require('discord.js')
+const {
+	SlashCommandBuilder,
+	SlashCommandSubcommandBuilder,
+	EmbedBuilder,
+} = require("discord.js")
 
 export default new ApplicationCommand({
 	permissions: ["botowner"],
 	data: new SlashCommandBuilder()
-		.setName('command')
-		.setDescription('Configure my commands')
-		.addSubcommandGroup(group => group
-			.setName('alias')
-			.setDescription('alias')
-			.addSubcommand(command => command
-				.setName('create')
-				.setDescription('create an alias')
-				.addStringOption(option => option
-					.setName('alias')
-					.setDescription('alias to create')
-					.setRequired(true)
-
-				).addStringOption(option => option
-					.setName("commandname")
-					.setDescription("commandname")
-					.setRequired(true)
+		.setName("command")
+		.setDescription("Configure my commands")
+		.addSubcommandGroup((group) =>
+			group
+				.setName("alias")
+				.setDescription("alias")
+				.addSubcommand((command) =>
+					command
+						.setName("create")
+						.setDescription("create an alias")
+						.addStringOption((option) =>
+							option
+								.setName("alias")
+								.setDescription("alias to create")
+								.setRequired(true),
+						)
+						.addStringOption((option) =>
+							option
+								.setName("commandname")
+								.setDescription("commandname")
+								.setRequired(true),
+						)
+						.addStringOption((option) =>
+							option.setName("group").setDescription("group"),
+						)
+						.addStringOption((option) =>
+							option
+								.setName("subcommand")
+								.setDescription("subcommand"),
+						)
+						.addStringOption((option) =>
+							option
+								.setName("defaultoptions")
+								.setDescription("defaultoptions"),
+						)
+						.addBooleanOption((option) =>
+							option
+								.setName("hidealloptions")
+								.setDescription("hide options?"),
+						)
+						.addStringOption((option) =>
+							option
+								.setName("description")
+								.setDescription("override description"),
+						),
 				)
-				.addStringOption(option => option
-					.setName("group")
-					.setDescription("group")
+				.addSubcommand((command) =>
+					command
+						.setName("remove")
+						.setDescription("remove an alias")
+						.addStringOption((option) =>
+							option
+								.setName("alias")
+								.setDescription("alias to remove")
+								.setRequired(true),
+						),
 				)
-				.addStringOption(option => option
-					.setName("subcommand")
-					.setDescription("subcommand")
-				)
-				.addStringOption(option => option
-					.setName("defaultoptions")
-					.setDescription("defaultoptions")
-				)
-				.addBooleanOption(option => option
-					.setName('hidealloptions')
-					.setDescription('hide options?')
-				)
-				.addStringOption(option => option
-					.setName('description')
-					.setDescription('override description'))
-			)
-			.addSubcommand(command => command
-				.setName('remove')
-				.setDescription('remove an alias')
-				.addStringOption(option => option
-					.setName('alias')
-					.setDescription('alias to remove')
-					.setRequired(true)
-				)
-			)
-			.addSubcommand(command => command
-				.setName('list')
-				.setDescription('list all aliases')
-			)
+				.addSubcommand((command) =>
+					command.setName("list").setDescription("list all aliases"),
+				),
 		)
-		.addSubcommandGroup(group => group
-			.setName('command')
-			.setDescription('command')
-			.addSubcommand(command => command
-				.setName('enable')
-				.setDescription('enable a disabled command')
-				.addStringOption(option => option
-					.setName('command')
-					.setDescription('command to enable')
-					.setRequired(true)
+		.addSubcommandGroup((group) =>
+			group
+				.setName("command")
+				.setDescription("command")
+				.addSubcommand((command) =>
+					command
+						.setName("enable")
+						.setDescription("enable a disabled command")
+						.addStringOption((option) =>
+							option
+								.setName("command")
+								.setDescription("command to enable")
+								.setRequired(true),
+						),
 				)
-			)
-			.addSubcommand(command => command
-				.setName('disable')
-				.setDescription('disable a command')
-				.addStringOption(option => option
-					.setName('command')
-					.setDescription('command to disable')
-					.setRequired(true)
-				)
-			)
+				.addSubcommand((command) =>
+					command
+						.setName("disable")
+						.setDescription("disable a command")
+						.addStringOption((option) =>
+							option
+								.setName("command")
+								.setDescription("command to disable")
+								.setRequired(true),
+						),
+				),
 		)
-		.addSubcommand(command => command
-			.setName('run')
-			.setDescription('run a command')
-			.addStringOption(option => option
-				.setName('command')
-				.setDescription('command to run')
-				.setRequired(true)
-			)
+		.addSubcommand((command) =>
+			command
+				.setName("run")
+				.setDescription("run a command")
+				.addStringOption((option) =>
+					option
+						.setName("command")
+						.setDescription("command to run")
+						.setRequired(true),
+				),
 		)
-		.addSubcommand(command => command
-			.setName('list')
-			.setDescription('list all commands')
+		.addSubcommand((command) =>
+			command.setName("list").setDescription("list all commands"),
 		)
-		.addSubcommand(command => command
-			.setName('parse')
-			.setDescription('wip')
-			.addStringOption(option => option
-				.setName('text')
-				.setDescription('text')
-				.setRequired(true)
-			)
-		)
-	,
-
+		.addSubcommand((command) =>
+			command
+				.setName("parse")
+				.setDescription("wip")
+				.addStringOption((option) =>
+					option
+						.setName("text")
+						.setDescription("text")
+						.setRequired(true),
+				),
+		),
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		switch (interaction.options.getSubcommandGroup()) {
-			case 'alias': {
-				const alias = interaction.options.getString('alias')
-				console.log('alias: ' + alias)
+			case "alias": {
+				const alias = interaction.options.getString("alias")
+				console.log("alias: " + alias)
 				// const command = interaction.options.getString('command')
 				// var sub = interaction.options.getString('subcommand')
 				// if (sub) {
@@ -135,12 +154,9 @@ export default new ApplicationCommand({
 				// 	}
 				// }
 
-
-
-
 				const guildID = interaction.guild.id
 				const path = `.guilds.${guildID}.commands.aliases`
-				const aliasPath = path + '.' + alias
+				const aliasPath = path + "." + alias
 				var value: string
 				var exists: boolean
 
@@ -156,58 +172,93 @@ export default new ApplicationCommand({
 				}
 
 				switch (interaction.options.getSubcommand()) {
-					case 'create': {
-						if (exists) throw new Error(`$${aliasPath} already exists`)
+					case "create": {
+						if (exists)
+							throw new Error(`$${aliasPath} already exists`)
 						//interaction.deferReply()
 						try {
-							const command = interaction.options.getString("commandname")
+							const command =
+								interaction.options.getString("commandname")
 							const group = interaction.options.getString("group")
-							const subcommand = interaction.options.getString("subcommand")
-							const defaultoptions = JSON.parse(interaction.options.getString("defaultoptions"))
-							const hidealloptions = interaction.options.getBoolean('hidealloptions')
-							const description = interaction.options.getString('description')
+							const subcommand =
+								interaction.options.getString("subcommand")
+							const defaultoptions = JSON.parse(
+								interaction.options.getString("defaultoptions"),
+							)
+							const hidealloptions =
+								interaction.options.getBoolean("hidealloptions")
+							const description =
+								interaction.options.getString("description")
 							console.log(defaultoptions)
 
-							const data = { commandname: command, group: group, subcommand: subcommand, defaultoptions: defaultoptions || [], hidedefaults: true, hidealloptions: hidealloptions, description: description }
+							const data = {
+								commandname: command,
+								group: group,
+								subcommand: subcommand,
+								defaultoptions: defaultoptions || [],
+								hidedefaults: true,
+								hidealloptions: hidealloptions,
+								description: description,
+							}
 							await database.set(aliasPath, data)
-							interaction.reply({ embeds: embeds.successEmbed("Created alias successfully") })
-						}
-						catch (err) {
-							interaction.reply({ embeds: embeds.errorEmbed("Creating alias", err) })
-							throw new Error(`Alias $${aliasPath} could not be created\n${err}`)
-
+							interaction.reply({
+								embeds: embeds.successEmbed(
+									"Created alias successfully",
+								),
+							})
+						} catch (err) {
+							interaction.reply({
+								embeds: embeds.errorEmbed(
+									"Creating alias",
+									err,
+								),
+							})
+							throw new Error(
+								`Alias $${aliasPath} could not be created\n${err}`,
+							)
 						}
 						break
 					}
-					case 'remove': {
-						if (!exists) throw new Error(`${aliasPath} does not exist`)
+					case "remove": {
+						if (!exists)
+							throw new Error(`${aliasPath} does not exist`)
 						try {
 							await database.del(aliasPath)
-							interaction.reply({ embeds: embeds.successEmbed("Created removed successfully") })
-						}
-						catch (err) {
-							interaction.reply({ embeds: embeds.errorEmbed("Removing alias", err) })
+							interaction.reply({
+								embeds: embeds.successEmbed(
+									"Created removed successfully",
+								),
+							})
+						} catch (err) {
+							interaction.reply({
+								embeds: embeds.errorEmbed(
+									"Removing alias",
+									err,
+								),
+							})
 						}
 						break
 					}
-					case 'list': {
+					case "list": {
 						value = await database.get(path)
-						await interaction.reply({ embeds: embeds.messageEmbed("List:", JSON.stringify(value)) })
+						await interaction.reply({
+							embeds: embeds.messageEmbed(
+								"List:",
+								JSON.stringify(value),
+							),
+						})
 						break
 					}
 				}
 				await commands.refreshGuild(guildID)
 				break
 			}
-			case 'command': {
+			case "command": {
 				switch (interaction.options.getSubcommand()) {
-
-					case 'enable': {
-
+					case "enable": {
 						break
 					}
-					case 'disable': {
-
+					case "disable": {
 						break
 					}
 					default: {
@@ -219,17 +270,23 @@ export default new ApplicationCommand({
 
 			default: {
 				switch (interaction.options.getSubcommand()) {
-					case 'run': {
+					case "run": {
 						break
 					}
-					case 'list': {
+					case "list": {
 						const lines = []
 						const commandList = await commands.get()
-						for (let i = 0, len = commandList.length; i < len; i++) {
+						for (
+							let i = 0, len = commandList.length;
+							i < len;
+							i++
+						) {
 							const command = commandList[i]
 							if (typeof command.execute === "function") {
 								console.log(command + typeof command.execute)
-								lines.push(`${command.data.name} - "${command.data.description}"`)
+								lines.push(
+									`${command.data.name} - "${command.data.description}"`,
+								)
 							} else {
 								console.log("not a slash command")
 							}
@@ -242,17 +299,29 @@ export default new ApplicationCommand({
 						}
 						break
 					}
-					case 'parse': {
+					case "parse": {
 						if (interaction.user.id !== permissions.botowner) return
 
 						const text = interaction.options.getString("text")
-						const [commandName, group, subcommand, foundoptions] = await commands.textToCommandParser(text)
-						console.log([commandName, group, subcommand, foundoptions])
-						commands.run(interaction, "slash", commandName, group, subcommand, foundoptions)
-
+						const [commandName, group, subcommand, foundoptions] =
+							await commands.textToCommandParser(text)
+						console.log([
+							commandName,
+							group,
+							subcommand,
+							foundoptions,
+						])
+						commands.run(
+							interaction,
+							"slash",
+							commandName,
+							group,
+							subcommand,
+							foundoptions,
+						)
 					}
 				}
 			}
 		}
-	}
+	},
 })

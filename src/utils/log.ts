@@ -1,4 +1,14 @@
-import { Guild, GuildResolvable, TextChannel, GuildBasedChannel, Message, MessagePayload, MessageCreateOptions, GuildEmojiRoleManager, GuildTextBasedChannel } from 'discord.js';
+import {
+	Guild,
+	GuildResolvable,
+	TextChannel,
+	GuildBasedChannel,
+	Message,
+	MessagePayload,
+	MessageCreateOptions,
+	GuildEmojiRoleManager,
+	GuildTextBasedChannel,
+} from "discord.js"
 import database from "./database"
 import { client } from ".."
 
@@ -8,7 +18,9 @@ export default {
 		//console.log("2")
 		//console.log(guild.id)
 
-		let channelid = await database.get(`.guilds.${guild.id}.settings.log_channel`)
+		let channelid = await database.get(
+			`.guilds.${guild.id}.settings.log_channel`,
+		)
 		if (!channelid) {
 			console.log("no log channel set. ignoring")
 			return
@@ -17,7 +29,10 @@ export default {
 			let g = await client.guilds.fetch(guild.id)
 			let c = await g.channels.fetch(channelid)
 			//console.log(c)
-			return (c as TextChannel).send({ content: message, allowedMentions: { parse: [], repliedUser: false, users: [] } })
+			return (c as TextChannel).send({
+				content: message,
+				allowedMentions: { parse: [], repliedUser: false, users: [] },
+			})
 		}
 	},
 	async channel(guild: Guild): Promise<string> {
@@ -25,10 +40,11 @@ export default {
 	},
 	async channel2(a: GuildResolvable): Promise<GuildTextBasedChannel> {
 		const guild = client.guilds.resolve(a)
-		const logchannelid = await database.get(`.guilds.${guild.id}.settings.log_channel`)
+		const logchannelid = await database.get(
+			`.guilds.${guild.id}.settings.log_channel`,
+		)
 		const logchannel = guild.channels.resolve(logchannelid)
 		if (!logchannel.isTextBased()) return
 		return logchannel
-
-	}
+	},
 }

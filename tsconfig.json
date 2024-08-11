@@ -1,8 +1,6 @@
 {
 	"compilerOptions": {
-		"lib": [
-			"ESNext"
-		],
+		"lib": ["ESNext"],
 		"module": "CommonJS",
 		"moduleResolution": "node",
 		"target": "ESNext",
@@ -14,17 +12,11 @@
 		"allowSyntheticDefaultImports": true,
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
-		"resolveJsonModule": true,
+		"resolveJsonModule": true
 	},
-	"include": [
-		"src",
-		"src/events/.ts",
-		"src/events/.ts"
-	],
-	"exclude": [
-		"node_modules"
-	],
+	"include": ["src", "src/events/.ts", "src/events/.ts"],
+	"exclude": ["node_modules"],
 	"ts-node": {
 		"files": true
-	},
+	}
 }

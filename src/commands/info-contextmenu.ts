@@ -1,4 +1,16 @@
-import { Interaction, ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, SlashCommandSubcommandBuilder, EmbedBuilder, Embed, ContextMenuCommandBuilder, ContextMenuCommandType, ApplicationCommandType, Guild } from "discord.js"
+import {
+	Interaction,
+	ChatInputCommandInteraction,
+	GuildMember,
+	SlashCommandBuilder,
+	SlashCommandSubcommandBuilder,
+	EmbedBuilder,
+	Embed,
+	ContextMenuCommandBuilder,
+	ContextMenuCommandType,
+	ApplicationCommandType,
+	Guild,
+} from "discord.js"
 import database from "../utils/database"
 import format from "../utils/format"
 import ApplicationCommand from "../types/ApplicationCommand"
@@ -8,34 +20,31 @@ import axios from "axios"
 import { stripIndent } from "common-tags"
 import commands from "../utils/commands"
 
-
-
-
-
 export default new ApplicationCommand({
 	data: new ContextMenuCommandBuilder()
 		.setName("User Info")
-		.setType(ApplicationCommandType.User)
-	,
+		.setType(ApplicationCommandType.User),
 	async menuUser(interaction) {
 		if (!interaction.guild) {
-			interaction.reply({ embeds: embeds.warningEmbed("This isn't available in DMs.") })
+			interaction.reply({
+				embeds: embeds.warningEmbed("This isn't available in DMs."),
+			})
 			return
 		}
 
-
-		const member = await interaction.guild.members.fetch(interaction.targetId)
+		const member = await interaction.guild.members.fetch(
+			interaction.targetId,
+		)
 		console.log(member)
-
 
 		await commands.run(interaction, "slash", "info", null, "user", [
 			{
-				name: 'target',
+				name: "target",
 				type: 6,
 				value: member.id,
 				user: await client.users.fetch(member.id),
-				member: await interaction.guild.members.fetch(member.id)
-			}
+				member: await interaction.guild.members.fetch(member.id),
+			},
 		])
 	},
 })

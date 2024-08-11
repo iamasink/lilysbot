@@ -15,16 +15,28 @@ export default new ApplicationCommand({
 		try {
 			const res = await commands.deploy()
 			console.log(res)
-			await interaction.followUp({ embeds: embeds.successEmbed(`Successfully deployed (${res}) commands!`) })
+			await interaction.followUp({
+				embeds: embeds.successEmbed(
+					`Successfully deployed (${res}) commands!`,
+				),
+			})
 
-			let msg = await interaction.followUp({ embeds: embeds.messageEmbed('Restarting!', 'Please wait...') })
-			await database.set(`.botdata.lastchannel`, { guild: interaction.guild.id, channel: interaction.channel.id, message: msg.id })
+			let msg = await interaction.followUp({
+				embeds: embeds.messageEmbed("Restarting!", "Please wait..."),
+			})
+			await database.set(`.botdata.lastchannel`, {
+				guild: interaction.guild.id,
+				channel: interaction.channel.id,
+				message: msg.id,
+			})
 		} catch (error) {
 			console.error(error)
 			throw error
 		}
 
 		// exit the process after 1 sec
-		setTimeout(function () { process.exit() }, 1000)
+		setTimeout(function () {
+			process.exit()
+		}, 1000)
 	},
 })

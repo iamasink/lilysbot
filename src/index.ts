@@ -1,4 +1,10 @@
-import { ChannelType, GatewayIntentBits, IntentsBitField, Partials, TextBasedChannel } from "discord.js"
+import {
+	ChannelType,
+	GatewayIntentBits,
+	IntentsBitField,
+	Partials,
+	TextBasedChannel,
+} from "discord.js"
 import { Bot } from "./structures/Client"
 import { botlogchannel } from "./config.json"
 import format from "./utils/format"
@@ -23,7 +29,7 @@ export const client = new Bot({
 		GatewayIntentBits.GuildVoiceStates,
 		GatewayIntentBits.GuildWebhooks,
 		GatewayIntentBits.Guilds,
-		GatewayIntentBits.MessageContent
+		GatewayIntentBits.MessageContent,
 	],
 	partials: [
 		Partials.Message,
@@ -32,12 +38,11 @@ export const client = new Bot({
 		Partials.GuildMember,
 		Partials.GuildScheduledEvent,
 		Partials.User,
-		Partials.ThreadMember
-	]
+		Partials.ThreadMember,
+	],
 })
 
 console.log("test")
-
 
 async function test() {
 	const channel = await client.channels.fetch("1008017419664638048", {
@@ -55,17 +60,23 @@ function signalHandler(signal) {
 }
 
 async function errorhandler(error) {
-	console.log('Uncaught Exception...')
+	console.log("Uncaught Exception...")
 	console.log(error.stack)
 	try {
 		const channel = await client.channels.fetch(botlogchannel)
 		if (channel) {
-			const messages = format.splitMessage("Wiwwie crashed\n```js\n" + error.stack + "\n```", 2000, '\n', '```js\n', '\n```')
+			const messages = format.splitMessage(
+				"Wiwwie crashed\n```js\n" + error.stack + "\n```",
+				2000,
+				"\n",
+				"```js\n",
+				"\n```",
+			)
 			for (let i = 0, len = messages.length; i < len; i++) {
 				await (channel as TextBasedChannel).send(messages[i])
 			}
 		} else {
-			throw new Error('No bot log channel')
+			throw new Error("No bot log channel")
 		}
 	} catch (e) {
 		console.log(e)
@@ -76,13 +87,13 @@ async function errorhandler(error) {
 	}, 1000) // Adjust the delay time as needed
 }
 
-
-process.on('SIGINT', signalHandler)
-process.on('SIGTERM', signalHandler)
-process.on('SIGQUIT', signalHandler)
-if (process.env.NODE_ENV === "prod") process.once('uncaughtException', errorhandler)
-if (process.env.NODE_ENV === "prod") process.once('unhandledRejection', errorhandler)
+process.on("SIGINT", signalHandler)
+process.on("SIGTERM", signalHandler)
+process.on("SIGQUIT", signalHandler)
+if (process.env.NODE_ENV === "prod")
+	process.once("uncaughtException", errorhandler)
+if (process.env.NODE_ENV === "prod")
+	process.once("unhandledRejection", errorhandler)
 
 client.start()
 //test()
-

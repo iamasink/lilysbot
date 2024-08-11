@@ -1,4 +1,14 @@
-import { Attachment, AttachmentBuilder, AttachmentData, AuditLogEvent, Events, GuildTextBasedChannel, Interaction, Message, TextChannel } from "discord.js"
+import {
+	Attachment,
+	AttachmentBuilder,
+	AttachmentData,
+	AuditLogEvent,
+	Events,
+	GuildTextBasedChannel,
+	Interaction,
+	Message,
+	TextChannel,
+} from "discord.js"
 import Event from "../types/Event"
 import log from "../utils/log"
 import webhooks from "../utils/webhooks"
@@ -28,7 +38,9 @@ export default new Event({
 		// fetch the entry weith the correct id
 		let deletionLog
 		if (message.author) {
-			deletionLog = fetchedLogs.entries.find(e => e.target.id === message.author.id)
+			deletionLog = fetchedLogs.entries.find(
+				(e) => e.target.id === message.author.id,
+			)
 			console.log(deletionLog)
 		}
 
@@ -48,8 +60,6 @@ export default new Event({
 				log.log(message.guild, msg)
 				return
 			}
-
-
 		} else {
 			// Now grab the user object of the person who deleted the message
 			// Also grab the target of this action to double-check things
@@ -60,12 +70,19 @@ export default new Event({
 			// Update the output with a bit more information
 			// Also run a check to make sure that the log returned was for the same author's message
 			if (target.id === message.author.id) {
-				console.log(`A message by ${message.author.username} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor.username}.`)
-				log.log(message.guild, `A message by ${message.author} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor}.`)
+				console.log(
+					`A message by ${message.author.username} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor.username}.`,
+				)
+				log.log(
+					message.guild,
+					`A message by ${message.author} <@${message.author.id}> was deleted in <#${message.channel.id}> by ${executor}.`,
+				)
 			}
 		}
 
-		const channel = await message.guild.channels.fetch(await log.channel(message.guild))
+		const channel = await message.guild.channels.fetch(
+			await log.channel(message.guild),
+		)
 
 		console.log(`channel: ${channel}`)
 		console.log(message.attachments)
@@ -73,18 +90,24 @@ export default new Event({
 		let note: string = ""
 		let files: AttachmentBuilder[]
 		let size: number = 0
-		message.attachments.forEach(e => {
+		message.attachments.forEach((e) => {
 			size += e.size
 			console.log(e.size)
 			console.log(size)
 		})
 		console.log(`total filesize: ${size}`)
 		if (size < 8_000_000) {
-			files = message.attachments.map(e => new AttachmentBuilder(e.url))
+			files = message.attachments.map((e) => new AttachmentBuilder(e.url))
 		} else {
 			files = []
 			note = "\n__Files:__"
-			message.attachments.map(e => note += `\n[${format.markdownEscape(e.name) || format.markdownEscape(e.url)}](${e.url})`)
+			message.attachments.map(
+				(e) =>
+					(note += `\n[${
+						format.markdownEscape(e.name) ||
+						format.markdownEscape(e.url)
+					}](${e.url})`),
+			)
 		}
 
 		let content: string = ""
@@ -92,35 +115,26 @@ export default new Event({
 		console.log(length)
 		content = message.content + note
 
-
-
 		let msgs = format.splitMessage(content, 2000, " ", "[...]", "[...]")
 		for (let i = 0, len = msgs.length; i < len; i++) {
 			let msg = msgs[i]
-			if (i == msgs.length - 1) { // attach files only to the last one
-				webhooks.send((channel as GuildTextBasedChannel),
-					{
-						content: msgs[i],
-						username: message.member.nickname || message.author.username,
-						files: files,
-						avatarURL: message.author.avatarURL({ forceStatic: false }),
-					}
-				)
+			if (i == msgs.length - 1) {
+				// attach files only to the last one
+				webhooks.send(channel as GuildTextBasedChannel, {
+					content: msgs[i],
+					username:
+						message.member.nickname || message.author.username,
+					files: files,
+					avatarURL: message.author.avatarURL({ forceStatic: false }),
+				})
 			} else {
-				webhooks.send((channel as GuildTextBasedChannel),
-					{
-						content: msgs[i],
-						username: message.member.nickname || message.author.username,
-						avatarURL: message.author.avatarURL({ forceStatic: false }),
-					}
-				)
-
+				webhooks.send(channel as GuildTextBasedChannel, {
+					content: msgs[i],
+					username:
+						message.member.nickname || message.author.username,
+					avatarURL: message.author.avatarURL({ forceStatic: false }),
+				})
 			}
 		}
-
-
-
-
 	},
-}
-)
+})

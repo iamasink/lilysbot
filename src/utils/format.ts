@@ -3,13 +3,22 @@ import format from "./format"
 import moment from "moment"
 
 export default {
-	bar(min: number, current: number, max: number, length = 10, border = false, chars = [`#`, `.`, `[`, `]`]) {
+	bar(
+		min: number,
+		current: number,
+		max: number,
+		length = 10,
+		border = false,
+		chars = [`#`, `.`, `[`, `]`],
+	) {
 		const progress = (current - min) / (max - min)
 
 		const count = Math.floor(progress * length)
 		console.log(progress)
 		console.log(length)
-		console.log(`min: ${min}, current: ${current}, max: ${max}, length: ${length}, chars: ${chars}, progress: ${progress}, count: ${count}`)
+		console.log(
+			`min: ${min}, current: ${current}, max: ${max}, length: ${length}, chars: ${chars}, progress: ${progress}, count: ${count}`,
+		)
 		let bar = `${chars[0].repeat(count)}${chars[1].repeat(length - count)}`
 		if (border) bar = `${chars[2]}${bar}${chars[3]}`
 		return bar
@@ -18,7 +27,7 @@ export default {
 		return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 	},
 	async getJSONResponse(body) {
-		let fullBody = ''
+		let fullBody = ""
 
 		for await (const data of body) {
 			fullBody += data.toString()
@@ -55,14 +64,13 @@ export default {
 	 * @return {string} Returns a string
 	 */
 	timeDiff(timea: moment.Moment, timeb: moment.Moment) {
+		var years = timea.diff(timeb, "year")
+		timeb.add(years, "years")
 
-		var years = timea.diff(timeb, 'year')
-		timeb.add(years, 'years')
+		var months = timea.diff(timeb, "months")
+		timeb.add(months, "months")
 
-		var months = timea.diff(timeb, 'months')
-		timeb.add(months, 'months')
-
-		var days = timea.diff(timeb, 'days')
+		var days = timea.diff(timeb, "days")
 
 		var output = ""
 		if (years) output += format.pluralize(years, "year") + ", "
@@ -71,8 +79,8 @@ export default {
 
 		return output
 	},
-	pluralize(number: number, string: string, suffix = 's') {
-		return `${number} ${string}${number !== 1 ? suffix : ''}`
+	pluralize(number: number, string: string, suffix = "s") {
+		return `${number} ${string}${number !== 1 ? suffix : ""}`
 	},
 	/**
 	 * split text up
@@ -82,24 +90,38 @@ export default {
 	 * @param {string | string[]} [char='\n'] character to split on
 	 * @param {string} [prepend=''] prepend to every message (i dont think it does it to the first message)
 	 * @param {string} [append=''] append to every message (i dont think it does it to the last one)
-	 * @return {*} 
+	 * @return {*}
 	 */
-	splitMessage(text: string, maxLength = 2000, char = '\n', prepend = '', append = ''): string[] {
+	splitMessage(
+		text: string,
+		maxLength = 2000,
+		char = "\n",
+		prepend = "",
+		append = "",
+	): string[] {
 		if (text.length <= maxLength) return [text]
 		let splitText = [text]
 		if (Array.isArray(char)) {
-			while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
+			while (
+				char.length > 0 &&
+				splitText.some((elem) => elem.length > maxLength)
+			) {
 				const currentChar = char.shift()
 				if (currentChar instanceof RegExp) {
-					splitText = splitText.flatMap(chunk => chunk.match(currentChar))
+					splitText = splitText.flatMap((chunk) =>
+						chunk.match(currentChar),
+					)
 				} else {
-					splitText = splitText.flatMap(chunk => chunk.split(currentChar))
+					splitText = splitText.flatMap((chunk) =>
+						chunk.split(currentChar),
+					)
 				}
 			}
 		} else {
 			splitText = text.split(char)
 		}
-		if (splitText.some(elem => elem.length > maxLength)) { // if it couldn't be split properly, try again but without the specific characters
+		if (splitText.some((elem) => elem.length > maxLength)) {
+			// if it couldn't be split properly, try again but without the specific characters
 			console.log("no splittable characters that make me happy")
 			splitText = []
 			for (let i = 0; i < text.length; i += maxLength - 10) {
@@ -107,15 +129,15 @@ export default {
 			}
 		}
 		const messages = []
-		let msg = ''
+		let msg = ""
 		for (const chunk of splitText) {
 			if (msg && (msg + char + chunk + append).length > maxLength) {
 				messages.push(msg + append)
 				msg = prepend
 			}
-			msg += (msg && msg !== prepend ? char : '') + chunk
+			msg += (msg && msg !== prepend ? char : "") + chunk
 		}
-		return messages.concat(msg).filter(m => m)
+		return messages.concat(msg).filter((m) => m)
 	},
 	cutToLength(text: string, length: number) {
 		if (text.length > length) {
@@ -153,20 +175,21 @@ export default {
 	// },
 	async pronouns(user: GuildMember) {
 		const roles = (await user.fetch()).roles
-		const pronouns = roles.cache.filter(role => {
-			switch (role.name.replace(" ", "").toLowerCase()) {
-				case "she/her": {
-					return "she/her"
+		const pronouns = roles.cache
+			.filter((role) => {
+				switch (role.name.replace(" ", "").toLowerCase()) {
+					case "she/her": {
+						return "she/her"
+					}
+					case "he/him": {
+						return "he/him"
+					}
+					case "they/them": {
+						return "they/them"
+					}
 				}
-				case "he/him": {
-					return "he/him"
-				}
-				case "they/them": {
-					return "they/them"
-				}
-			}
-		}
-		).random()
+			})
+			.random()
 		return pronouns
 	},
 	// markdownEscape(text: string) {
@@ -176,20 +199,22 @@ export default {
 	// 	return escaped
 	// },
 	markdownEscape(string: string, skips: string[] = []): string {
-		var unescaped = string.replace(/\\(\*|_|`|~|\\)/g, '$1') // unescape any "backslashed" character
+		var unescaped = string.replace(/\\(\*|_|`|~|\\)/g, "$1") // unescape any "backslashed" character
 
 		const replacements: [RegExp, string, string][] = [
-			[/\*/g, '\\*', 'asterisks'],
-			[/#/g, '\\#', 'number signs'],
-			[/\//g, '\\/', 'slashes'],
-			[/_/g, '\\_', 'underscores'],
-			[/`/g, '\\`', 'codeblocks'],
-			[/~/g, '\\~', 'strikethroughs']
+			[/\*/g, "\\*", "asterisks"],
+			[/#/g, "\\#", "number signs"],
+			[/\//g, "\\/", "slashes"],
+			[/_/g, "\\_", "underscores"],
+			[/`/g, "\\`", "codeblocks"],
+			[/~/g, "\\~", "strikethroughs"],
 		]
 
 		return replacements.reduce((result, replacement) => {
 			const name = replacement[2]
-			return name && skips.includes(name) ? result : result.replace(replacement[0], replacement[1])
+			return name && skips.includes(name)
+				? result
+				: result.replace(replacement[0], replacement[1])
 		}, unescaped)
 	},
 	async usernameBrackets(user: User) {
@@ -201,5 +226,5 @@ export default {
 		} else {
 			return text
 		}
-	}
+	},
 }

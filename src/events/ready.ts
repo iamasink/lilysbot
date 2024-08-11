@@ -1,12 +1,20 @@
-import { ActivityOptions, ActivityType, Events, PresenceData, PresenceStatusData, TextBasedChannel, TextChannel } from 'discord.js'
-import Event from '../types/Event'
+import {
+	ActivityOptions,
+	ActivityType,
+	Events,
+	PresenceData,
+	PresenceStatusData,
+	TextBasedChannel,
+	TextChannel,
+} from "discord.js"
+import Event from "../types/Event"
 import { client } from "../index"
-import database from '../utils/database'
-import format from '../utils/format'
-import invites from '../utils/invites'
-import embeds from '../utils/embeds'
-import axios from 'axios'
-import { botlogchannel } from '../config.json'
+import database from "../utils/database"
+import format from "../utils/format"
+import invites from "../utils/invites"
+import embeds from "../utils/embeds"
+import axios from "axios"
+import { botlogchannel } from "../config.json"
 
 export default new Event({
 	name: Events.ClientReady,
@@ -23,50 +31,65 @@ export default new Event({
 		console.log(`Users: ${users}`)
 
 		let res = client.user.setPresence({
-			activities: [{ name: `Starting Up!`, type: ActivityType.Playing, }],
-			status: 'dnd',
+			activities: [{ name: `Starting Up!`, type: ActivityType.Playing }],
+			status: "dnd",
 		})
 
 		// console.log(res)
 
-		setTimeout(async () => {
-			// update the database cache with all invites, some may have been lost if the bot was offline.
-			invites.updateAllInviteCaches()
+		setTimeout(
+			async () => {
+				// update the database cache with all invites, some may have been lost if the bot was offline.
+				invites.updateAllInviteCaches()
 
-			// say that the bots been restarted if /refresh was used
-			const restartinfo = await database.get(`.botdata.lastchannel`)
-			console.log(restartinfo)
-			if (restartinfo && restartinfo.message != null) {
-				const guild = await client.guilds.fetch(restartinfo.guild)
-				const channel = await guild.channels.fetch(restartinfo.channel)
-				const message = await (channel as TextChannel).messages.fetch(restartinfo.message)
-				message.reply({ embeds: embeds.successEmbed(`Restarted!`) })
-			}
-			database.set(`.botdata.lastchannel`, { guild: null, channel: null, message: null })
-			client.user.setPresence({
-				activities: [{ name: `Restarted!`, type: ActivityType.Playing, }],
-				status: 'online',
-			})
-
-		}, 2000 + guilds.size * 100) // wait (hopefully) an appropriate amount of time
-
+				// say that the bots been restarted if /refresh was used
+				const restartinfo = await database.get(`.botdata.lastchannel`)
+				console.log(restartinfo)
+				if (restartinfo && restartinfo.message != null) {
+					const guild = await client.guilds.fetch(restartinfo.guild)
+					const channel = await guild.channels.fetch(
+						restartinfo.channel,
+					)
+					const message = await (
+						channel as TextChannel
+					).messages.fetch(restartinfo.message)
+					message.reply({ embeds: embeds.successEmbed(`Restarted!`) })
+				}
+				database.set(`.botdata.lastchannel`, {
+					guild: null,
+					channel: null,
+					message: null,
+				})
+				client.user.setPresence({
+					activities: [
+						{ name: `Restarted!`, type: ActivityType.Playing },
+					],
+					status: "online",
+				})
+			},
+			2000 + guilds.size * 100,
+		) // wait (hopefully) an appropriate amount of time
 
 		// update the activity on an interval
 		setInterval(async () => {
 			// console.log("minutel")
 
-
 			const activities: ActivityOptions[] = [
-				{ type: ActivityType.Watching, name: `you and ${client.users.cache.size - 1} others <33`, },
-				{ type: ActivityType.Watching, name: `you.`, },
-				{ type: ActivityType.Listening, name: `${client.guilds.cache.size} guilds`, },
-				{ type: ActivityType.Playing, name: `for ${format.time(client.uptime)}`, },
+				{
+					type: ActivityType.Watching,
+					name: `you and ${client.users.cache.size - 1} others <33`,
+				},
+				{ type: ActivityType.Watching, name: `you.` },
+				{
+					type: ActivityType.Listening,
+					name: `${client.guilds.cache.size} guilds`,
+				},
+				{
+					type: ActivityType.Playing,
+					name: `for ${format.time(client.uptime)}`,
+				},
 			]
-			const statuses: PresenceStatusData[] = [
-				"dnd",
-				"idle",
-				"online",
-			]
+			const statuses: PresenceStatusData[] = ["dnd", "idle", "online"]
 
 			// console.log("updating activity")
 			let randomActivity = Math.floor(Math.random() * activities.length)
@@ -79,34 +102,35 @@ export default new Event({
 
 			let res = client.user.setPresence({
 				activities: [activity],
-				status: status
+				status: status,
 			})
 
 			// console.log(res)
 
-
 			// log ip
 			if (botlogchannel) {
 				try {
-
 					const lastip = await database.get(`.botdata.lastip`)
-					const newip = (await axios.get(`http://icanhazip.com/`)).data
+					const newip = (await axios.get(`http://icanhazip.com/`))
+						.data
 					// console.log(newip)
 					if (lastip != newip) {
-						const messageChannel = client.channels.cache.get(botlogchannel) as TextChannel;
-						messageChannel.send({ embeds: embeds.messageEmbed("IP Changed!", `From: \`${lastip}\`\nTo: \`${newip}\``) })
+						const messageChannel = client.channels.cache.get(
+							botlogchannel,
+						) as TextChannel
+						messageChannel.send({
+							embeds: embeds.messageEmbed(
+								"IP Changed!",
+								`From: \`${lastip}\`\nTo: \`${newip}\``,
+							),
+						})
 						database.set(`.botdata.lastip`, newip)
 					}
 				} catch (e) {
 					console.log(e)
 				}
 			}
-
-
-
-		}, 60 * 1000);
-
-
+		}, 60 * 1000)
 
 		// // temp
 		// setInterval(async () => {

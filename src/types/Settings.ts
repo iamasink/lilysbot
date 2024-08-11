@@ -1,4 +1,6 @@
-type NoSpaces<T extends string> = T extends `${infer Head} ${infer Tail}` ? never : T
+type NoSpaces<T extends string> = T extends `${infer Head} ${infer Tail}`
+	? never
+	: T
 
 interface BaseSetting {
 	name: string

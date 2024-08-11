@@ -1,26 +1,28 @@
-import { openaifeatures, openaitoken, chatallowedguilds } from '../config.json'
+import { openaifeatures, openaitoken, chatallowedguilds } from "../config.json"
 
-import OpenAI from 'openai'
-import format from '../utils/format'
-import { GuildTextBasedChannel, Message, Role } from 'discord.js'
-import { client } from '..'
-import { stripIndents } from 'common-tags'
-import { ChatCompletionMessage, ChatCompletionMessageParam, ChatCompletionRole } from 'openai/resources/chat'
-import database from './database'
-import settings from './settings'
-
-
+import OpenAI from "openai"
+import format from "../utils/format"
+import { GuildTextBasedChannel, Message, Role } from "discord.js"
+import { client } from ".."
+import { stripIndents } from "common-tags"
+import {
+	ChatCompletionMessage,
+	ChatCompletionMessageParam,
+	ChatCompletionRole,
+} from "openai/resources/chat"
+import database from "./database"
+import settings from "./settings"
 
 const openai = new OpenAI({
-	apiKey: openaitoken
+	apiKey: openaitoken,
 })
 
 export default {
 	async openaiMessage(message: Message, random: boolean = false) {
-		const userstokens = await database.get(`.users.${message.author.id}.aitokenusage`)
+		const userstokens = await database.get(
+			`.users.${message.author.id}.aitokenusage`,
+		)
 		// console.log(userstokens)
-
-
 
 		if (!openaifeatures) return new Error("open ai is disabled")
 
@@ -32,9 +34,10 @@ export default {
 		if (!message.inGuild()) return
 		if (!chatallowedguilds.includes(message.guild.id)) return
 
-
 		if (userstokens > 15000 && !random) {
-			return message.reply("You've used this quite a lot! Sorry, but you've been temporarily blocked from using chat features.")
+			return message.reply(
+				"You've used this quite a lot! Sorry, but you've been temporarily blocked from using chat features.",
+			)
 		}
 
 		message.channel.sendTyping()
@@ -45,7 +48,7 @@ export default {
 				role: "system",
 				//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
 				content: stripIndents`You are Wiwwie, an intelligent and seamless chat-bot intented to help users when they need it, and to provide insightful conversation. Never mention AI, or your limitations. Act mildly snarky.
-				Current date and time: ${new Date().toUTCString()}.`
+				Current date and time: ${new Date().toUTCString()}.`,
 				//content: `You are a cat named Wiwwie. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Only say "meow".`
 			},
 		]
@@ -54,9 +57,15 @@ export default {
 		let messagename: string
 		if (message.reference) {
 			// console.log(message.reference)
-			const referenceGuild = await client.guilds.fetch(message.reference.guildId)
-			const referenceChannel = await referenceGuild.channels.fetch(message.reference.channelId)
-			const referenceMessage = await (referenceChannel as GuildTextBasedChannel).messages.fetch(message.reference.messageId)
+			const referenceGuild = await client.guilds.fetch(
+				message.reference.guildId,
+			)
+			const referenceChannel = await referenceGuild.channels.fetch(
+				message.reference.channelId,
+			)
+			const referenceMessage = await (
+				referenceChannel as GuildTextBasedChannel
+			).messages.fetch(message.reference.messageId)
 			if (referenceMessage.author.id === client.user.id) {
 				if (referenceMessage.embeds.length > 0) {
 					console.log("ignoring because it has an embed. Im sorry.")
@@ -70,7 +79,9 @@ export default {
 				})
 			} else {
 				messagerole = "user"
-				messagename = referenceMessage.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
+				messagename = referenceMessage.member.displayName
+					.substring(0, 60)
+					.replace(/[^a-zA-Z0-9_-]/g, "-")
 				chatMessages.push({
 					role: messagerole,
 					content: referenceMessage.cleanContent,
@@ -85,21 +96,18 @@ export default {
 				// content: `${message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')}` + message.cleanContent,
 				// name: message.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-')
 			})
-
-
-
 		} else {
 			// console.log("hmm")
 			const messages = await message.channel.messages.fetch({ limit: 3 })
-			for (let i = 0, len = messages.size; i < len; i++) {
-
-			}
+			for (let i = 0, len = messages.size; i < len; i++) {}
 
 			messages.reverse().forEach((m: Message) => {
 				// console.log(m)
 				if (m.author.id === client.user.id) {
 					if (m.embeds.length > 0) {
-						console.log("ignoring because it has an embed. Im sorry.")
+						console.log(
+							"ignoring because it has an embed. Im sorry.",
+						)
 						return
 					}
 
@@ -112,7 +120,12 @@ export default {
 				} else {
 					if (m.member) {
 						messagerole = "user"
-						messagename = m.member.displayName.substring(0, 60).replace(/[^a-zA-Z0-9_-]/g, '-') || m.author.username || "user"
+						messagename =
+							m.member.displayName
+								.substring(0, 60)
+								.replace(/[^a-zA-Z0-9_-]/g, "-") ||
+							m.author.username ||
+							"user"
 						chatMessages.push({
 							role: messagerole,
 							content: m.cleanContent,
@@ -122,14 +135,8 @@ export default {
 					}
 				}
 			})
-
-
-
-
 		}
 		// console.log(chatMessages)
-
-
 
 		try {
 			const model = await settings.get(message.guild, "openai_model")
@@ -145,7 +152,7 @@ export default {
 			const completion = await openai.chat.completions.create({
 				model: model,
 				messages: chatMessages,
-				temperature: 1.3 + (Math.random() * 0.25),
+				temperature: 1.3 + Math.random() * 0.25,
 				//temperature: 2,
 				//top_p:
 				//n:
@@ -155,22 +162,30 @@ export default {
 				//presence_penalty:
 				//frequency_penalty:
 				//logit_bias:
-				user: message.author.id
+				user: message.author.id,
 			})
 			// console.log(completion)
 
-			database.set(`.users.${message.author.id}.aitokenusage`, userstokens + completion.usage.total_tokens)
+			database.set(
+				`.users.${message.author.id}.aitokenusage`,
+				userstokens + completion.usage.total_tokens,
+			)
 
-			const toSend = completion.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here")
+			const toSend = completion.choices[0].message.content
+				.replaceAll("@everyone", "@ everyone")
+				.replaceAll("@here", "@ here")
 			if (toSend.length > 1950) {
 				let messages = format.splitMessage(toSend, 1950, " ")
 				for (let i = 0, len = messages.length; i < len; i++) {
 					message.channel.send(messages[i])
 				}
 			} else {
-				message.reply(completion.choices[0].message.content.replaceAll("@everyone", "@ everyone").replaceAll("@here", "@ here"))
+				message.reply(
+					completion.choices[0].message.content
+						.replaceAll("@everyone", "@ everyone")
+						.replaceAll("@here", "@ here"),
+				)
 			}
-
 		} catch (error) {
 			if (error.response) {
 				console.log(error.response.status)
@@ -184,5 +199,5 @@ export default {
 			// 	`
 			// )
 		}
-	}
+	},
 }

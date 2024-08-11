@@ -1,4 +1,12 @@
-import { SlashCommandBuilder, EmbedBuilder, ColorResolvable, APIEmbedField, EmbedFooterOptions, APIEmbed, User } from "discord.js"
+import {
+	SlashCommandBuilder,
+	EmbedBuilder,
+	ColorResolvable,
+	APIEmbedField,
+	EmbedFooterOptions,
+	APIEmbed,
+	User,
+} from "discord.js"
 import { footer } from "../config.json"
 
 function embed(
@@ -8,7 +16,7 @@ function embed(
 	fields?: APIEmbedField[],
 	image?: string,
 	thumbnail?: string,
-	footer?: EmbedFooterOptions
+	footer?: EmbedFooterOptions,
 ): EmbedBuilder[] {
 	const embed = new EmbedBuilder()
 	if (color) embed.setColor(color)
@@ -93,19 +101,14 @@ export default {
 			guild.members.resolve(user) &&
 			guild.members.resolve(user).avatar != undefined
 		) {
-			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${user.id}/avatars/${guild.members.resolve(user).avatar}.webp`
+			thumbnail = `https://cdn.discordapp.com/guilds/${guild.id}/users/${
+				user.id
+			}/avatars/${guild.members.resolve(user).avatar}.webp`
 		} else {
 			thumbnail = user.avatarURL()
 		}
 
 		const color = user.hexAccentColor || "#f9beca"
-		return embed(
-			color,
-			title,
-			description,
-			fields,
-			undefined,
-			thumbnail,
-		)
+		return embed(color, title, description, fields, undefined, thumbnail)
 	},
 }

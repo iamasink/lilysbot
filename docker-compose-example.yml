@@ -1,26 +1,26 @@
 ---
 services:
-  lilysbot:
-    container_name: lilysbot
-    # image:
-    build: .
-    depends_on: [redis-stack]
-    restart: unless-stopped
-    # develop:
-    #   watch:
-    #     - path: ./src
-    #       action: rebuild
-    environment:
-      - REDIS_URL=redis://redis-stack:6379
-  redis-stack:
-    image: redis/redis-stack:latest
-    container_name: redis
-    ports:
-      - 6379:6379
-      - 8001:8001
-    volumes:
-      - /PATH/TO/REDIS/DATA:/data
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/London
-      - REDIS_ARGS=--save 60 100 --appendonly yes
+    lilysbot:
+        container_name: lilysbot
+        # image:
+        build: .
+        depends_on: [redis-stack]
+        restart: unless-stopped
+        # develop:
+        #   watch:
+        #     - path: ./src
+        #       action: rebuild
+        environment:
+            - REDIS_URL=redis://redis-stack:6379
+    redis-stack:
+        image: redis/redis-stack:latest
+        container_name: redis
+        ports:
+            - 6379:6379
+            - 8001:8001
+        volumes:
+            - /PATH/TO/REDIS/DATA:/data
+        restart: unless-stopped
+        environment:
+            - TZ=Europe/London
+            - REDIS_ARGS=--save 60 100 --appendonly yes

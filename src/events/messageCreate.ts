@@ -1,12 +1,15 @@
-import { Events, Guild, GuildTextBasedChannel, Message, Utils } from 'discord.js'
-import Event from '../types/Event'
+import {
+	Events,
+	Guild,
+	GuildTextBasedChannel,
+	Message,
+	Utils,
+} from "discord.js"
+import Event from "../types/Event"
 import { client } from "../index"
-import database from '../utils/database'
-import openai from '../utils/openai'
-import BridgeManager from '../structures/BridgeManager'
-
-
-
+import database from "../utils/database"
+import openai from "../utils/openai"
+import BridgeManager from "../structures/BridgeManager"
 
 export default new Event({
 	name: Events.MessageCreate,
@@ -14,13 +17,10 @@ export default new Event({
 	async execute(message: Message): Promise<void> {
 		//console.log(message)
 
-
 		const guild = message.guild
 		const user = message.author
 
-
 		client.bridgeManager.handleBridgedMessage(message)
-
 
 		// handle the stuff for pings and that for ai chatbot
 		if (
@@ -32,8 +32,11 @@ export default new Event({
 			if (message.author != client.user) {
 				openai.openaiMessage(message)
 			}
-		}
-		else if (Math.random() < 0.001 && (message.channel as GuildTextBasedChannel).name == "general" && message.content.length > 10) {
+		} else if (
+			Math.random() < 0.001 &&
+			(message.channel as GuildTextBasedChannel).name == "general" &&
+			message.content.length > 10
+		) {
 			if (message.channel.id == "645053287208452112") return
 			if (message.content.includes("@everyone")) return
 			openai.openaiMessage(message, true)
@@ -43,11 +46,24 @@ export default new Event({
 		if (user.id === "302050872383242240") {
 			if (!message.embeds) return
 			if (message.embeds[0].description.startsWith("Bump done!")) {
-				message.reply(`${message.interaction.user}, thanks for bumping! You've been awarded some xp <3\nThe server can next be bumped at <t:${(Date.now() + 7200000).toString().slice(0, -3)}:t>`)
-				const currentXp = await database.get(`.guilds.${guild.id}.users.${message.interaction.user.id}.xp`)
+				message.reply(
+					`${
+						message.interaction.user
+					}, thanks for bumping! You've been awarded some xp <3\nThe server can next be bumped at <t:${(
+						Date.now() + 7200000
+					)
+						.toString()
+						.slice(0, -3)}:t>`,
+				)
+				const currentXp = await database.get(
+					`.guilds.${guild.id}.users.${message.interaction.user.id}.xp`,
+				)
 				const newXp = Math.floor(currentXp + 100)
 				// sets new xp value
-				await database.set(`.guilds.${guild.id}.users.${message.interaction.user.id}.xp`, newXp)
+				await database.set(
+					`.guilds.${guild.id}.users.${message.interaction.user.id}.xp`,
+					newXp,
+				)
 				return
 			}
 		}
@@ -87,14 +103,12 @@ export default new Event({
 		// 	return
 
 		// }
-		const currentXp = await database.get(`.guilds.${guild.id}.users.${user.id}.xp`)
+		const currentXp = await database.get(
+			`.guilds.${guild.id}.users.${user.id}.xp`,
+		)
 		// newXp is random between +5 and +15
 		const newXp = Math.floor(currentXp + 5 + Math.random() * 11)
 		// sets new xp value
 		await database.set(`.guilds.${guild.id}.users.${user.id}.xp`, newXp)
-
-
-
-
 	},
 })

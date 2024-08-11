@@ -15,11 +15,15 @@ export default new Event({
 
 		// cache invites
 		const guildinvites = await guild.invites.fetch()
-		guildinvites.map(async invite => {
+		guildinvites.map(async (invite) => {
 			const code = invite.code
 			const inviterId = invite.inviterId
 			const uses = invite.uses
-			database.set(`.guilds.${guild.id}.invites.${code}`, { inviterId: inviterId, uses: uses, expired: false })
+			database.set(`.guilds.${guild.id}.invites.${code}`, {
+				inviterId: inviterId,
+				uses: uses,
+				expired: false,
+			})
 		})
 
 		guild.systemChannel.send({
@@ -28,9 +32,9 @@ export default new Event({
 				`Thanks for inviting me! See \`/settings\` for some options <3 
 				This bot is really quite WIP so things might break and I'm sorry
 				-Lily`,
-				null, client.user)
+				null,
+				client.user,
+			),
 		})
 	},
-}
-)
-
+})

@@ -1,8 +1,7 @@
-import * as redis from 'redis'
+import * as redis from "redis"
 import { client } from ".."
 
 let isReady: boolean
-
 
 const key = "lilybot"
 let db: any
@@ -23,10 +22,7 @@ async function connect() {
 	await db.connect()
 }
 
-
-async function check(path) {
-
-}
+async function check(path) {}
 
 async function set(path: string, data: any) {
 	//console.log(`Setting "${JSON.stringify(data)}" at "${path}"`)
@@ -38,8 +34,7 @@ async function set(path: string, data: any) {
 		//console.log(`redis response: ${res}`)
 		if (!res) throw new Error("null")
 		//console.log(`success: ${path}`)
-	}
-	catch (e) {
+	} catch (e) {
 		let newpath
 		// console.log("s" + e.toString())
 		// console.log("n" + e.name)
@@ -48,7 +43,7 @@ async function set(path: string, data: any) {
 
 		// console.log(`redis set caught error: ${path} = ${JSON.stringify(data)}`)
 		switch (e.message) {
-			case 'ERR new objects must be created at the root': {
+			case "ERR new objects must be created at the root": {
 				// i think this happens when there is no key set, so set it?
 				// console.log("error root")
 				newpath = path.split(".")
@@ -57,7 +52,8 @@ async function set(path: string, data: any) {
 				await set(path, data) // try again with this value
 				break
 			}
-			case 'null': { // if it failed to set the value, fix it idk
+			case "null": {
+				// if it failed to set the value, fix it idk
 				// console.log("error null")
 				newpath = path.split(".")
 				// console.log("newpath" + newpath)
@@ -68,10 +64,11 @@ async function set(path: string, data: any) {
 			}
 			default: {
 				console.log("unhandled error")
-				throw new Error(`Redis Error while setting "${data}" at "${path}": "${e.message}"`)
+				throw new Error(
+					`Redis Error while setting "${data}" at "${path}": "${e.message}"`,
+				)
 			}
 		}
-
 	}
 }
 
@@ -81,13 +78,10 @@ async function get(path: string): Promise<any> {
 		let data = await db.json.get(key, { path: path })
 		//console.log(`retrieved data ${data} from path ${path}`)
 		return data
-	}
-	catch (e) {
+	} catch (e) {
 		return
 	}
 }
-
-
 
 export default {
 	async connect() {
@@ -120,8 +114,7 @@ export default {
 		// console.log(`path: ${path}`)
 		try {
 			await db.json.del(key, path)
-		}
-		catch (e) {
+		} catch (e) {
 			console.log(e)
 			throw new Error(`Could not delete ${key}: $.${path}.\n${e}`)
 		}
@@ -130,7 +123,7 @@ export default {
 	 * Check if path exists in the database
 	 *
 	 * @param {string} path The path to the data in JSON Path format (start with .)
-	 * @return {Promise<boolean>} 
+	 * @return {Promise<boolean>}
 	 */
 	async check(path: string): Promise<boolean> {
 		//console.log(`check path: ${path}`)
@@ -144,5 +137,5 @@ export default {
 
 		//console.log("exists")
 		return true
-	}
+	},
 }

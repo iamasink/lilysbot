@@ -13,32 +13,58 @@ import type {
 	ButtonInteraction,
 	UserContextMenuCommandInteraction,
 	MessageContextMenuCommandInteraction,
-	ContextMenuCommandInteraction
+	ContextMenuCommandInteraction,
 } from "discord.js"
-
 
 export default class ApplicationCommand {
 	permissions?: PermissionResolvable[] | ["botowner"]
-	data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any // this should be a type (not any) but i can't figure it out so whatevs
+	data:
+		| SlashCommandBuilder
+		| ContextMenuCommandBuilder
+		| SlashCommandSubcommandsOnlyBuilder
+		| ChatInputApplicationCommandData
+		| any // this should be a type (not any) but i can't figure it out so whatevs
 	execute?: (interaction: ChatInputCommandInteraction) => Promise<void> | void
-	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
-	menuUser?: (interaction: UserContextMenuCommandInteraction) => Promise<void> | void
-	menuMessage?: (interaction: MessageContextMenuCommandInteraction) => Promise<void> | void
-	menuBoth?: (interaction: ContextMenuCommandInteraction) => Promise<void> | void
+	autocomplete?: (
+		interaction: AutocompleteInteraction,
+	) => Promise<void> | void
+	menuUser?: (
+		interaction: UserContextMenuCommandInteraction,
+	) => Promise<void> | void
+	menuMessage?: (
+		interaction: MessageContextMenuCommandInteraction,
+	) => Promise<void> | void
+	menuBoth?: (
+		interaction: ContextMenuCommandInteraction,
+	) => Promise<void> | void
 	menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void
 	button?: (interaction: ButtonInteraction) => Promise<void> | void
 
 	constructor(options: {
 		permissions?: PermissionResolvable[] | ["botowner"]
-		data: SlashCommandBuilder | ContextMenuCommandBuilder | SlashCommandSubcommandsOnlyBuilder | ChatInputApplicationCommandData | any
-		execute?: (interaction: ChatInputCommandInteraction) => Promise<void> | void
-		autocomplete?: (interaction: AutocompleteInteraction) => Promise<void> | void
-		menuUser?: (interaction: UserContextMenuCommandInteraction) => Promise<void> | void
-		menuMessage?: (interaction: MessageContextMenuCommandInteraction) => Promise<void> | void
-		menuBoth?: (interaction: ContextMenuCommandInteraction) => Promise<void> | void
+		data:
+			| SlashCommandBuilder
+			| ContextMenuCommandBuilder
+			| SlashCommandSubcommandsOnlyBuilder
+			| ChatInputApplicationCommandData
+			| any
+		execute?: (
+			interaction: ChatInputCommandInteraction,
+		) => Promise<void> | void
+		autocomplete?: (
+			interaction: AutocompleteInteraction,
+		) => Promise<void> | void
+		menuUser?: (
+			interaction: UserContextMenuCommandInteraction,
+		) => Promise<void> | void
+		menuMessage?: (
+			interaction: MessageContextMenuCommandInteraction,
+		) => Promise<void> | void
+		menuBoth?: (
+			interaction: ContextMenuCommandInteraction,
+		) => Promise<void> | void
 		menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void
 		button?: (interaction: ButtonInteraction) => Promise<void> | void
-
 	}) {
 		this.permissions = options.permissions
 		this.data = options.data

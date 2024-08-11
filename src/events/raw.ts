@@ -8,10 +8,8 @@ export default new Event({
 	async execute(data) {
 		// console.log("raw event:")
 		// console.log(data)
-
 		// switch (data.t) {
 		// 	case "MESSAGE_REACTION_REMOVE": {
-
 		// 		break
 		// 	}
 		// 	default: {
@@ -19,5 +17,4 @@ export default new Event({
 		// 		}
 		// }
 	},
-}
-)
+})

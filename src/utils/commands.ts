@@ -41,22 +41,25 @@ async function refreshGlobalCommands() {
 	const commandList = await getCommands() //.concat(await getContextMenuCommands())
 	console.log(commandList)
 	try {
-		console.log(`Started refreshing ${commandList.length} global application (/) commands.`,)
+		console.log(
+			`Started refreshing ${commandList.length} global application (/) commands.`,
+		)
 
 		const data: any = await rest.put(Routes.applicationCommands(clientId), {
 			body: commandList.map((e) => e.data),
 		})
 
-		console.log(`Successfully reloaded ${data.length} global application (/) commands.`,)
+		console.log(
+			`Successfully reloaded ${data.length} global application (/) commands.`,
+		)
 		return data.length
 	} catch (error) {
 		console.error(error)
 		throw error
-
 	}
 }
 async function refreshGuildCommands(guildId: any) {
-	const rest = new REST({ version: '10' }).setToken(token)
+	const rest = new REST({ version: "10" }).setToken(token)
 	const commandList = []
 
 	const dbpath = `.guilds.${guildId}.commands.aliases`
@@ -65,7 +68,7 @@ async function refreshGuildCommands(guildId: any) {
 
 	//aliases = await process.db.json.get(`guilds`, dbpath) || {}
 
-	const aliases = await database.get(dbpath) || {}
+	const aliases = (await database.get(dbpath)) || {}
 	const commands = []
 	for (const i in aliases) {
 		console.log(`i = ${i}`)
@@ -91,13 +94,17 @@ async function refreshGuildCommands(guildId: any) {
 		// flatten stuff, set main command to subcommand / bring subcommand up
 		if (group) {
 			console.log(`group = ${group}`)
-			newcommanddata.options = newcommanddata.options.find((element: any) => element.name === group).options
+			newcommanddata.options = newcommanddata.options.find(
+				(element: any) => element.name === group,
+			).options
 			console.log(newcommanddata.options)
 		}
 		if (subcommand) {
 			console.log(`subcommand = ${subcommand}`)
 			console.log("awawa")
-			newcommanddata.options = newcommanddata.options.find((element: any) => element.name === subcommand).options
+			newcommanddata.options = newcommanddata.options.find(
+				(element: any) => element.name === subcommand,
+			).options
 			console.log(newcommanddata.options)
 		}
 		for (let i = 0; i < defaultoptions.length; i++) {
@@ -117,7 +124,10 @@ async function refreshGuildCommands(guildId: any) {
 		}
 
 		// 	remove item from a if it exists in b
-		var reduced = a.filter((aitem: any) => !b.find((bitem: any) => aitem["name"] === bitem["name"]))
+		var reduced = a.filter(
+			(aitem: any) =>
+				!b.find((bitem: any) => aitem["name"] === bitem["name"]),
+		)
 		newcommanddata.options = reduced
 
 		console.log(`new options:`)
@@ -139,7 +149,6 @@ async function refreshGuildCommands(guildId: any) {
 		if (aliases[i].hidedefaults) {
 			console.log("hide options set")
 			//newcommanddata.options = newcommanddata.options.filter(e => e.name !== "")
-
 		}
 		if (aliases[i].hidealloptions) {
 			console.log("hide all options")
@@ -155,17 +164,21 @@ async function refreshGuildCommands(guildId: any) {
 	console.log(commandList)
 
 	try {
-		console.log(`Started refreshing ${commandList.length} guild application (/) commands.`)
+		console.log(
+			`Started refreshing ${commandList.length} guild application (/) commands.`,
+		)
 
 		const data = await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),
-			{ body: commandList }
+			{ body: commandList },
 		)
 
-		console.log(`Successfully reloaded ${(data as any).length} guild application commands.`)
-
-	}
-	catch (error) {
+		console.log(
+			`Successfully reloaded ${
+				(data as any).length
+			} guild application commands.`,
+		)
+	} catch (error) {
 		console.error(error)
 		throw error
 	}
@@ -202,12 +215,16 @@ async function getCommands(): Promise<ApplicationCommand[]> {
 	const commandfilepath = path.join(__dirname, "..", "commands")
 	console.log(commandfilepath)
 
-	const commandFiles: string[] = fs.readdirSync(commandfilepath).filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
+	const commandFiles: string[] = fs
+		.readdirSync(commandfilepath)
+		.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
 
 	console.log(commandFiles)
 	for (let i = 0, len = commandFiles.length; i < len; i++) {
 		const file = commandFiles[i]
-		const command: ApplicationCommand = (await import(`../commands/${file}`)).default as ApplicationCommand
+		const command: ApplicationCommand = (
+			await import(`../commands/${file}`)
+		).default as ApplicationCommand
 		console.log("awa" + file)
 		commands.push(command)
 	}
@@ -234,8 +251,6 @@ async function getContextMenuCommands() {
 	// return commands
 }
 
-
-
 export default {
 	get() {
 		return getCommands()
@@ -252,17 +267,16 @@ export default {
 		commandName = (interaction as CommandInteraction).commandName,
 		group?: string,
 		subcommand?: string,
-		options?: (
-			any
-		)[],
+		options?: any[],
 	) {
 		let newInteraction: any = interaction
 
 		// if theres no options present, create a new options resolver
 		// this probably kinda a stupid way to do everything but like idc
-		if (!newInteraction.options) newInteraction.options = new (CommandInteractionOptionResolver as any)(client, [])
+		if (!newInteraction.options)
+			newInteraction.options =
+				new (CommandInteractionOptionResolver as any)(client, [])
 		//console.log(newInteraction)
-
 
 		if (group != null) {
 			//console.log(`group = ${group}`)
@@ -275,12 +289,17 @@ export default {
 		if (options != null) {
 			//console.log("balls")
 			//if (!interaction.options._hoistedOptions) interaction.options = new CommandInteractionOptionResolver(client, )
-			if (!interaction.options._hoistedOptions) interaction.options._hoistedOptions = []
+			if (!interaction.options._hoistedOptions)
+				interaction.options._hoistedOptions = []
 
 			// merge options with interaction's options, new options should overwrite
 			//console.log(newInteraction.options._hoistedOptions)
 			//console.log(options)
-			newInteraction.options._hoistedOptions = merge(newInteraction.options._hoistedOptions, options, "name",)
+			newInteraction.options._hoistedOptions = merge(
+				newInteraction.options._hoistedOptions,
+				options,
+				"name",
+			)
 			//console.log("merged	")
 			//console.log(newInteraction.options._hoistedOptions)
 		}
@@ -297,21 +316,24 @@ export default {
 			//console.log(command.permissions)
 			let permissionsText = "Permissions:"
 
-
-
 			// for every permission set in the command, check it
 			for (let i = 0; i < permlist.length; i++) {
 				if (permlist[i] == "botowner") {
 					if (interaction.user.id !== config.permissions.botowner) {
 						interaction.reply({
 							ephemeral: true,
-							embeds: embeds.warningEmbed(`You don't have permission to perform the command **${commandName}**`, `🚫 **Bot Owner**`,),
+							embeds: embeds.warningEmbed(
+								`You don't have permission to perform the command **${commandName}**`,
+								`🚫 **Bot Owner**`,
+							),
 						})
 						return
 					}
 				} else {
 					console.log(i)
-					if ((interaction.member.permissions as any).has(permlist[i])) {
+					if (
+						(interaction.member.permissions as any).has(permlist[i])
+					) {
 						console.log("yes")
 						acceptedPermissions.push(permlist[i])
 					} else {
@@ -321,16 +343,23 @@ export default {
 				}
 			}
 			for (let i = 0; i < deniedPermissions.length; i++) {
-				permissionsText += `\n🚫 ** ${new PermissionsBitField(deniedPermissions[i],).toArray()}**` // get text name for each permission
+				permissionsText += `\n🚫 ** ${new PermissionsBitField(
+					deniedPermissions[i],
+				).toArray()}**` // get text name for each permission
 			}
 			for (let i = 0; i < acceptedPermissions.length; i++) {
-				permissionsText += `\n✅ ** ${new PermissionsBitField(acceptedPermissions[i],).toArray()}**`
+				permissionsText += `\n✅ ** ${new PermissionsBitField(
+					acceptedPermissions[i],
+				).toArray()}**`
 			}
 
 			if (deniedPermissions.length > 0) {
 				interaction.reply({
 					ephemeral: true,
-					embeds: embeds.warningEmbed(`You don't have permission to perform the command **${commandName}**`, `${permissionsText}`,),
+					embeds: embeds.warningEmbed(
+						`You don't have permission to perform the command **${commandName}**`,
+						`${permissionsText}`,
+					),
 				})
 				return
 			}
@@ -359,13 +388,12 @@ export default {
 			return newInteraction
 		} catch (error) {
 			console.error(error)
-			const row: any = new ActionRowBuilder()
-				.addComponents(
-					new ButtonBuilder()
-						.setCustomId("errorreport")
-						.setLabel("Report Error")
-						.setStyle(ButtonStyle.Danger),
-				)
+			const row: any = new ActionRowBuilder().addComponents(
+				new ButtonBuilder()
+					.setCustomId("errorreport")
+					.setLabel("Report Error")
+					.setStyle(ButtonStyle.Danger),
+			)
 			let message = {
 				embeds: embeds.errorEmbed(
 					`Running command **${interaction.commandName}**`,
@@ -373,7 +401,7 @@ export default {
 				),
 				components: [row],
 				ephemeral: true,
-				fetchReply: true
+				fetchReply: true,
 			}
 			let msg: Message
 
@@ -391,33 +419,42 @@ export default {
 				}
 			}
 
-			const collector = msg.createMessageComponentCollector({ componentType: ComponentType.Button, time: 2 * 60 * 1000 })
+			const collector = msg.createMessageComponentCollector({
+				componentType: ComponentType.Button,
+				time: 2 * 60 * 1000,
+			})
 
-			collector.on('collect', async i => {
+			collector.on("collect", async (i) => {
 				if (i.user.id === interaction.user.id) {
-					console.log(`${i.user.id} clicked on the ${i.customId} button.`)
+					console.log(
+						`${i.user.id} clicked on the ${i.customId} button.`,
+					)
 
 					const modal = new ModalBuilder()
-						.setCustomId('myModal')
-						.setTitle('Reporting an Error')
-
+						.setCustomId("myModal")
+						.setTitle("Reporting an Error")
 
 					// Add components to modal
 
 					// Create the text input components
 					const reportInput = new TextInputBuilder()
-						.setCustomId('errorReportModalField')
+						.setCustomId("errorReportModalField")
 						// The label is the prompt the user sees for this input
 						.setLabel("What went wrong?")
 						// Short means only a single line of text
 						.setStyle(TextInputStyle.Paragraph)
 						.setRequired(false)
-						.setPlaceholder("What happaned? Why are you reporting this error!!!?")
+						.setPlaceholder(
+							"What happaned? Why are you reporting this error!!!?",
+						)
 						.setMaxLength(1800)
 
 					// An action row only holds one text input,
 					// so you need one action row per text input.
-					const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(reportInput)
+					const firstActionRow =
+						new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+							reportInput,
+						)
 
 					// Add inputs to the modal
 					modal.addComponents(firstActionRow)
@@ -425,45 +462,69 @@ export default {
 					// Show the modal to the user
 					await i.showModal(modal)
 
-					const filter = i => {
+					const filter = (i) => {
 						return i.user.id === interaction.user.id
 					}
 					i.awaitModalSubmit({ time: 240 * 1000, filter })
-						.then(async i => {
+						.then(async (i) => {
 							interaction.deleteReply()
-							const usermessage = i.fields.getTextInputValue('errorReportModalField')
+							const usermessage = i.fields.getTextInputValue(
+								"errorReportModalField",
+							)
 							const content = stripIndents`error: \`\`\`${error.toString()}\`\`\`
 							On command: \`${interaction.commandName}\`
 							Options: \`\`\`${JSON.stringify(interaction.options)}\`\`\`
-							Reported by: \`${format.oldUsername(interaction.user.username)} (${interaction.user.id})\`
+							Reported by: \`${format.oldUsername(interaction.user.username)} (${
+								interaction.user.id
+							})\`
 							User's Message: \`\`\`${usermessage}\`\`\``
 
-							client.channels.fetch("767026023387758612").then((channel: GuildTextBasedChannel) => {
-								console.log(channel.name)
-								channel.send(content)
-								return
-							})
+							client.channels
+								.fetch("767026023387758612")
+								.then((channel: GuildTextBasedChannel) => {
+									console.log(channel.name)
+									channel.send(content)
+									return
+								})
 
 							// create an github issue from the error report
 							const octokit = new Octokit({
-								auth: config.github.token
+								auth: config.github.token,
 							})
 
-							let title = format.cutToLength(`Error report from command "${interaction.commandName}" - ${usermessage}`, 250)
+							let title = format.cutToLength(
+								`Error report from command "${interaction.commandName}" - ${usermessage}`,
+								250,
+							)
 
-							octokit.issues.create({ owner: "iamasink", repo: "lilysbot", title: title, body: content, labels: ["report"] })
-								.then(async res => {
-									await i.reply({ embeds: embeds.successEmbed(`Thank you for your submission!\nLink: ${res.data.html_url}`), ephemeral: true, fetchReply: true })
+							octokit.issues
+								.create({
+									owner: "iamasink",
+									repo: "lilysbot",
+									title: title,
+									body: content,
+									labels: ["report"],
+								})
+								.then(async (res) => {
+									await i.reply({
+										embeds: embeds.successEmbed(
+											`Thank you for your submission!\nLink: ${res.data.html_url}`,
+										),
+										ephemeral: true,
+										fetchReply: true,
+									})
 								})
 						})
-						.catch(err => console.log(err))
+						.catch((err) => console.log(err))
 				} else {
-					i.reply({ content: `These buttons aren't for you!`, ephemeral: true })
-						.then(msg => {
-							setTimeout(() => {
-								msg.delete()
-							}, 1000)
-						})
+					i.reply({
+						content: `These buttons aren't for you!`,
+						ephemeral: true,
+					}).then((msg) => {
+						setTimeout(() => {
+							msg.delete()
+						}, 1000)
+					})
 				}
 			})
 		}
@@ -474,9 +535,9 @@ export default {
 		// split text by spaces
 		let words: string[] = text.split(" ")
 		if (words[0].startsWith("/")) words[0] = words[0].substring(1)
-		words = words.flatMap(word => {
-			if (word.includes(':')) {
-				const [firstPart, secondPart] = word.split(':')
+		words = words.flatMap((word) => {
+			if (word.includes(":")) {
+				const [firstPart, secondPart] = word.split(":")
 				return [`${firstPart}:`, secondPart]
 			} else {
 				// if theres no colon, return the word as is
@@ -496,23 +557,37 @@ export default {
 
 		// parse group and subcommand
 		// if words[1] and words[2] aren't options
-		if (words[1] && !words[1].endsWith(":") && words[2] && !words[2].endsWith(":")) {
+		if (
+			words[1] &&
+			!words[1].endsWith(":") &&
+			words[2] &&
+			!words[2].endsWith(":")
+		) {
 			group = words[1]
 			subcommand = words[2]
 			optionsStart = 3
 		}
 		// if only words[1] isn't an option
-		else if (words[1] && !words[1].endsWith(":") && words[2] && words[2].endsWith(":")) {
+		else if (
+			words[1] &&
+			!words[1].endsWith(":") &&
+			words[2] &&
+			words[2].endsWith(":")
+		) {
 			group = null
 			subcommand = words[1]
 			optionsStart = 2
 		}
 		// if both are options
-		else if (words[1] && words[1].endsWith(":") && words[2] && words[2].endsWith(":")) {
+		else if (
+			words[1] &&
+			words[1].endsWith(":") &&
+			words[2] &&
+			words[2].endsWith(":")
+		) {
 			group = null
 			subcommand = null
 			optionsStart = 1
-
 		}
 		// if there are no options or subcommand
 		else {
@@ -527,7 +602,9 @@ export default {
 
 		// get command
 		console.log(`commandName = ${commandName}`)
-		const command = await commands.find((e: ApplicationCommand) => e.data.name == commandName)
+		const command = await commands.find(
+			(e: ApplicationCommand) => e.data.name == commandName,
+		)
 		console.log(`command found: ${JSON.stringify(command)}`)
 
 		if (!command) throw new Error("Command not found")
@@ -539,13 +616,13 @@ export default {
 
 		command.data.options.forEach((e: any) => {
 			console.log("Full object:")
-			console.dir(e, { depth: null })  // Log the entire object with full depth
+			console.dir(e, { depth: null }) // Log the entire object with full depth
 
 			// Check if the type is accessible directly
 			console.log(`Direct type: ${e.type}`)
 
 			// Check if the type is accessible through any method
-			if (typeof e.getType === 'function') {
+			if (typeof e.getType === "function") {
 				console.log(`Type via getType(): ${e.getType()}`)
 			}
 
@@ -553,27 +630,33 @@ export default {
 			console.log(`Properties: ${Object.keys(e)}`)
 		})
 
-
 		// find group, if nothing can be found, use the whole command (this subcommand has no group)
-		const commandgroup = (await command.data.options.find((e: any) => {
-			// console.log(`${e.name} = ${JSON.stringify(e)}`)
-			console.log(e)
-			console.log(e.name)
-			console.log(e.toJSON().type)
-			if (e.name == group && e.toJSON().type == 2) return true
-		})) || command.data
+		const commandgroup =
+			(await command.data.options.find((e: any) => {
+				// console.log(`${e.name} = ${JSON.stringify(e)}`)
+				console.log(e)
+				console.log(e.name)
+				console.log(e.toJSON().type)
+				if (e.name == group && e.toJSON().type == 2) return true
+			})) || command.data
 		console.log(`commandgroup = ${JSON.stringify(commandgroup)}`)
 		// const commandsubcommand = (await commandgroup.options.find((e: any) => e.name == subcommand && e.type == 1)) || commandgroup
-		const commandsubcommand = (await commandgroup.options.find((e: any) => {
-			// console.log(`${e.name} = ${JSON.stringify(e)}`)
-			console.log(e)
-			console.log(e.name)
-			console.log(e.toJSON().type)
-			if (e.name == subcommand && e.toJSON().type == 1) return true
-		})) || commandgroup
+		const commandsubcommand =
+			(await commandgroup.options.find((e: any) => {
+				// console.log(`${e.name} = ${JSON.stringify(e)}`)
+				console.log(e)
+				console.log(e.name)
+				console.log(e.toJSON().type)
+				if (e.name == subcommand && e.toJSON().type == 1) return true
+			})) || commandgroup
 		console.log(`commandsubcommand = ${JSON.stringify(commandsubcommand)}`)
 
-		const foundoptions: { name: string, position: number, type: number, value: string }[] = []
+		const foundoptions: {
+			name: string
+			position: number
+			type: number
+			value: string
+		}[] = []
 		// parse options
 		// for each word from optionsStart to end
 		console.log(words)
@@ -588,10 +671,20 @@ export default {
 				// if it hasn't been chosen yet
 				if (!foundoptions.find((e: any) => e.name == option)) {
 					// if it exists in the command
-					const command = await commandsubcommand.options.find((e: any) => e.name == option && e.toJSON().type >= 3 && e.toJSON().type <= 11)
+					const command = await commandsubcommand.options.find(
+						(e: any) =>
+							e.name == option &&
+							e.toJSON().type >= 3 &&
+							e.toJSON().type <= 11,
+					)
 					if (command) {
 						console.log(`option found ${words[i]}, ${i}`)
-						foundoptions.push({ name: option, position: i, type: command.toJSON().type, value: undefined })
+						foundoptions.push({
+							name: option,
+							position: i,
+							type: command.toJSON().type,
+							value: undefined,
+						})
 					}
 				} else {
 					console.log("already processed", option)
@@ -602,10 +695,13 @@ export default {
 		for (let i = 0, len = foundoptions.length; i < len; i++) {
 			const currentoption = foundoptions[i]
 			// find the next option, unless its out of bounds
-			const nextposition = i + 1 < len ? foundoptions[i + 1].position : words.length
+			const nextposition =
+				i + 1 < len ? foundoptions[i + 1].position : words.length
 			// loop through all foundoptions
 			// find words from each options' "position" to the next "position", or end
-			currentoption.value = words.slice(currentoption.position + 1, nextposition).join(" ")
+			currentoption.value = words
+				.slice(currentoption.position + 1, nextposition)
+				.join(" ")
 			foundoptions[i] = currentoption
 		}
 		console.log(foundoptions)

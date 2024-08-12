@@ -77,7 +77,7 @@ class BridgeManager {
 	// }
 
 	async initialise() {
-		await database.connect() // there's most likely a better way to do this or place to put this
+		// await database.connect() // there's most likely a better way to do this or place to put this
 		const bridges = await database.get<BridgeSchema[]>(".channelbridges")
 		if (!bridges?.length) return
 		for (let i = 0, len = bridges.length; i < len; i++) {

@@ -316,30 +316,28 @@ export default {
 			//console.log(command.permissions)
 			let permissionsText = "Permissions:"
 
+			if (
+				command.settings.ownerOnly &&
+				interaction.user.id !== config.permissions.botowner
+			) {
+				interaction.reply({
+					ephemeral: true,
+					embeds: embeds.warningEmbed(
+						`You don't have permission to perform the command **${commandName}**`,
+						`🚫 **Bot Owner**`,
+					),
+				})
+				return
+			}
+
 			// for every permission set in the command, check it
-			for (let i = 0; i < permlist.length; i++) {
-				if (permlist[i] == "botowner") {
-					if (interaction.user.id !== config.permissions.botowner) {
-						interaction.reply({
-							ephemeral: true,
-							embeds: embeds.warningEmbed(
-								`You don't have permission to perform the command **${commandName}**`,
-								`🚫 **Bot Owner**`,
-							),
-						})
-						return
-					}
+			for (const permission of permlist) {
+				if (interaction.memberPermissions.has(permission)) {
+					console.log("yes")
+					acceptedPermissions.push(permission)
 				} else {
-					console.log(i)
-					if (
-						(interaction.member.permissions as any).has(permlist[i])
-					) {
-						console.log("yes")
-						acceptedPermissions.push(permlist[i])
-					} else {
-						console.log("no")
-						deniedPermissions.push(permlist[i])
-					}
+					console.log("no")
+					deniedPermissions.push(permission)
 				}
 			}
 			for (let i = 0; i < deniedPermissions.length; i++) {

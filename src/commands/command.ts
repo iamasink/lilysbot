@@ -12,7 +12,9 @@ const {
 } = require("discord.js")
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("command")
 		.setDescription("Configure my commands")

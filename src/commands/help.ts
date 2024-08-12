@@ -10,7 +10,9 @@ import { client } from ".."
 import { stripIndents } from "common-tags"
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Display help information"),

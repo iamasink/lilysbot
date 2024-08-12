@@ -16,8 +16,13 @@ import type {
 	ContextMenuCommandInteraction,
 } from "discord.js"
 
+interface ApplicationCommandSettings {
+	ownerOnly?: boolean
+}
+
 export default class ApplicationCommand {
-	permissions?: PermissionResolvable[] | ["botowner"]
+	permissions?: PermissionResolvable[]
+	settings?: ApplicationCommandSettings
 	data:
 		| SlashCommandBuilder
 		| ContextMenuCommandBuilder
@@ -41,7 +46,8 @@ export default class ApplicationCommand {
 	button?: (interaction: ButtonInteraction) => Promise<void> | void
 
 	constructor(options: {
-		permissions?: PermissionResolvable[] | ["botowner"]
+		permissions?: PermissionResolvable[]
+		settings?: ApplicationCommandSettings
 		data:
 			| SlashCommandBuilder
 			| ContextMenuCommandBuilder
@@ -67,6 +73,7 @@ export default class ApplicationCommand {
 		button?: (interaction: ButtonInteraction) => Promise<void> | void
 	}) {
 		this.permissions = options.permissions
+		this.settings = options.settings
 		this.data = options.data
 		this.execute = options.execute
 		this.autocomplete = options.autocomplete

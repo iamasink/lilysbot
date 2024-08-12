@@ -5,7 +5,9 @@ import embeds from "../utils/embeds"
 import database from "../utils/database"
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("refresh")
 		.setDescription("Reloads the bot and commands"),

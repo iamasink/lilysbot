@@ -87,8 +87,10 @@ export default class ApplicationCommand {
 
 export interface ApplicationCommandAlias {
 	commandName: string
-	defaultoptions: string[] 
-	group: string
-	subcommand: string
-	description: string
+	defaultoptions?: string[] // TODO defaultoptions is an Array of OptionsResolvable
+	group?: string
+	subcommand?: string
+	description?: string
+	hidedefaults?: boolean
+	hidealloptions?: boolean
 }

@@ -36,6 +36,23 @@ function merge<T, K extends keyof T>(a: T[], b: T[], prop: K) {
 	return reduced.concat(b)
 }
 
+interface Response {
+	id: string
+	application_id: string
+	version: string
+	default_member_permissions: string[]
+	type: number
+	name: string
+	name_localizations: unknown
+	description: string
+	description_localizations: unknown
+	dm_permission: boolean
+	contexts: null
+	integration_types: number[]
+	options?: unknown[]
+	nsfw: boolean
+}
+
 async function refreshGlobalCommands() {
 	const rest = new REST({ version: "10" }).setToken(token)
 	const commandList = await getCommands() //.concat(await getContextMenuCommands())
@@ -45,9 +62,9 @@ async function refreshGlobalCommands() {
 			`Started refreshing ${commandList.length} global application (/) commands.`,
 		)
 
-		const data: any = await rest.put(Routes.applicationCommands(clientId), {
+		const data = (await rest.put(Routes.applicationCommands(clientId), {
 			body: commandList.map((e) => e.data),
-		})
+		})) as Response[]
 
 		console.log(
 			`Successfully reloaded ${data.length} global application (/) commands.`,
@@ -386,7 +403,7 @@ export default {
 			return newInteraction
 		} catch (error) {
 			console.error(error)
-			const row: any = new ActionRowBuilder().addComponents(
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
 					.setCustomId("errorreport")
 					.setLabel("Report Error")

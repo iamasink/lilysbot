@@ -29,7 +29,7 @@
 		"@discordjs/rest": "^2.3.0",
 		"@discordjs/voice": "^0.17.0",
 		"@octokit/rest": "^20.1.1",
-		"axios": "^1.6.4",
+		"axios": "^1.7.4",
 		"bl": "^6.0.8",
 		"common-tags": "^1.8.2",
 		"discord.js": "^14.15.3",

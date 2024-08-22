@@ -334,7 +334,7 @@ export default {
 			let permissionsText = "Permissions:"
 
 			if (
-				command.settings.ownerOnly &&
+				command.settings?.ownerOnly &&
 				interaction.user.id !== config.permissions.botowner
 			) {
 				interaction.reply({

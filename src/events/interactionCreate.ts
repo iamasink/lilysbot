@@ -73,7 +73,7 @@ export default new Event({
 
 			// Check if the command is for owners only and if interaction executor are the owners
 			if (
-				command.settings.ownerOnly &&
+				command.settings?.ownerOnly &&
 				interaction.user.id !== config.permissions.botowner
 			) {
 				return

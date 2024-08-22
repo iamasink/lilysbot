@@ -75,7 +75,10 @@ export default new ApplicationCommand({
 			case "set": {
 				const settingName = interaction.options.getString("setting")
 				console.log(settingName)
-				const option: Setting = settingsList[settingName]
+				const option: Setting =
+					settingsList[
+						settingsList.findIndex((e) => e.value === settingName)
+					]
 				console.log(JSON.stringify(option))
 				const oldvalue = await settings.get(
 					interaction.guild,

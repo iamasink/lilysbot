@@ -204,7 +204,7 @@ export default new ApplicationCommand({
 				//output += `\nInvites marked as [-] have expired.`
 				if (!output) {
 					output = "No invites found. "
-					if (!showall) output += "Try searching with showall=true?"
+					if (!showall) output += "Maybe try searching with showall:true?"
 				}
 				let messages = format.splitMessage(output, 1900, "\n")
 				for (let i = 0, len = messages.length; i < len; i++) {

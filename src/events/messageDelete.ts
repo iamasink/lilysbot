@@ -30,7 +30,7 @@ export default new Event({
 			type: AuditLogEvent.MessageDelete,
 		})
 		if (message.webhookId) {
-			console.log("webhook id " + message.webhookId)
+			// console.log("webhook id " + message.webhookId)
 			return
 		}
 		if (message.author && message.author.bot) return
@@ -41,7 +41,7 @@ export default new Event({
 			deletionLog = fetchedLogs.entries.find(
 				(e) => e.target.id === message.author.id,
 			)
-			console.log(deletionLog)
+			// console.log(deletionLog)
 		}
 
 		// Perform a coherence check to make sure that there's *something*
@@ -52,11 +52,11 @@ export default new Event({
 			// Discord does not emit an audit log if the person who deleted the message is a bot deleting a single message or is the author of the message itself.
 			if (message.author) {
 				msg = `A message by ${message.author.username} <@${message.author.id}> was deleted in <#${message.channel.id}>`
-				console.log(msg)
+				// console.log(msg)
 				log.log(message.guild, msg)
 			} else {
 				msg = `A message by ??? was deleted in <#${message.channel.id}>`
-				console.log(msg)
+				// console.log(msg)
 				log.log(message.guild, msg)
 				return
 			}
@@ -84,18 +84,18 @@ export default new Event({
 			await log.channel(message.guild),
 		)
 
-		console.log(`channel: ${channel}`)
-		console.log(message.attachments)
+		// console.log(`channel: ${channel}`)
+		// console.log(message.attachments)
 
 		let note: string = ""
 		let files: AttachmentBuilder[]
 		let size: number = 0
 		message.attachments.forEach((e) => {
 			size += e.size
-			console.log(e.size)
-			console.log(size)
+			// console.log(e.size)
+			// console.log(size)
 		})
-		console.log(`total filesize: ${size}`)
+		// console.log(`total filesize: ${size}`)
 		if (size < 8_000_000) {
 			files = message.attachments.map((e) => new AttachmentBuilder(e.url))
 		} else {
@@ -137,6 +137,7 @@ export default new Event({
 				}
 			} catch (e) {
 				console.log("failed to log deleted message", e)
+				throw new Error(`failed to log deleted message, ${e}`)
 			}
 		}
 	},

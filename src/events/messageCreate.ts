@@ -86,6 +86,7 @@ export default new Event({
 			//console.log("author is a bot, so not adding xp")
 			return
 		}
+		// if there's few valid messages, its probably all bot messages, don't add xp
 		if (newmessages.length < 2) return
 		if (newmessages[0].author.id === newmessages[1].author.id) {
 			//console.log("user sent 2 messages to the same channel, not adding xp")

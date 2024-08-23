@@ -15,7 +15,7 @@ import embeds from "../utils/embeds"
 import axios from "axios"
 import { stripIndent, stripIndents } from "common-tags"
 import moment from "moment"
-import { InviteSchema, UsernameSchema } from "../types/Database"
+import { InviteListSchema, UsernameSchema } from "../types/Database"
 
 // function fetchPromise(toFetch) {
 // 	return new Promise((resolve, reject) => {
@@ -251,7 +251,7 @@ export default new ApplicationCommand({
 						const invitedLink = await database.get<string>(
 							`.guilds.${member.guild.id}.users.${member.id}.invitedLink`,
 						)
-						const invites = await database.get<InviteSchema>(
+						const invites = await database.get<InviteListSchema>(
 							`.guilds.${member.guild.id}.invites`,
 						)
 						const invite = invites[invitedLink]
@@ -270,10 +270,7 @@ export default new ApplicationCommand({
 								? `\`${invitedBy.username}\` <@${invitedById}>`
 								: `*Unknown*`
 							// const invited = invitedBy ? `<@${invitedById}>` : `*Unknown*`
-							guildtext += `\n**Invited by:** ${invited} ${invite.code.slice(
-								0,
-								4,
-							)}`
+							guildtext += `\n**Invited by:** ${invited} ${invite.code.slice(0, 4,)}`
 						}
 
 						if (member)

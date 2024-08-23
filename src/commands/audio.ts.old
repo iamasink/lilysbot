@@ -33,7 +33,10 @@ import {
 } from "@discordjs/voice"
 
 export default new ApplicationCommand({
-	permissions: ["KickMembers"],
+	// permissions: [""],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("audio")
 		.setDescription("Audio-related commands")

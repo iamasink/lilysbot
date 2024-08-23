@@ -6,6 +6,7 @@ import commands from "../utils/commands"
 import format from "../utils/format"
 import { stripIndent, stripIndents } from "common-tags"
 import { permissions } from "../config.json"
+import { client } from ".."
 const {
 	SlashCommandBuilder,
 	EmbedBuilder,
@@ -102,19 +103,23 @@ export default new ApplicationCommand({
 								.setDescription("command to disable")
 								.setRequired(true),
 						),
-				),
+				)
+				.addSubcommand((command) =>
+					command
+						.setName("refresh")
+						.setDescription("refresh guild commands")),
 		)
-		.addSubcommand((command: SlashCommandSubcommandBuilder) =>
-			command
-				.setName("run")
-				.setDescription("run a command")
-				.addStringOption((option) =>
-					option
-						.setName("command")
-						.setDescription("command to run")
-						.setRequired(true),
-				),
-		)
+		// .addSubcommand((command: SlashCommandSubcommandBuilder) =>
+		// 	command
+		// 		.setName("run")
+		// 		.setDescription("run a command")
+		// 		.addStringOption((option) =>
+		// 			option
+		// 				.setName("command")
+		// 				.setDescription("command to run")
+		// 				.setRequired(true),
+		// 		),
+		// )
 		.addSubcommand((command) =>
 			command.setName("list").setDescription("list all commands"),
 		)
@@ -132,28 +137,8 @@ export default new ApplicationCommand({
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		switch (interaction.options.getSubcommandGroup()) {
 			case "alias": {
-				const alias = interaction.options.getString("alias")
+				const alias = interaction.options.getString("alias").toLowerCase()
 				console.log("alias: " + alias)
-				// const command = interaction.options.getString('command')
-				// var sub = interaction.options.getString('subcommand')
-				// if (sub) {
-				// 	var sub = sub.split(' ')
-				// 	switch (sub.length) {
-				// 		case 0: {
-
-				// 			break
-				// 		} case 1: {
-				// 			var subcommand = sub[0]
-				// 			break
-				// 		} case 2: {
-				// 			var group = sub[0]
-				// 			var subcommand = sub[1]
-				// 			break
-				// 		} default: {
-				// 			throw new Error('Invalid group / subcommand option')
-				// 		}
-				// 	}
-				// }
 
 				const guildID = interaction.guild.id
 				const path = `.guilds.${guildID}.commands.aliases`
@@ -172,11 +157,19 @@ export default new ApplicationCommand({
 					else exists = false
 				}
 
+
+
 				switch (interaction.options.getSubcommand()) {
 					case "create": {
 						if (exists)
 							throw new Error(`$${aliasPath} already exists`)
-						//interaction.deferReply()
+
+						// check if there is a command already named as this alias, and prevent that
+						if (client.commands.has(alias))
+							throw new Error(`${alias} is an already existing command`)
+						if ((await interaction.guild.commands.fetch()).has(alias))
+							throw new Error(`${alias} is an already existing guild command`)
+
 						try {
 							const command =
 								interaction.options.getString("commandname")
@@ -202,18 +195,20 @@ export default new ApplicationCommand({
 								description: description,
 							}
 							await database.set(aliasPath, data)
+							commands.refreshGuild(guildID)
+
 							interaction.reply({
 								embeds: embeds.successEmbed(
 									"Created alias successfully",
 								),
 							})
 						} catch (err) {
-							interaction.reply({
-								embeds: embeds.errorEmbed(
-									"Creating alias",
-									err,
-								),
-							})
+							// interaction.reply({
+							// 	embeds: embeds.errorEmbed(
+							// 		"Creating alias",
+							// 		err,
+							// 	),
+							// })
 							throw new Error(
 								`Alias $${aliasPath} could not be created\n${err}`,
 							)
@@ -225,9 +220,10 @@ export default new ApplicationCommand({
 							throw new Error(`${aliasPath} does not exist`)
 						try {
 							await database.del(aliasPath)
+							commands.refreshGuild(guildID)
 							interaction.reply({
 								embeds: embeds.successEmbed(
-									"Created removed successfully",
+									"Removed alias successfully",
 								),
 							})
 						} catch (err) {
@@ -238,6 +234,7 @@ export default new ApplicationCommand({
 								),
 							})
 						}
+
 						break
 					}
 					case "list": {
@@ -251,7 +248,6 @@ export default new ApplicationCommand({
 						break
 					}
 				}
-				await commands.refreshGuild(guildID)
 				break
 			}
 			case "command": {
@@ -260,6 +256,15 @@ export default new ApplicationCommand({
 						break
 					}
 					case "disable": {
+						break
+					}
+					case "refresh": {
+						commands.refreshGuild(interaction.guild.id)
+						interaction.reply({
+							embeds: embeds.successEmbed(
+								"Refreshed guild commands",
+							),
+						})
 						break
 					}
 					default: {

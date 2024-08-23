@@ -5,9 +5,10 @@ import {
 	Interaction,
 	Message,
 	MessageReaction,
-	ReactionManager,
+	Snowflake,
 	User,
 } from "discord.js"
+import { StarboardMessageSchema } from "../types/Database"
 import Event from "../types/Event"
 import { client } from "../index"
 import database from "../utils/database"
@@ -43,7 +44,7 @@ export default new Event({
 		// console.log(`${reaction.count} user(s) have given the same reaction to this message!`)
 
 		if (reaction.emoji.name == "⭐") {
-			const starboardChannelId = await database.get(
+			const starboardChannelId = await database.get<Snowflake>(
 				`.guilds.${guild.id}.settings.starboard_channel`,
 			)
 			if (!starboardChannelId) return
@@ -51,7 +52,7 @@ export default new Event({
 				starboardChannelId,
 			)) as GuildTextBasedChannel
 
-			let previousStars: any[] =
+			let previousStars: StarboardMessageSchema[] =
 				(await database.get(`.guilds.${guild.id}.starboard`)) || []
 
 			// rename this when sane

@@ -21,7 +21,9 @@ import error from "./error"
 import { stripIndents } from "common-tags"
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("issue")
 		.setDescription("Report an issue"),

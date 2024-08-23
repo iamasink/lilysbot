@@ -6,6 +6,7 @@ import {
 	EmbedFooterOptions,
 	APIEmbed,
 	User,
+	Guild,
 } from "discord.js"
 import { footer } from "../config.json"
 
@@ -35,7 +36,7 @@ function embed(
 }
 
 export default {
-	errorEmbed(when: string, error: any): EmbedBuilder[] {
+	errorEmbed(when: string, error: Error): EmbedBuilder[] {
 		return embed(
 			"#d02721",
 			"An error occurred!",
@@ -52,23 +53,23 @@ export default {
 		)
 	},
 
-	successEmbed(title: string, description?: string): any {
+	successEmbed(title: string, description?: string): EmbedBuilder[] {
 		return embed("#00ff00", title, description)
 	},
 
 	messageEmbed(
 		title: string,
 		description?: string,
-		fields?: any,
+		fields?: APIEmbedField[],
 		color: ColorResolvable = "#f9beca",
-	): any {
+	): EmbedBuilder[] {
 		return embed(color, title, description, fields)
 	},
 
 	warningEmbed(
 		title: string,
 		description?: string,
-		fields?: any,
+		fields?: APIEmbedField[],
 		color: ColorResolvable = "#f2bb05",
 	) {
 		return embed(color, title, description, fields)
@@ -89,10 +90,10 @@ export default {
 	async profileEmbed(
 		title: string,
 		description?: string,
-		fields?: any,
+		fields?: APIEmbedField[],
 		user?: User,
-		guild?: any,
-	): Promise<any> {
+		guild?: Guild
+	): Promise<EmbedBuilder[]> {
 		user = await user.fetch()
 		let thumbnail: string
 

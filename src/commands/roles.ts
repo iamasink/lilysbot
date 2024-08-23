@@ -18,6 +18,7 @@ import {
 import embeds from "../utils/embeds"
 import database from "../utils/database"
 import ApplicationCommand from "../types/ApplicationCommand"
+import { RolesListSchema, RolesMenuSchema } from "../types/Database"
 import emoji from "../utils/emoji"
 var stringSimilarity = require("string-similarity")
 
@@ -980,7 +981,7 @@ export default new ApplicationCommand({
 					}
 					// /roles lists get
 					case "get": {
-						const rolelists: RoleList[] = await database.get(
+						const rolelists = await database.get<RoleList[]>(
 							`.guilds.${interaction.guild.id}.roles.lists`,
 						)
 						if (
@@ -1078,10 +1079,10 @@ export default new ApplicationCommand({
 			case "selectrolemenu": {
 				await interaction.deferUpdate()
 				const menuid = interaction.message.id
-				const roleMenu = await database.get(
+				const roleMenu = await database.get<RolesMenuSchema>(
 					`.guilds.${interaction.guild.id}.roles.menus.${menuid}`,
 				)
-				const roleList = await database.get(
+				const roleList = await database.get<RolesListSchema>(
 					`.guilds.${interaction.guild.id}.roles.lists.${roleMenu.list}`,
 				)
 				const user = await interaction.user.fetch()
@@ -1135,10 +1136,10 @@ export default new ApplicationCommand({
 			case "buttonrolemenu": {
 				const roleid = id[2]
 				const menuid = interaction.message.id
-				const roleMenu = await database.get(
+				const roleMenu = await database.get<RolesMenuSchema>(
 					`.guilds.${interaction.guild.id}.roles.menus.${menuid}`,
 				)
-				const roleList = await database.get(
+				const roleList = await database.get<RolesListSchema>(
 					`.guilds.${interaction.guild.id}.roles.lists.${roleMenu.list}`,
 				)
 				console.log(roleMenu)

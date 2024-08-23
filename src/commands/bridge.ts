@@ -8,7 +8,9 @@ import ApplicationCommand from "../types/ApplicationCommand"
 import { client } from ".."
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("bridge")
 		.setDescription("Create or manage bridges between channels")

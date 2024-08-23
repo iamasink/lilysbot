@@ -30,7 +30,9 @@ const clean = async (text: string) => {
 }
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("eval")
 		.setDescription("eval")

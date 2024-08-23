@@ -10,9 +10,11 @@ import {
 	PermissionsBitField,
 	Role,
 	RoleSelectMenuBuilder,
+	RoleSelectMenuInteraction,
 	SlashCommandBuilder,
 	Snowflake,
 	StringSelectMenuBuilder,
+	StringSelectMenuInteraction,
 	TextChannel,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
@@ -80,15 +82,15 @@ export default new ApplicationCommand({
 				console.log(JSON.stringify(option))
 				const oldvalue = await settings.get(
 					interaction.guild,
-					settingName,
+					settingName
 				)
-				let value = ""
+				let value: string | void = ""
 				switch (option.type) {
 					case "channel": {
 						let channel = await channelSelector(
 							interaction,
 							option.name,
-							oldvalue,
+							oldvalue as string
 						)
 						if (channel) {
 							console.log(channel.name)
@@ -103,7 +105,7 @@ export default new ApplicationCommand({
 						let role = await roleSelector(
 							interaction,
 							option.name,
-							oldvalue,
+							oldvalue as string
 						)
 						if (role) {
 							console.log(role.name)
@@ -117,7 +119,7 @@ export default new ApplicationCommand({
 						value = await toggleSelector(
 							interaction,
 							option.name,
-							oldvalue,
+							oldvalue as string
 						)
 						break
 					}
@@ -126,7 +128,7 @@ export default new ApplicationCommand({
 							interaction,
 							option.name,
 							option.options,
-							oldvalue,
+							oldvalue as string
 						)
 						break
 					}
@@ -363,7 +365,7 @@ async function roleSelector(
 				.setLabel("none")
 				.setStyle(ButtonStyle.Danger),
 		)
-		const filter = (i) => {
+		const filter = (i: RoleSelectMenuInteraction) => {
 			return i.user.id === interaction.user.id
 		}
 		await interaction
@@ -430,8 +432,8 @@ async function roleSelector(
 async function toggleSelector(
 	interaction: ChatInputCommandInteraction,
 	setting: string,
-	oldvalue: string,
-): Promise<any> {
+	oldvalue: string
+): Promise<string | void> {
 	return stringSelector(
 		interaction,
 		setting,
@@ -447,67 +449,53 @@ async function stringSelector(
 	interaction: ChatInputCommandInteraction,
 	setting: string,
 	options: SelectorOption[],
-	oldvalue: string,
-): Promise<any> {
+	oldvalue: string
+): Promise<string | void> {
 	const title = `Choose a value for __${setting}__...`
 
-	return new Promise(async (resolve, reject) => {
-		const row =
-			new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-				new StringSelectMenuBuilder()
-					.setCustomId("select")
-					.setPlaceholder("Nothing selected")
-					.setOptions(
-						...options.map((e) => {
-							if (!e.label) {
-								e.label = e.value
-							}
-							return e as SelectorOptionLabel
-						}),
-					),
+	const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+		new StringSelectMenuBuilder()
+			.setCustomId("select")
+			.setPlaceholder("Nothing selected")
+			.setOptions(
+				...options.map((e) => {
+					if (!e.label) {
+						e.label = e.value
+					}
+					return e as SelectorOptionLabel
+				})
 			)
-		const filter = (i) => {
-			return i.user.id === interaction.user.id
-		}
-		await interaction
-			.reply({
-				embeds: embeds.messageEmbed(
-					title,
-					`**Currently**: *${oldvalue}*`,
-				),
-				components: [row],
-				ephemeral: true,
-			})
-			.then((message) => {
-				message
-					.awaitMessageComponent({
-						filter,
-						componentType: ComponentType.StringSelect,
-						time: 60000,
-					})
-					.then(async (i) => {
-						let value = i.values[0]
-						console.log(value)
-						interaction.editReply({
-							embeds: embeds.successEmbed(
-								title,
-								`You selected ${value}`,
-							),
-							components: [],
-						})
-						resolve(value)
-					})
-					.catch((err) => {
-						interaction.editReply({
-							embeds: embeds.warningEmbed(
-								title,
-								`Nothing selected`,
-							),
-							components: [],
-						})
-						setTimeout(() => interaction.deleteReply(), 10000)
-						// reject(new Error("Nothing selected"))
-					})
-			})
+	)
+	const filter = (i: StringSelectMenuInteraction) => {
+		return i.user.id === interaction.user.id
+	}
+	const message = await interaction.reply({
+		embeds: embeds.messageEmbed(title, `**Currently**: *${oldvalue}*`),
+		components: [row],
+		ephemeral: true,
 	})
+
+	return message
+		.awaitMessageComponent({
+			filter,
+			componentType: ComponentType.StringSelect,
+			time: 60000,
+		})
+		.then(async (i) => {
+			let value = i.values[0]
+			console.log(value)
+			interaction.editReply({
+				embeds: embeds.successEmbed(title, `You selected ${value}`),
+				components: [],
+			})
+			return value
+		})
+		.catch((err) => {
+			interaction.editReply({
+				embeds: embeds.warningEmbed(title, `Nothing selected`),
+				components: [],
+			})
+			setTimeout(() => interaction.deleteReply(), 10000)
+			// reject(new Error("Nothing selected"))
+		})
 }

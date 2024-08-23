@@ -6,6 +6,7 @@ import {
 	Message,
 	MessageReaction,
 	ReactionManager,
+	Snowflake,
 	User,
 } from "discord.js"
 import Event from "../types/Event"
@@ -15,6 +16,7 @@ import messageCreate from "./messageCreate"
 import embeds from "../utils/embeds"
 import { type } from "os"
 import openai from "../utils/openai"
+import { StarboardMessageSchema } from "../types/Database"
 
 // Emitted whenever a reaction is added to a message
 export default new Event({
@@ -46,15 +48,13 @@ export default new Event({
 		// reaction.message.channel.send("")
 
 		if (reaction.emoji.name == "⭐") {
-			const starboardChannelId = await database.get(
-				`.guilds.${guild.id}.settings.starboard_channel`,
+			const starboardChannelId = await database.get<Snowflake>(
+				`.guilds.${guild.id}.settings.starboard_channel`
 			)
 			if (!starboardChannelId) return
-			const starboardChannel = (await guild.channels.fetch(
-				starboardChannelId,
-			)) as GuildTextBasedChannel
+			const starboardChannel = (await guild.channels.fetch(starboardChannelId)) as GuildTextBasedChannel
 
-			let previousStars: any[] =
+			let previousStars: StarboardMessageSchema[] =
 				(await database.get(`.guilds.${guild.id}.starboard`)) || []
 
 			// rename this when sane

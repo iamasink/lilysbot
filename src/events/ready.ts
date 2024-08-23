@@ -15,6 +15,7 @@ import invites from "../utils/invites"
 import embeds from "../utils/embeds"
 import axios from "axios"
 import { botlogchannel } from "../config.json"
+import { LastChannelSchema } from "../types/Database"
 
 export default new Event({
 	name: Events.ClientReady,
@@ -43,7 +44,9 @@ export default new Event({
 				invites.updateAllInviteCaches()
 
 				// say that the bots been restarted if /refresh was used
-				const restartinfo = await database.get(`.botdata.lastchannel`)
+				const restartinfo = await database.get<LastChannelSchema>(
+					`.botdata.lastchannel`
+				)
 				console.log(restartinfo)
 				if (restartinfo && restartinfo.message != null) {
 					const guild = await client.guilds.fetch(restartinfo.guild)

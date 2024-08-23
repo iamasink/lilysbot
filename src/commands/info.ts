@@ -15,6 +15,7 @@ import embeds from "../utils/embeds"
 import axios from "axios"
 import { stripIndent, stripIndents } from "common-tags"
 import moment from "moment"
+import { InviteSchema, UsernameSchema } from "../types/Database"
 
 // function fetchPromise(toFetch) {
 // 	return new Promise((resolve, reject) => {
@@ -250,10 +251,10 @@ export default new ApplicationCommand({
 					})
 
 					if (interaction.guild.members.resolve(user)) {
-						const invitedLink = await database.get(
+						const invitedLink = await database.get<string>(
 							`.guilds.${member.guild.id}.users.${member.id}.invitedLink`,
 						)
-						const invites: object = await database.get(
+						const invites = await database.get<InviteSchema>(
 							`.guilds.${member.guild.id}.invites`,
 						)
 						const invite = invites[invitedLink]
@@ -293,7 +294,7 @@ export default new ApplicationCommand({
 					if (image) infoEmbed.setImage(`${image}?size=4096`)
 				}
 				if (interaction.options.getString("show") == "usernames") {
-					const usernames = await database.get(
+					const usernames = await database.get<UsernameSchema>(
 						`.users.${user.id}.usernames`,
 					)
 					let text = `\n`

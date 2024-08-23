@@ -10,6 +10,7 @@ import ChannelBridge from "./ChannelBridge"
 import { client } from ".."
 import format from "../utils/format"
 import webhooks from "../utils/webhooks"
+import { BridgeSchema } from "../types/Database"
 
 class BridgeManager {
 	bridges: ChannelBridge[]
@@ -76,8 +77,9 @@ class BridgeManager {
 	// }
 
 	async initialise() {
-		await database.connect() // there's most likely a better way to do this or place to put this
-		const bridges = await database.get(".channelbridges")
+		// await database.connect() // there's most likely a better way to do this or place to put this
+		const bridges = await database.get<BridgeSchema[]>(".channelbridges")
+		if (!bridges?.length) return
 		for (let i = 0, len = bridges.length; i < len; i++) {
 			this.addBridge(bridges[i].channel1, bridges[i].channel2)
 		}

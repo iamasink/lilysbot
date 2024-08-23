@@ -19,7 +19,7 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js"
-import ApplicationCommand from "../types/ApplicationCommand"
+import ApplicationCommand, { ApplicationCommandAlias } from "../types/ApplicationCommand"
 import { client } from "../index"
 import embeds from "./embeds"
 import database from "./database"
@@ -29,11 +29,28 @@ import { Octokit } from "@octokit/rest"
 import format from "./format"
 import { stripIndents } from "common-tags"
 
-function merge(a: any, b: any, prop: any) {
+function merge<T, K extends keyof T>(a: T[], b: T[], prop: K) {
 	const reduced = a.filter(
-		(aitem: any) => !b.find((bitem: any) => aitem[prop] === bitem[prop]),
+		(aitem) => !b.find((bitem) => aitem[prop] === bitem[prop]),
 	)
 	return reduced.concat(b)
+}
+
+interface Response {
+	id: string
+	application_id: string
+	version: string
+	default_member_permissions: string[]
+	type: number
+	name: string
+	name_localizations: unknown
+	description: string
+	description_localizations: unknown
+	dm_permission: boolean
+	contexts: null
+	integration_types: number[]
+	options?: unknown[]
+	nsfw: boolean
 }
 
 async function refreshGlobalCommands() {
@@ -45,9 +62,9 @@ async function refreshGlobalCommands() {
 			`Started refreshing ${commandList.length} global application (/) commands.`,
 		)
 
-		const data: any = await rest.put(Routes.applicationCommands(clientId), {
+		const data = (await rest.put(Routes.applicationCommands(clientId), {
 			body: commandList.map((e) => e.data),
-		})
+		})) as Response[]
 
 		console.log(
 			`Successfully reloaded ${data.length} global application (/) commands.`,
@@ -58,7 +75,7 @@ async function refreshGlobalCommands() {
 		throw error
 	}
 }
-async function refreshGuildCommands(guildId: any) {
+async function refreshGuildCommands(guildId: string) {
 	const rest = new REST({ version: "10" }).setToken(token)
 	const commandList = []
 
@@ -68,7 +85,7 @@ async function refreshGuildCommands(guildId: any) {
 
 	//aliases = await process.db.json.get(`guilds`, dbpath) || {}
 
-	const aliases = (await database.get(dbpath)) || {}
+	const aliases = (await database.get<ApplicationCommandAlias>(dbpath)) || {}
 	const commands = []
 	for (const i in aliases) {
 		console.log(`i = ${i}`)
@@ -316,30 +333,28 @@ export default {
 			//console.log(command.permissions)
 			let permissionsText = "Permissions:"
 
+			if (
+				command.settings?.ownerOnly &&
+				interaction.user.id !== config.permissions.botowner
+			) {
+				interaction.reply({
+					ephemeral: true,
+					embeds: embeds.warningEmbed(
+						`You don't have permission to perform the command **${commandName}**`,
+						`🚫 **Bot Owner**`,
+					),
+				})
+				return
+			}
+
 			// for every permission set in the command, check it
-			for (let i = 0; i < permlist.length; i++) {
-				if (permlist[i] == "botowner") {
-					if (interaction.user.id !== config.permissions.botowner) {
-						interaction.reply({
-							ephemeral: true,
-							embeds: embeds.warningEmbed(
-								`You don't have permission to perform the command **${commandName}**`,
-								`🚫 **Bot Owner**`,
-							),
-						})
-						return
-					}
+			for (const permission of permlist) {
+				if (interaction.memberPermissions.has(permission)) {
+					console.log("yes")
+					acceptedPermissions.push(permission)
 				} else {
-					console.log(i)
-					if (
-						(interaction.member.permissions as any).has(permlist[i])
-					) {
-						console.log("yes")
-						acceptedPermissions.push(permlist[i])
-					} else {
-						console.log("no")
-						deniedPermissions.push(permlist[i])
-					}
+					console.log("no")
+					deniedPermissions.push(permission)
 				}
 			}
 			for (let i = 0; i < deniedPermissions.length; i++) {
@@ -388,7 +403,7 @@ export default {
 			return newInteraction
 		} catch (error) {
 			console.error(error)
-			const row: any = new ActionRowBuilder().addComponents(
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
 					.setCustomId("errorreport")
 					.setLabel("Report Error")

@@ -1,25 +1,15 @@
 import * as redis from "redis"
-import { client } from ".."
-
-let isReady: boolean
 
 const key = "lilybot"
-let db: any
+const db = redis.createClient({url: process.env.REDIS_URL})
 
 async function connect() {
-	if (isReady) return true
-
 	console.log(`connecting to database (url: ${process.env.REDIS_URL})`)
-	db = redis.createClient({ url: process.env.REDIS_URL })
-	db.on("error", async (err) => {
-		console.log(`Redis error: ${err}`)
-	})
-	db.on("ready", () => {
-		isReady = true
-		console.log("Redis is ready!")
-		return
-	})
 	await db.connect()
+		.then(() => {
+			console.log("Redis is ready!")
+		})
+		.catch((err) => console.error(`Redis Error: ${err}`))
 }
 
 async function check(path) {}
@@ -85,7 +75,7 @@ async function get(path: string): Promise<any> {
 
 export default {
 	async connect() {
-		connect()
+		await connect()
 	},
 	/**
 	 * Set data in the redis database
@@ -100,9 +90,9 @@ export default {
 	 * Get data from the redis database
 	 *
 	 * @param {string} path The path to the data in JSON Path format (start with .)
-	 * @return {Promise<any>} Returns data from the path
+	 * @return {Promise<TData>} Returns data from the path
 	 */
-	async get(path: string): Promise<any> {
+	async get<TData>(path: string): Promise<TData> {
 		return get(path)
 	},
 	/**

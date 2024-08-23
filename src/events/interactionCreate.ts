@@ -71,25 +71,27 @@ export default new Event({
 			const permlist = command.permissions || []
 			//console.log(command.permissions)
 
+			// Check if the command is for owners only and if interaction executor are the owners
+			if (
+				command.settings?.ownerOnly &&
+				interaction.user.id !== config.permissions.botowner
+			) {
+				return
+			}
+
 			// for every permission set in the command, check it
-			for (let i = 0; i < permlist.length; i++) {
-				if (permlist[i] == "botowner") {
-					if (interaction.user.id !== config.permissions.botowner) {
-						return
-					}
+			for (const permission of permlist) {
+				console.log(permission)
+
+				if (interaction.memberPermissions.has(permission)) {
+					console.log("yes")
+					acceptedPermissions.push(permission)
 				} else {
-					console.log(i)
-					if (
-						(interaction.member.permissions as any).has(permlist[i])
-					) {
-						console.log("yes")
-						acceptedPermissions.push(permlist[i])
-					} else {
-						console.log("no")
-						deniedPermissions.push(permlist[i])
-					}
+					console.log("no")
+					deniedPermissions.push(permission)
 				}
 			}
+
 			for (let i = 0; i < deniedPermissions.length; i++) {
 				// permissionsText += `\n🚫 ** ${new PermissionsBitField(deniedPermissions[i],).toArray()}**` // get text name for each permission
 			}

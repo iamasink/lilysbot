@@ -13,6 +13,7 @@ import {
 	TextChannel,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
+import { InviteSchema, UserSchema } from "../types/Database"
 import database from "../utils/database"
 import embeds from "../utils/embeds"
 import format from "../utils/format"
@@ -132,7 +133,7 @@ export default new ApplicationCommand({
 					ephemeral: true,
 					embeds: embeds.messageEmbed("listing invites..."),
 				})
-				const invitelist = await database.get(
+				const invitelist = await database.get<InviteSchema[]>(
 					`.guilds.${interaction.guild.id}.invites`,
 				)
 				// console.log(invitelist)
@@ -261,7 +262,7 @@ export default new ApplicationCommand({
 				}
 
 				// create actionrow with confirm, delete button
-				const row: any = new ActionRowBuilder()
+				const row = new ActionRowBuilder<ButtonBuilder>()
 					.addComponents(
 						new ButtonBuilder()
 							.setCustomId("invite-confirmdelete")
@@ -446,7 +447,9 @@ export default new ApplicationCommand({
 
 				const invitedusers = []
 
-				const dbusers = await database.get(`.guilds.${guild.id}.users`)
+				const dbusers = await database.get<UserSchema[]>(
+					`.guilds.${guild.id}.users`,
+				)
 				for (let u in dbusers) {
 					if (dbusers.hasOwnProperty(u)) {
 						if (dbusers[u].invitedLink == code) {

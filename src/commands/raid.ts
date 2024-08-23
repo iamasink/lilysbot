@@ -8,7 +8,9 @@ import embeds from "../utils/embeds"
 import format from "../utils/format"
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true
+	},
 	data: new SlashCommandBuilder()
 		.setName("raid")
 		.setDescription("Configure anti-raid measures")

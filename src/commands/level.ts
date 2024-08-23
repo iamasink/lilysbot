@@ -4,6 +4,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
+import { UserSchema } from "../types/Database"
 import database from "../utils/database"
 import calc from "../utils/calc"
 import embeds from "../utils/embeds"
@@ -93,8 +94,8 @@ export default new ApplicationCommand({
 				await interaction.deferReply()
 
 				// some terrible way to sort by xp
-				const users = await database.get(
-					`.guilds.${interaction.guild.id}.users`,
+				const users = await database.get<UserSchema[]>(
+					`.guilds.${interaction.guild.id}.users`
 				)
 				const usersArray = []
 				const guildUsers = await guild.members.fetch()

@@ -14,7 +14,9 @@ import database from "../utils/database"
 import moment, { now } from "moment"
 
 export default new ApplicationCommand({
-	permissions: ["botowner"],
+	settings: {
+		ownerOnly: true,
+	},
 	data: new SlashCommandBuilder()
 		.setName("test")
 		.setDescription("description"),

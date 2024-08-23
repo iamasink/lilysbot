@@ -8,6 +8,7 @@ import {
 	MessageCreateOptions,
 	GuildEmojiRoleManager,
 	GuildTextBasedChannel,
+	Snowflake,
 } from "discord.js"
 import database from "./database"
 import { client } from ".."
@@ -18,7 +19,7 @@ export default {
 		//console.log("2")
 		//console.log(guild.id)
 
-		let channelid = await database.get(
+		let channelid = await database.get<Snowflake>(
 			`.guilds.${guild.id}.settings.log_channel`,
 		)
 		if (!channelid) {
@@ -40,7 +41,7 @@ export default {
 	},
 	async channel2(a: GuildResolvable): Promise<GuildTextBasedChannel> {
 		const guild = client.guilds.resolve(a)
-		const logchannelid = await database.get(
+		const logchannelid = await database.get<Snowflake>(
 			`.guilds.${guild.id}.settings.log_channel`,
 		)
 		const logchannel = guild.channels.resolve(logchannelid)

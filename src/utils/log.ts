@@ -36,8 +36,8 @@ export default {
 			})
 		}
 	},
-	async channel(guild: Guild): Promise<string> {
-		return await database.get(`.guilds.${guild.id}.settings.log_channel`)
+	async channel(guild: Guild): Promise<Snowflake | undefined> {
+		return await database.get<Snowflake>(`.guilds.${guild.id}.settings.log_channel`)
 	},
 	async channel2(a: GuildResolvable): Promise<GuildTextBasedChannel> {
 		const guild = client.guilds.resolve(a)

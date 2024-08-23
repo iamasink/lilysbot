@@ -103,9 +103,8 @@ export default new Event({
 			note = "\n__Files:__"
 			message.attachments.map(
 				(e) =>
-					(note += `\n[${
-						format.markdownEscape(e.name) ||
-						format.markdownEscape(e.url)
+				(note += `\n[${format.markdownEscape(e.name) ||
+					format.markdownEscape(e.url)
 					}](${e.url})`),
 			)
 		}
@@ -116,24 +115,28 @@ export default new Event({
 		content = message.content + note
 
 		let msgs = format.splitMessage(content, 2000, " ", "[...]", "[...]")
+
+
 		for (let i = 0, len = msgs.length; i < len; i++) {
-			let msg = msgs[i]
-			if (i == msgs.length - 1) {
-				// attach files only to the last one
-				webhooks.send(channel as GuildTextBasedChannel, {
-					content: msgs[i],
-					username:
-						message.member.nickname || message.author.username,
-					files: files,
-					avatarURL: message.author.avatarURL({ forceStatic: false }),
-				})
-			} else {
-				webhooks.send(channel as GuildTextBasedChannel, {
-					content: msgs[i],
-					username:
-						message.member.nickname || message.author.username,
-					avatarURL: message.author.avatarURL({ forceStatic: false }),
-				})
+			try {
+				let msg = msgs[i]
+				if (i == msgs.length - 1) {
+					// Attach files only to the last one
+					await webhooks.send(channel as GuildTextBasedChannel, {
+						content: msg,
+						username: message.member ? message.member.nickname : message.author.username,
+						files: files,
+						avatarURL: message.author.avatarURL({ forceStatic: false }),
+					})
+				} else {
+					await webhooks.send(channel as GuildTextBasedChannel, {
+						content: msg,
+						username: message.member ? message.member.nickname : message.author.username,
+						avatarURL: message.author.avatarURL({ forceStatic: false }),
+					})
+				}
+			} catch (e) {
+				console.log("failed to log deleted message", e)
 			}
 		}
 	},

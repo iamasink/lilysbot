@@ -19,6 +19,10 @@ export interface InviteSchema {
 	code: string
 }
 
+export interface InviteListSchema {
+	[key: string]: InviteSchema
+}
+
 export interface UserSchema {
 	invitedLink: string
 	xp: number

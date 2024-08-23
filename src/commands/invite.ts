@@ -13,7 +13,7 @@ import {
 	TextChannel,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
-import { InviteSchema, UserSchema } from "../types/Database"
+import { InviteListSchema, InviteSchema, UserSchema } from "../types/Database"
 import database from "../utils/database"
 import embeds from "../utils/embeds"
 import format from "../utils/format"
@@ -143,7 +143,7 @@ export default new ApplicationCommand({
 				// })
 
 				// Fetch the invite list from the database
-				const invitelist = await database.get(
+				const invitelist = await database.get<InviteListSchema>(
 					`.guilds.${interaction.guild.id}.invites`
 				)
 				// console.log(invitelist)

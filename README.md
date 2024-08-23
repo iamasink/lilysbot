@@ -42,11 +42,6 @@ This will compile the typescript code and start the bot
 
 ```bash
 git clone https://github.com/iamasink/lilysbot.git
-```
-
--
-
-```bash
 cd lilysbot
 ```
 

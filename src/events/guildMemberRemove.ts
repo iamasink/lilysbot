@@ -8,13 +8,12 @@ import {
 	Message,
 } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import log from "../utils/log"
 import format from "../utils/format"
 import settings from "../utils/settings"
-import axios from "axios"
-import { url } from "inspector"
+import { InviteListSchema } from "../types/Database"
+import { stripIndents } from "common-tags"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
@@ -22,7 +21,7 @@ export default new Event({
 	async execute(member: GuildMember) {
 		const guild = member.guild
 
-		let action: string = "left"
+		let action: "left" | "was banned" | "kicked" | "false" | "vanished" | "was kicked" = "left"
 
 		if (member.pending) {
 			//log.log(member.guild, `${member.id} has left guild ${member.guild}, but never passed rules screening`)
@@ -82,7 +81,7 @@ export default new Event({
 					guild,
 					`${member.displayName} (${member.user.username} ${member.user}) left the guild, audit log fetch was inconclusive.`,
 				)
-				action = "vanished??"
+				action = "vanished"
 			}
 		} else if (kickLog) {
 			// Now grab the user object of the person who kicked the member
@@ -108,7 +107,22 @@ export default new Event({
 					guild,
 					`${member.displayName} (${member.user.username} ${member.user}) left the guild, audit log fetch was inconclusive.`,
 				)
-				action = "vanished??"
+				action = "vanished"
+			}
+		}
+		const invitedLink = await database.get<string>(
+			`.guilds.${member.guild.id}.users.${member.id}.invitedLink`,
+		)
+		const invites = await database.get<InviteListSchema>(
+			`.guilds.${member.guild.id}.invites`,
+		)
+		// display inviter if they were banned or kicked
+		let invitermsg = ""
+		const invite = invites[invitedLink]
+		if (invite && action === "was banned" || action === "was kicked") {
+			const inviter = await guild.members.fetch(invite.inviterId)
+			if (inviter) {
+				invitermsg = `They were invited by ${inviter} (${invite.inviterId}) ${invite.code.slice(0, 4)}`
 			}
 		}
 
@@ -117,11 +131,10 @@ export default new Event({
 				.setColor("#ff0000")
 				.setTitle(`${member.user.username} ${action}.`)
 				.setDescription(
-					`They were a member for ${format.time(
-						Date.now() - member.joinedTimestamp,
-					)}.\nJoined on <t:${member.joinedTimestamp
-						.toString()
-						.slice(0, -3)}:f>\nID: ${member.id}`,
+					`They were a member for ${format.time(Date.now() - member.joinedTimestamp,)}.
+					Joined on <t:${member.joinedTimestamp.toString().slice(0, -3)}:f>
+					ID: ${member.id}\n`
+					+ invitermsg,
 				)
 				.setThumbnail(member.user.avatarURL({ forceStatic: false }))
 			if (action == "was banned") {

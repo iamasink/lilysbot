@@ -58,7 +58,7 @@ function formatlink(
 		if (fallbacklink) {
 			if (dontappendonfallback) outputlink = `${fallbacklink}`
 			else outputlink = `${fallbacklink}${linkappend}`
-			return `\n**[${name}](${outputlink})`
+			return `\n**[${name}](${outputlink})**`
 		} else {
 			return ``
 		}
@@ -132,8 +132,7 @@ export default new ApplicationCommand({
 					user.avatarURL({ forceStatic: false }),
 					`Avatar URL`,
 					`?size=4096`,
-					`https://cdn.discordapp.com/embed/avatars/${
-						parseInt(user.discriminator) % 5
+					`https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5
 					}.png`,
 				)
 				const gav = formatlink(gavURL, `Guild Avatar URL`, `?size=4096`)
@@ -151,18 +150,16 @@ export default new ApplicationCommand({
 					thumb = user.avatarURL({ forceStatic: false })
 				} // else set it to default avatar (calculated by discrim modulo 5)
 				else {
-					thumb = `https://cdn.discordapp.com/embed/avatars/${
-						parseInt(user.discriminator) % 5
-					}.png`
+					thumb = `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5
+						}.png`
 				}
 
 				// sets image and image name to whatever was specified
 				if (user.avatarURL({ forceStatic: false })) {
 					avatar = user.avatarURL({ forceStatic: false })
 				} else {
-					avatar = `https://cdn.discordapp.com/embed/avatars/${
-						parseInt(user.discriminator) % 5
-					}.png`
+					avatar = `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5
+						}.png`
 				}
 
 				let image: string
@@ -414,11 +411,9 @@ export default new ApplicationCommand({
 						{
 							name: "__**Members**__",
 							value: stripIndent`
-								**Total**: ${memberCount} | ${
-									memberCount - botMemberCount
+								**Total**: ${memberCount} | ${memberCount - botMemberCount
 								} Users, ${botMemberCount} Bots
-								**Online**: ${onlineMemberCount} | ${
-									onlineMemberCount - onlineBotMemberCount
+								**Online**: ${onlineMemberCount} | ${onlineMemberCount - onlineBotMemberCount
 								} Users, ${onlineBotMemberCount} Bots
 							`,
 						},
@@ -444,8 +439,7 @@ export default new ApplicationCommand({
 					)
 					//.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
 					.setDescription(
-						`**ID**: ${
-							user.id
+						`**ID**: ${user.id
 						}\n**Created at**: <t:${user.createdTimestamp
 							.toString()
 							.slice(0, -3)}:f>`,
@@ -453,9 +447,8 @@ export default new ApplicationCommand({
 					.addFields(
 						{
 							name: "__Stats__",
-							value: stripIndents`**Guilds**: ${
-								client.guilds.cache.size
-							}
+							value: stripIndents`**Guilds**: ${client.guilds.cache.size
+								}
 							**Total Channels**: ${client.channels.cache.size}
 							**Total Members**: ${client.users.cache.size}
 							**Total Members2**: ${""}`,

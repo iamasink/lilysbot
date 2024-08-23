@@ -43,6 +43,11 @@ export default new ApplicationCommand({
 						.setDescription(
 							"show all invites? by default expired invites without uses are hidden.",
 						),
+				)
+				.addUserOption((option) =>
+					option
+						.setName("user")
+						.setDescription("the user of invites to list")
 				),
 		)
 		.addSubcommand((command) =>
@@ -129,80 +134,88 @@ export default new ApplicationCommand({
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		switch (interaction.options.getSubcommand()) {
 			case "list": {
-				await interaction.reply({
-					ephemeral: true,
-					embeds: embeds.messageEmbed("listing invites..."),
-				})
-				const invitelist = await database.get<InviteSchema[]>(
-					`.guilds.${interaction.guild.id}.invites`,
+				const user = interaction.options.getUser("user")
+
+				await interaction.deferReply({ ephemeral: true })
+				// await interaction.reply({
+				// 	ephemeral: true,
+				// 	embeds: embeds.messageEmbed("listing invites..."),
+				// })
+
+				// Fetch the invite list from the database
+				const invitelist = await database.get(
+					`.guilds.${interaction.guild.id}.invites`
 				)
 				// console.log(invitelist)
-				var output = ""
+				invitelist
+				var newinvitelist: InviteSchema[] = Object.values(invitelist)
 
-				for (let i in invitelist) {
-					// console.log(i)
-					const invite = invitelist[i]
-					const code = i
-					const name = invite.name ? `${invite.name} - ` : ""
-					const hasExpired = invite.expired
-					const uses = invite.uses
-					const showall = interaction.options.getBoolean("showall")
-					// console.log(code, name, hasExpired, uses)
-					// console.log(invite.inviterId)
-					const inviter = await interaction.client.users.fetch(
-						invite.inviterId,
-					)
-					var tempoutput = ``
+				// Fetch the current invites from the guild
+				const currentinvites = await interaction.guild.invites.fetch()
+				// console.log(currentinvites)
 
+				let output = ""
+
+				const showall = interaction.options.getBoolean("showall")
+				for (const invite of newinvitelist) {
+					const { code, name = "", expired: hasExpired, uses, inviterId } = invite
+					if (user) {
+						if (inviterId !== user.id) {
+							continue
+						}
+					}
+
+					let tempoutput = ""
+
+
+					// Skip expired invites with no uses if "showall" is false
 					if (hasExpired && uses === 0 && !showall) continue
 
-					tempoutput += `${name}\`${code}\`, by \`${inviter.username}\` (<@${inviter.id}>),`
+					if (inviterId) {
+						tempoutput += `${name ? `${name} - ` : ""}\`${code}\`, by <@${inviterId}> (${inviterId}),`
+					}
 
-					let guildinvite: Invite
+					let guildinvite: Invite | undefined
 
 					if (!hasExpired) {
-						guildinvite = await interaction.guild.invites.fetch(
-							code,
-						)
-						const createdTimestamp = `<t:${guildinvite.createdTimestamp
-							.toString()
-							.slice(0, -3)}>`
-						let expiresTimestamp = ``
-						if (guildinvite.expiresTimestamp) {
-							expiresTimestamp = `<t:${await guildinvite.expiresTimestamp
-								.toString()
-								.slice(0, -3)}>`
-						} else {
-							expiresTimestamp = `never`
+						guildinvite = currentinvites.find(e => e.code === code)
+
+						if (guildinvite) {
+							const createdTimestamp = `<t:${guildinvite.createdTimestamp.toString().slice(0, -3)}>`
+							let expiresTimestamp = guildinvite.expiresTimestamp
+								? `<t:${guildinvite.expiresTimestamp.toString().slice(0, -3)}>`
+								: "never"
+							tempoutput += `at ${createdTimestamp}, till ${expiresTimestamp}, to <#${guildinvite.channelId}>,`
 						}
-						tempoutput += `at ${createdTimestamp}, till ${expiresTimestamp}, to <#${guildinvite.channelId}>,`
 					}
 
 					tempoutput += `uses: ${uses}`
-					if (!hasExpired) {
-						guildinvite = await interaction.guild.invites.fetch(
-							code,
-						)
-						// console.log(guildinvite)
-						var maxUses = guildinvite.maxUses.toString()
-						if (maxUses == "0") maxUses = `∞`
+
+					if (!hasExpired && guildinvite) {
+						let maxUses = guildinvite.maxUses.toString()
+						if (maxUses === "0") maxUses = `∞`
 						tempoutput += `/${maxUses}`
 					}
-					if (hasExpired) {
-						output += `\n~~${tempoutput}~~`
-					} else {
-						output += `\n${tempoutput}`
-					}
+
+					output += hasExpired ? `\n~~${tempoutput}~~` : `\n${tempoutput}`
 				}
 
+
 				//output += `\nInvites marked as [-] have expired.`
+				if (!output) {
+					output = "No invites found. "
+					if (!showall) output += "Try searching with showall=true?"
+				}
 				let messages = format.splitMessage(output, 1900, "\n")
 				for (let i = 0, len = messages.length; i < len; i++) {
-					interaction.followUp({
+					const data = {
 						ephemeral: true,
 						content: messages[i],
 						allowedMentions: { repliedUser: false, users: [] },
-					})
+						embeds: []
+					}
+					if (i == 0) interaction.editReply(data)
+					else interaction.followUp(data)
 				}
 
 				break
@@ -377,7 +390,7 @@ export default new ApplicationCommand({
 					})
 				}
 
-				;(channel as TextChannel)
+				; (channel as TextChannel)
 					.createInvite({
 						unique: true,
 						maxAge: length,

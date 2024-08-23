@@ -1,6 +1,7 @@
 import * as redis from "redis"
+import { rediskey } from "../config.json"
 
-const key = "lilybot"
+const key = rediskey
 const db = redis.createClient({url: process.env.REDIS_URL})
 
 async function connect() {

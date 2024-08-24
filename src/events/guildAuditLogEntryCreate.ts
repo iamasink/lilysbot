@@ -7,7 +7,6 @@ import {
 	ChannelSelectMenuBuilder,
 } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import settings from "../utils/settings"
 import { Channel } from "diagnostics_channel"

@@ -6,7 +6,6 @@ import {
 import ApplicationCommand from "../types/ApplicationCommand"
 import commands from "../utils/commands"
 import format from "../utils/format"
-import { client } from ".."
 import { stripIndents } from "common-tags"
 
 export default new ApplicationCommand({
@@ -16,7 +15,10 @@ export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName("help")
 		.setDescription("Display help information"),
-	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+	async execute(
+		interaction: ChatInputCommandInteraction,
+		client,
+	): Promise<void> {
 		const embed = new EmbedBuilder()
 			.setColor("#f9beca")
 			.setTitle("Wiwwie")

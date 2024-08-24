@@ -10,7 +10,6 @@ import {
 	User,
 } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import messageCreate from "./messageCreate"
 import embeds from "../utils/embeds"

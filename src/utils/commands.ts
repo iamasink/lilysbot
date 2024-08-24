@@ -384,16 +384,16 @@ export default {
 			if (!type) type = "slash"
 			switch (type) {
 				case "slash": {
-					await command.execute(newInteraction) // trys to run the command
+					await command.execute(newInteraction, client) // trys to run the command
 					break
 				}
 				case "messagecontext": {
-					await command.menuMessage(newInteraction) // trys to run the command
+					await command.menuMessage(newInteraction, client) // trys to run the command
 
 					break
 				}
 				case "usercontext": {
-					await command.menuUser(newInteraction) // trys to run the command
+					await command.menuUser(newInteraction, client) // trys to run the command
 					break
 				}
 				default: {

@@ -60,13 +60,12 @@ export class Bot extends Client {
 		console.log(eventFiles)
 
 		eventFiles.forEach(async (file) => {
-			console.log(file)
 			const event: Event = (await import(`../events/${file}`))
 				.default as Event
 			if (event.once) {
-				this.once(event.name, (...args) => event.execute(...args))
+				this.once(event.name, (...args) => event.execute(...args, this))
 			} else {
-				this.on(event.name, (...args) => event.execute(...args))
+				this.on(event.name, (...args) => event.execute(...args, this))
 			}
 		})
 	}

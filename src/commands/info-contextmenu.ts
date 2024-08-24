@@ -24,7 +24,7 @@ export default new ApplicationCommand({
 	data: new ContextMenuCommandBuilder()
 		.setName("User Info")
 		.setType(ApplicationCommandType.User),
-	async menuUser(interaction) {
+	async menuUser(interaction, client) {
 		if (!interaction.guild) {
 			interaction.reply({
 				embeds: embeds.warningEmbed("This isn't available in DMs."),

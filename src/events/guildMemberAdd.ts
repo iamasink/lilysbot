@@ -1,17 +1,17 @@
 import { Events, GuildMember, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import log from "../utils/log"
 import commands from "../utils/commands"
 import invites from "../utils/invites"
 import settings from "../utils/settings"
 import format from "../utils/format"
+import type { Bot } from "../structures/Client"
 
 // Emitted whenever a user joins a guild.
 export default new Event({
 	name: Events.GuildMemberAdd,
-	async execute(member: GuildMember) {
+	async execute(member: GuildMember, client: Bot) {
 		const guild = member.guild
 		console.log(member)
 		let note = "idk who invited them"

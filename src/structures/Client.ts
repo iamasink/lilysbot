@@ -3,14 +3,15 @@ import {
 	Client,
 	Collection,
 	FetchApplicationCommandOptions,
+	ClientOptions
 } from "discord.js"
 import { token } from "../config.json"
 import { readdirSync } from "fs"
 import path from "node:path"
 import ApplicationCommand from "../types/ApplicationCommand"
 import Event from "../types/Event"
-import commands from "../utils/commands"
 import database from "../utils/database"
+import { loadCommands } from "../utils/loader"
 import BridgeManager from "./BridgeManager"
 
 // Bot is a class which extends discord.js Client,
@@ -20,7 +21,7 @@ export class Bot extends Client {
 	// commandManager: ApplicationCommandManager
 	// awaw: FetchApplicationCommandOptions
 	bridgeManager: BridgeManager
-	constructor(options) {
+	constructor(options: ClientOptions) {
 		super(options)
 		this.bridgeManager = new BridgeManager()
 	}
@@ -36,19 +37,12 @@ export class Bot extends Client {
 	// function to register commands and events
 	async register() {
 		// register commands
-		const commandfilepath = path.join(__dirname, "..", "commands")
-		console.log(commandfilepath)
-		const commandFiles: string[] = readdirSync(commandfilepath).filter(
-			(file) => file.endsWith(".js") || file.endsWith(".ts"),
-		)
-		console.log(commandFiles)
+		const commandsList = await loadCommands()
 
-		commandFiles.forEach(async (file) => {
-			console.log(file)
-			const command: ApplicationCommand = (
-				await import(`../commands/${file}`)
-			).default as ApplicationCommand
+		console.log(`Found ${commandsList.length} Commands`)
+		commandsList.forEach(async (command) => {
 			this.commands.set(command.data.name, command)
+			console.log(`Successfully registered /${command.data.name} command`)
 		})
 
 		// register events

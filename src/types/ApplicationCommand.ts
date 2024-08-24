@@ -107,3 +107,11 @@ export interface ApplicationCommandAlias {
 	hidedefaults?: boolean
 	hidealloptions?: boolean
 }
+
+export interface Subcommand {
+	name: string
+	execute: (
+		interaction: ChatInputCommandInteraction,
+		client?: Bot,
+	) => Promise<void>
+}

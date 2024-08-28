@@ -1,6 +1,5 @@
 import { Events, Guild, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import embeds from "../utils/embeds"
 import settings from "../utils/settings"
@@ -8,7 +7,7 @@ import settings from "../utils/settings"
 // Emitted whenever the client joins a guild.
 export default new Event({
 	name: Events.GuildCreate,
-	async execute(guild: Guild) {
+	async execute(guild: Guild, client) {
 		console.log(`a guild was joined: ${guild}`)
 
 		settings.setDefaults(guild.id)

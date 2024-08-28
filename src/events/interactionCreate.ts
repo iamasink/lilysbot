@@ -10,17 +10,17 @@ import {
 	TextInputStyle,
 } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import commands from "../utils/commands"
 import embeds from "../utils/embeds"
 import format from "../utils/format"
 import database from "../utils/database"
 import config from "../config.json"
+import type { Bot } from "../structures/Client"
 
 // Emitted when an interaction is created.
 export default new Event({
 	name: Events.InteractionCreate,
-	async execute(interaction: Interaction) {
+	async execute(interaction: Interaction, client: Bot) {
 		let location: string
 		if (interaction.channel) location = interaction.channel.name
 		else location = "dms"

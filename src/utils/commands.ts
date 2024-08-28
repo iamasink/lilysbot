@@ -19,7 +19,7 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js"
-import ApplicationCommand, { ApplicationCommandAlias } from "../types/ApplicationCommand"
+import ApplicationCommand, { ApplicationCommandAlias, Subcommand } from "../types/ApplicationCommand"
 import { client } from "../index"
 import embeds from "./embeds"
 import database from "./database"
@@ -28,6 +28,7 @@ import { setTimeout } from "node:timers"
 import { Octokit } from "@octokit/rest"
 import format from "./format"
 import { stripIndents } from "common-tags"
+import { loadCommands } from "./loader"
 
 function merge<T, K extends keyof T>(a: T[], b: T[], prop: K) {
 	const reduced = a.filter(
@@ -55,8 +56,8 @@ interface Response {
 
 async function refreshGlobalCommands() {
 	const rest = new REST({ version: "10" }).setToken(token)
-	const commandList = await getCommands() //.concat(await getContextMenuCommands())
-	console.log(commandList)
+	const commandList = await loadCommands() //.concat(await getContextMenuCommands())
+
 	try {
 		console.log(
 			`Started refreshing ${commandList.length} global application (/) commands.`,
@@ -209,72 +210,32 @@ async function deployCommands() {
 	return refreshGlobalCommands()
 }
 
-async function getCommands(): Promise<ApplicationCommand[]> {
-	console.log("!!!")
-	const commands: ApplicationCommand[] = []
-	// reads files from files directory
-	// const commandsPath = path.join(__dirname, '..', 'commands')
-	// const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.ts'))
+/**
+ * Subcommand file importer for the given `subcommandPath`
+ * @param subcommandPath Path of the subcommand file
+ * @returns {Subcommand} Imported subcommand file
+ */
+async function getSubCommand(subcommandPath: string): Promise<Subcommand> {
+	const fileExtension = process.env.NODE_ENV == "prod" ? ".js" : ".ts"
 
-	// for (const file of commandFiles) {
-	// 	const command = require(`../commands/${file}`)
-	// 	console.log(file)
-	// 	if (command.tempType === 'new') {
-	// 		commands.push(command.data)
-	// 		//console.log(command.data)
-	// 	} else {
-	// 		commands.push(command.data.toJSON())
-	// 		//console.log(command.data)
-	// 	}
-	// }
-	//console.log(commands)
+	// TODO: pass (commandName, subcommandName) instead -> get subcommand given these args
+	// For now, pass the whole subcommand path to import
+	// get command path
+	// get subcommand name
+	// import commandpath/subcommands/subcommandName.extension
 
-	const commandfilepath = path.join(__dirname, "..", "commands")
-	console.log(commandfilepath)
-
-	const commandFiles: string[] = fs
-		.readdirSync(commandfilepath)
-		.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
-
-	console.log(commandFiles)
-	for (let i = 0, len = commandFiles.length; i < len; i++) {
-		const file = commandFiles[i]
-		const command: ApplicationCommand = (
-			await import(`../commands/${file}`)
-		).default as ApplicationCommand
-		console.log("awa" + file)
-		commands.push(command)
-	}
-	console.log("commands:")
-	console.log(commands)
-	return commands
-}
-
-async function getGuildCommands() {
-	const commands = []
-}
-
-async function getContextMenuCommands() {
-	// console.log('context menu commands,,')
-	// const commands = []
-	// const commandsPath = path.join(__dirname, '..', 'commands', 'contextmenu')
-	// const commandFiles = fs.readdirSync(commandsPath).filter((file: any) => file.endsWith('.ts'))
-	// for (const file of commandFiles) {
-	// 	const command = require(`../commands/contextmenu/${file}`)
-	// 	console.log(file)
-	// 	console.log(command.data.name)
-	// 	commands.push(command.data.toJSON())
-	// }
-	// return commands
+	return (await import(`${subcommandPath}${fileExtension}`))
+		.default as Subcommand
 }
 
 export default {
 	get() {
-		return getCommands()
+		return loadCommands()
 	},
 	deploy() {
 		return deployCommands()
 	},
+	getSubCommand,
 	refreshGuild(guildID: string) {
 		refreshGuildCommands(guildID)
 	},
@@ -384,16 +345,16 @@ export default {
 			if (!type) type = "slash"
 			switch (type) {
 				case "slash": {
-					await command.execute(newInteraction) // trys to run the command
+					await command.execute(newInteraction, client) // trys to run the command
 					break
 				}
 				case "messagecontext": {
-					await command.menuMessage(newInteraction) // trys to run the command
+					await command.menuMessage(newInteraction, client) // trys to run the command
 
 					break
 				}
 				case "usercontext": {
-					await command.menuUser(newInteraction) // trys to run the command
+					await command.menuUser(newInteraction, client) // trys to run the command
 					break
 				}
 				default: {

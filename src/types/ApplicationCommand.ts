@@ -15,6 +15,7 @@ import type {
 	MessageContextMenuCommandInteraction,
 	ContextMenuCommandInteraction,
 } from "discord.js"
+import type { Bot } from "../structures/Client"
 
 interface ApplicationCommandSettings {
 	ownerOnly?: boolean
@@ -29,18 +30,25 @@ export default class ApplicationCommand {
 		| SlashCommandSubcommandsOnlyBuilder
 		| ChatInputApplicationCommandData
 		| any // this should be a type (not any) but i can't figure it out so whatevs
-	execute?: (interaction: ChatInputCommandInteraction) => Promise<void> | void
+	execute?: (
+		interaction: ChatInputCommandInteraction,
+		client?: Bot,
+	) => Promise<void> | void
 	autocomplete?: (
 		interaction: AutocompleteInteraction,
+		client?: Bot,
 	) => Promise<void> | void
 	menuUser?: (
 		interaction: UserContextMenuCommandInteraction,
+		client?: Bot,
 	) => Promise<void> | void
 	menuMessage?: (
 		interaction: MessageContextMenuCommandInteraction,
+		client?: Bot,
 	) => Promise<void> | void
 	menuBoth?: (
 		interaction: ContextMenuCommandInteraction,
+		client?: Bot,
 	) => Promise<void> | void
 	menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void
 	button?: (interaction: ButtonInteraction) => Promise<void> | void
@@ -56,18 +64,23 @@ export default class ApplicationCommand {
 			| any
 		execute?: (
 			interaction: ChatInputCommandInteraction,
+			client?: Bot,
 		) => Promise<void> | void
 		autocomplete?: (
 			interaction: AutocompleteInteraction,
+			client?: Bot,
 		) => Promise<void> | void
 		menuUser?: (
 			interaction: UserContextMenuCommandInteraction,
+			client?: Bot,
 		) => Promise<void> | void
 		menuMessage?: (
 			interaction: MessageContextMenuCommandInteraction,
+			client?: Bot,
 		) => Promise<void> | void
 		menuBoth?: (
 			interaction: ContextMenuCommandInteraction,
+			client?: Bot,
 		) => Promise<void> | void
 		menu?: (interaction: AnySelectMenuInteraction) => Promise<void> | void
 		button?: (interaction: ButtonInteraction) => Promise<void> | void
@@ -93,4 +106,12 @@ export interface ApplicationCommandAlias {
 	description?: string
 	hidedefaults?: boolean
 	hidealloptions?: boolean
+}
+
+export interface Subcommand {
+	name: string
+	execute: (
+		interaction: ChatInputCommandInteraction,
+		client?: Bot,
+	) => Promise<void>
 }

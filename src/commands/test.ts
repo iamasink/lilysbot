@@ -8,7 +8,6 @@ import {
 	TextBasedChannel,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
-import { client } from ".."
 import format from "../utils/format"
 import database from "../utils/database"
 import moment, { now } from "moment"

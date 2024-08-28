@@ -10,7 +10,6 @@ import {
 } from "discord.js"
 import { StarboardMessageSchema } from "../types/Database"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import messageCreate from "./messageCreate"
 import embeds from "../utils/embeds"

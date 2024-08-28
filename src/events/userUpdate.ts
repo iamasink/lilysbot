@@ -1,6 +1,5 @@
 import { Events, Interaction, Message, User, Guild } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import format from "../utils/format"
 import log from "../utils/log"

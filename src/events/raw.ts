@@ -1,6 +1,5 @@
 import { Events, Interaction, Message } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 
 // Emitted whenever any event happens
 export default new Event({

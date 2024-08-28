@@ -4,7 +4,6 @@ import format from "../utils/format"
 import database from "../utils/database"
 import http from "http"
 import https from "https"
-import { client } from ".."
 
 // This function cleans up and prepares the
 // result of our eval command input for sending
@@ -42,7 +41,7 @@ export default new ApplicationCommand({
 				.setDescription("string to eval")
 				.setRequired(true),
 		),
-	async execute(interaction: ChatInputCommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction, client) {
 		console.log(interaction.options["_hoistedOptions"])
 		console.log("hi!!!")
 		if (interaction.user.id !== "303267459824353280")

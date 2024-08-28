@@ -6,15 +6,14 @@ import {
 	Utils,
 } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import openai from "../utils/openai"
-import BridgeManager from "../structures/BridgeManager"
+import type { Bot } from "../structures/Client"
 
 export default new Event({
 	name: Events.MessageCreate,
 	once: false,
-	async execute(message: Message): Promise<void> {
+	async execute(message: Message, client: Bot): Promise<void> {
 		//console.log(message)
 
 		const guild = message.guild

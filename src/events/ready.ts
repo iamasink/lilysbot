@@ -8,7 +8,6 @@ import {
 	TextChannel,
 } from "discord.js"
 import Event from "../types/Event"
-import { client } from "../index"
 import database from "../utils/database"
 import format from "../utils/format"
 import invites from "../utils/invites"
@@ -16,11 +15,12 @@ import embeds from "../utils/embeds"
 import axios from "axios"
 import { botlogchannel } from "../config.json"
 import { LastChannelSchema } from "../types/Database"
+import type { Bot } from "../structures/Client"
 
 export default new Event({
 	name: Events.ClientReady,
 	once: true,
-	async execute(): Promise<void> {
+	async execute(client: Bot): Promise<void> {
 		// Runs when the bot logs in
 		console.log("Starting Bot")
 		console.log(`${process.env.NODE_ENV}`)

@@ -5,7 +5,6 @@ import {
 	EmbedBuilder,
 } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
-import { client } from ".."
 
 export default new ApplicationCommand({
 	settings: {
@@ -53,7 +52,7 @@ export default new ApplicationCommand({
 				.setName("list")
 				.setDescription("List all bridged channels"),
 		),
-	async execute(interaction: ChatInputCommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction, client) {
 		if (interaction.options.getSubcommand() === "create") {
 			const channel1 = interaction.options.getString("channel1", true)
 			const channel2 = interaction.options.getString("channel2", true)

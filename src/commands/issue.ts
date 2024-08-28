@@ -14,7 +14,6 @@ import {
 import ApplicationCommand from "../types/ApplicationCommand"
 import embeds from "../utils/embeds"
 import { Octokit } from "@octokit/rest"
-import { client } from ".."
 import config from "../config.json"
 import format from "../utils/format"
 import error from "./error"
@@ -27,7 +26,10 @@ export default new ApplicationCommand({
 	data: new SlashCommandBuilder()
 		.setName("issue")
 		.setDescription("Report an issue"),
-	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+	async execute(
+		interaction: ChatInputCommandInteraction,
+		client,
+	): Promise<void> {
 		const modal = new ModalBuilder()
 			.setCustomId("myModal")
 			.setTitle("Reporting an Issue")

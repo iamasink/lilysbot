@@ -11,10 +11,8 @@ export default new ApplicationCommand({
 			fetchReply: true,
 		})
 		interaction.editReply(
-			`Pong!\nRoundtrip latency: ${
-				sent.createdTimestamp - interaction.createdTimestamp
-			}ms`,
+			`Pong!\nRoundtrip latency: ${sent.createdTimestamp - interaction.createdTimestamp}ms`,
 		)
-		console.log(JSON.stringify(interaction.client))
+		// console.log(JSON.stringify(interaction.client))
 	},
 })

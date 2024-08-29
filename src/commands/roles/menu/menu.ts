@@ -3,8 +3,6 @@ import path from "path"
 import { Subcommand } from "../../../types/ApplicationCommand"
 import commands from "../../../utils/commands"
 
-const timeout = 15 * 15 * 1000
-
 export default {
 	name: "menu",
 	execute: async (interaction: ChatInputCommandInteraction) => {

@@ -7,7 +7,7 @@ import commands from "../../utils/commands"
 import database from "../../utils/database"
 var stringSimilarity = require("string-similarity")
 
-export async function getRoles(interaction) {
+export async function getRoles(interaction: ChatInputCommandInteraction) {
 	//await interaction.reply(interaction.options.getString('input'))
 	let roles = interaction.guild.roles.cache
 
@@ -16,6 +16,10 @@ export async function getRoles(interaction) {
 }
 
 export interface RoleList {
+	[listname: string]: RoleListProps
+}
+
+export interface RoleListProps {
 	name: string
 	roles: Role[]
 }
@@ -33,8 +37,6 @@ export interface SelectMenuItem {
 	description?: string
 	emoji?: string
 }
-
-const timeout = 15 * 15 * 1000
 
 export default new ApplicationCommand({
 	permissions: ["ManageRoles"],

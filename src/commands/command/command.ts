@@ -1,5 +1,4 @@
 import {
-	ApplicationCommandOptionType,
 	ChatInputCommandInteraction,
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder,
@@ -9,7 +8,6 @@ import { permissions } from "../../config.json"
 import ApplicationCommand from "../../types/ApplicationCommand"
 import commands from "../../utils/commands"
 import format from "../../utils/format"
-import { CommandOptions } from "@node-redis/client/dist/lib/command-options"
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
 
 export default new ApplicationCommand({
@@ -163,21 +161,9 @@ export default new ApplicationCommand({
 			case "list": {
 				const commandList = await commands.get()
 
-
-
 				const list = commandList
-
 					.map((command) => {
-						const options = command.data.options
-						const subcommandgroups = options.map(e => {
-							if (e.type === ApplicationCommandOptionType.SubcommandGroup) {
-								return e.name
-							}
-						})
-						const subcommands = options.find(e => e.type === ApplicationCommandOptionType.SubcommandGroup)
-						return `${command.data.name} - "${command.data.description}"
-						`
-
+						return `${command.data.name} - "${command.data.description}"`
 					})
 					.join("\n")
 

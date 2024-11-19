@@ -4,7 +4,6 @@ import {
 	IntentsBitField,
 	Partials,
 	TextBasedChannel,
-	TextChannel,
 } from "discord.js"
 import { Bot } from "./structures/Client"
 import { botlogchannel } from "./config.json"
@@ -51,7 +50,7 @@ async function test() {
 	})
 	console.log(channel)
 	if (channel.type === ChannelType.GuildText) {
-		// channel.send("hello world")
+		channel.send("hello world")
 	}
 }
 
@@ -74,7 +73,7 @@ async function errorhandler(error) {
 				"\n```",
 			)
 			for (let i = 0, len = messages.length; i < len; i++) {
-				await (channel as TextChannel).send(messages[i])
+				await (channel as TextBasedChannel).send(messages[i])
 			}
 		} else {
 			throw new Error("No bot log channel")

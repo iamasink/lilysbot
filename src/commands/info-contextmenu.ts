@@ -23,7 +23,7 @@ import commands from "../utils/commands"
 export default new ApplicationCommand({
 	data: new ContextMenuCommandBuilder()
 		.setName("User Info")
-		.setType(2),
+		.setType(ApplicationCommandType.User),
 	async menuUser(interaction, client) {
 		if (!interaction.guild) {
 			interaction.reply({

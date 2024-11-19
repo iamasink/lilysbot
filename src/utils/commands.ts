@@ -192,8 +192,7 @@ async function refreshGuildCommands(guildId: string) {
 		)
 
 		console.log(
-			`Successfully reloaded ${
-				(data as any).length
+			`Successfully reloaded ${(data as any).length
 			} guild application commands.`,
 		)
 	} catch (error) {
@@ -450,9 +449,8 @@ export default {
 							const content = stripIndents`error: \`\`\`${error.toString()}\`\`\`
 							On command: \`${interaction.commandName}\`
 							Options: \`\`\`${JSON.stringify(interaction.options)}\`\`\`
-							Reported by: \`${format.oldUsername(interaction.user.username)} (${
-								interaction.user.id
-							})\`
+							Reported by: \`${format.oldUsername(interaction.user.username)} (${interaction.user.id
+								})\`
 							User's Message: \`\`\`${usermessage}\`\`\``
 
 							client.channels

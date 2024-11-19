@@ -8,6 +8,7 @@ import {
 	Message,
 	StringSelectMenuBuilder,
 	StringSelectMenuInteraction,
+	TextChannel,
 } from "discord.js"
 import { Subcommand } from "../../../../types/ApplicationCommand"
 import database from "../../../../utils/database"
@@ -173,8 +174,7 @@ export default {
 											new ButtonBuilder()
 											const button = new ButtonBuilder()
 											button.setCustomId(
-												`roles.buttonrolemenu.${
-													list[i + j].id
+												`roles.buttonrolemenu.${list[i + j].id
 												}`,
 											)
 											button.setLabel(
@@ -233,9 +233,9 @@ export default {
 
 						if (roleMenu.description)
 							embed.setDescription(`${roleMenu.description}`)
-						if (message) embed.setFooter({ text: message })
+						if (message) embed.setFooter({ text: message });
 
-						i.message.channel
+						(i.message.channel as TextChannel)
 							.send({
 								embeds: [embed],
 								components: rows,

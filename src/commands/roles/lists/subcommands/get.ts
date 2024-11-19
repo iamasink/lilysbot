@@ -10,60 +10,79 @@ import { RoleList, getRoles } from "../../roles"
 export default {
 	name: "get",
 	execute: async (interaction: ChatInputCommandInteraction) => {
-		const rolelists = await database.get<RoleList[]>(
+		const rolelists = await database.get<RoleList>(
 			`.guilds.${interaction.guild.id}.roles.lists`,
 		)
-		if (
-			!interaction.options.getString("name") ||
-			interaction.options.getString("name") == "all"
-		) {
-			const roles = await getRoles(interaction)
-			//options = roles.map(r => r = { label: r.name, value: r.id })
-			//console.log("options: ", options)
-			const tagList = []
-			for (const [key, value] of roles) {
-				console.log(`${key} goes ${value}`)
-				console.log(`${value.name}`)
-				if (value.name != `@everyone`) tagList.push(`<@&${value.id}>`)
-				else tagList.push(`@everyone`)
-			}
-			let roleliststext = ""
-			let count = 0
-			for (const i in rolelists) {
-				roleliststext += `${rolelists[i].name} - ${rolelists[i].roles.length}\n`
-				count++
+
+		if (!Object.keys(rolelists).length) {
+			// Nothing to get since there's no roles lists created
+			// Should this still display all roles?
+			// TODO Update error message
+			interaction.reply(
+				"There's no created role lists to get. Create one first",
+			)
+			return
+		}
+
+		const rolelistsArray = Object.values(rolelists)
+
+		const listName = interaction.options.getString("name")
+
+		// User specified list name - /role lists get <name>
+		if (listName && listName !== "all") {
+			// Find the specified list name in rolelists
+			const roleList = rolelistsArray.find(
+				(list) => list.name == listName,
+			)
+
+			// Can't find
+			if (!roleList) {
+				// TODO Update error message
+				interaction.reply(`Couldn't find specified role list name`)
+				return
 			}
 
-			console.log(tagList)
-			await interaction.reply({
+			// Send list
+			interaction.reply({
 				embeds: embeds.messageEmbed(
-					`Roles - ${tagList.length}`,
-					tagList.join("\n"),
+					`Roles List - ${roleList.name} - ${roleList.roles.length}`,
+					roleList.roles
+						.map((r) =>
+							// Add role emoji if its available else just mention the role
+							r.emoji ? `${r.emoji} <@&${r.id}>` : `<@&${r.id}>`,
+						)
+						.join("\n"),
 				),
 			})
-			await interaction.followUp({
-				embeds: embeds.messageEmbed(
-					`Role Lists - ${count}`,
-					roleliststext,
-				),
-			})
-			// TODO: add rolelists
-		} else {
-			console.log(JSON.stringify(rolelists))
-			for (const i in rolelists) {
-				if (
-					rolelists[i].name == interaction.options.getString("name")
-				) {
-					interaction.reply({
-						embeds: embeds.messageEmbed(
-							`Roles List - ${rolelists[i].name} - ${rolelists[i].roles.length}`,
-							rolelists[i].roles
-								.map((r) => `${r.emoji} <@&${r.id}>`)
-								.join("\n"),
-						),
-					})
-				}
-			}
+
+			return
 		}
+
+		// Default to all list
+		const roles = await getRoles(interaction)
+
+		const tagList = roles.map((role) =>
+			role.name !== "@everyone" ? `<@&${role.id}>` : `@everyone`,
+		)
+
+		const roleListsText = rolelistsArray
+			.map((list) => `${list.name} - ${list.roles.length}`)
+			.join("\n")
+
+		await interaction.reply({
+			embeds: embeds.messageEmbed(
+				`Roles - ${tagList.length}`,
+				tagList.join("\n"),
+			),
+		})
+
+		await interaction.followUp({
+			embeds: embeds.messageEmbed(
+				`Role Lists - ${rolelistsArray.length}`,
+				roleListsText,
+			),
+		})
+
+		// TODO: add rolelists
 	},
 } satisfies Subcommand

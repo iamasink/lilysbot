@@ -8,6 +8,10 @@ import {
 	Message,
 	RoleManager,
 	StringSelectMenuBuilder,
+	TextBasedChannel,
+	TextBasedChannelResolvable,
+	TextBasedChannels,
+	TextChannel,
 } from "discord.js"
 import { Subcommand } from "../../../../types/ApplicationCommand"
 import database from "../../../../utils/database"
@@ -138,9 +142,9 @@ export default {
 			roleMenu.name,
 			roleMenu.description,
 			message,
-		)
+		);
 
-		menuInteraction.message.channel
+		(menuInteraction.message.channel as TextChannel)
 			.send({
 				embeds: [embed],
 				components: rows,

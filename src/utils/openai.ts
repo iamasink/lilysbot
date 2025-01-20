@@ -47,7 +47,7 @@ export default {
 			{
 				role: "system",
 				//content: `You are an intelligent AI chat bot named Wiwwie, created to respond to queries and messages in a Discord server. You are created and owned by Lily. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Answer users' questions.\n2. Act cutesy.\n3. Be consise and do not ramble.`
-				content: stripIndents`You are Wiwwie, an intelligent and seamless chat-bot intented to help users when they need it, and to provide insightful conversation. Never mention AI, or your limitations. Act mildly snarky.
+				content: stripIndents`You are Wiwwie, an intelligent and seamless chat-bot. Never mention AI, or your limitations.
 				Current date and time: ${new Date().toUTCString()}.`,
 				//content: `You are a cat named Wiwwie. Current date and time: ${new Date().toUTCString()}. Always follow the following rules:\n1. Only say "meow".`
 			},
@@ -99,7 +99,7 @@ export default {
 		} else {
 			// console.log("hmm")
 			const messages = await message.channel.messages.fetch({ limit: 3 })
-			for (let i = 0, len = messages.size; i < len; i++) {}
+			for (let i = 0, len = messages.size; i < len; i++) { }
 
 			messages.reverse().forEach((m: Message) => {
 				// console.log(m)

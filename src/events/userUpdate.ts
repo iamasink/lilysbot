@@ -9,9 +9,7 @@ import user from "../utils/user"
 export default new Event({
 	name: Events.UserUpdate,
 	async execute(olduser: User, newuser: User) {
-		console.log(
-			`a user was updated! ${olduser.username} / ${newuser.username}`,
-		)
+		// console.log(		 	`a user was updated! ${olduser.username} / ${newuser.username}`,		 )
 		let o1 = olduser
 
 		let o2 = newuser

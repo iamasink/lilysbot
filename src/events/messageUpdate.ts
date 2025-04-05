@@ -19,7 +19,7 @@ export default new Event({
 		if (oldmessage.partial) return
 		if (newmessage.partial) return
 
-		console.log(`a message was updated in <#${oldmessage.channel.id}>.`)
+		// console.log(`a message was updated in <#${oldmessage.channel.id}>.`)
 
 		// stolen from discordjs.guide <3
 

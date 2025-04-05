@@ -19,7 +19,7 @@ import format from "../utils/format"
 export default new Event({
 	name: Events.MessageDelete,
 	async execute(message: Message) {
-		console.log(`a message was deleted in ${message.channel.id}.`)
+		// console.log(`a message was deleted in ${message.channel.id}.`)
 
 		// stolen from discordjs.guide <3
 

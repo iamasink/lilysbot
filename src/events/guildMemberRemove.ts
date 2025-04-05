@@ -120,7 +120,12 @@ export default new Event({
 		let invitermsg = ""
 		const invite = invites[invitedLink]
 		if (invite && action === "was banned" || action === "was kicked") {
-			const inviter = await guild.members.fetch(invite.inviterId)
+			let inviter = null
+			try {
+				inviter = await guild.members.fetch(invite.inviterId)
+			} catch (e) {
+				console.log("invite issue")
+			}
 			if (inviter) {
 				invitermsg = `They were invited by ${inviter} (${invite.inviterId}) ${invite.code.slice(0, 4)}`
 			}

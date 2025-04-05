@@ -27,7 +27,7 @@ export default {
 		console.log(interaction.options.getString("info"))
 
 		let member: GuildMember
-		if (interaction.guild.members.resolve(user)) {
+		if (interaction.inGuild() && interaction.guild.members.resolve(user)) {
 			member = interaction.guild.members.resolve(user)
 		}
 
@@ -164,7 +164,7 @@ export default {
 				value: `${a}${av}${gav}${b}\n`,
 			})
 
-			if (interaction.guild.members.resolve(user)) {
+			if (interaction.inGuild() && interaction.guild.members.resolve(user)) {
 				const invitedLink = await database.get<string>(
 					`.guilds.${member.guild.id}.users.${member.id}.invitedLink`,
 				)

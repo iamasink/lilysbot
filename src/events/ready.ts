@@ -80,7 +80,7 @@ export default new Event({
 			const activities: ActivityOptions[] = [
 				{
 					type: ActivityType.Watching,
-					name: `you and ${client.users.cache.size - 1} others <33`,
+					name: `you and ${client.users.cache.size - 1} others <3`,
 				},
 				{ type: ActivityType.Watching, name: `you.` },
 				{
@@ -133,7 +133,7 @@ export default new Event({
 					console.log(e)
 				}
 			}
-		}, 60 * 1000)
+		}, 5 * 60 * 1000)
 
 		// // temp
 		// setInterval(async () => {

@@ -1,8 +1,9 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js"
+import { SlashCommandBuilder, ChatInputCommandInteraction, ActivityType } from "discord.js"
 import ApplicationCommand from "../types/ApplicationCommand"
 import commands from "../utils/commands"
 import embeds from "../utils/embeds"
 import database from "../utils/database"
+import { client } from ".."
 
 export default new ApplicationCommand({
 	settings: {
@@ -17,12 +18,19 @@ export default new ApplicationCommand({
 		try {
 			const res = await commands.deploy()
 			console.log(res)
+			client.user.setPresence({
+				activities: [{ name: `Deploying Commands!`, type: ActivityType.Playing }],
+				status: "dnd",
+			})
 			await interaction.followUp({
 				embeds: embeds.successEmbed(
 					`Successfully deployed (${res}) commands!`,
 				),
 			})
-
+			client.user.setPresence({
+				activities: [{ name: `Restarting...`, type: ActivityType.Playing }],
+				status: "dnd",
+			})
 			let msg = await interaction.followUp({
 				embeds: embeds.messageEmbed("Restarting!", "Please wait..."),
 			})

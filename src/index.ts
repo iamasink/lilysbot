@@ -1,4 +1,5 @@
 import {
+	ActivityType,
 	ChannelType,
 	GatewayIntentBits,
 	IntentsBitField,
@@ -57,7 +58,15 @@ async function test() {
 
 function signalHandler(signal) {
 	console.log(`Shutting down due to ${signal}. Goodbaii!! 👋 `)
-	process.exit()
+	let res = client.user.setPresence({
+		activities: [{ name: `Shutting Down, Bye!`, type: ActivityType.Competing }],
+		status: "dnd",
+	})
+	console.log(res)
+	setTimeout(() => {
+		client.destroy()
+		process.exit()
+	}, 1000)
 }
 
 async function errorhandler(error) {

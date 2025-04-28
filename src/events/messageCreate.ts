@@ -9,12 +9,13 @@ import Event from "../types/Event"
 import database from "../utils/database"
 import openai from "../utils/openai"
 import type { Bot } from "../structures/Client"
+import localai from "../utils/localai"
 
 export default new Event({
 	name: Events.MessageCreate,
 	once: false,
 	async execute(message: Message, client: Bot): Promise<void> {
-		//console.log(message)
+		// console.log(message)
 
 		const guild = message.guild
 		const user = message.author
@@ -29,16 +30,45 @@ export default new Event({
 			if (message.channel.id == "645053287208452112") return
 			if (message.content.includes("@everyone")) return
 			if (message.author != client.user) {
-				openai.openaiMessage(message)
+				try {
+					localai.aiMessage(message)
+				} catch (e) {
+					console.log("ai error ", e)
+				}
 			}
 		} else if (
 			Math.random() < 0.001 &&
-			(message.channel as GuildTextBasedChannel).name == "general" &&
-			message.content.length > 10
+			((message.channel as GuildTextBasedChannel).name == "general" || (message.channel.id == "1324493230288539720")) &&
+			message.content.length > 1
 		) {
 			if (message.channel.id == "645053287208452112") return
 			if (message.content.includes("@everyone")) return
-			openai.openaiMessage(message, true)
+			try {
+				localai.aiMessage(message, true)
+			} catch (e) {
+				console.log("ai error ", e)
+			}
+		} else if (
+			message.channel.isDMBased() &&
+			!message.author.bot
+		) {
+			try {
+				localai.aiMessage(message, false)
+			} catch (e) {
+				console.log("ai error ", e)
+			}
+		} else if (
+			message.channel.isTextBased() &&
+			message.inGuild() &&
+			(message.channel as GuildTextBasedChannel).name.toLowerCase() == "wiwwie" &&
+			!message.author.bot
+		) {
+			if (message.content.includes("@everyone")) return
+			try {
+				localai.aiMessage(message, true, false)
+			} catch (e) {
+				console.log("ai error ", e)
+			}
 		}
 
 		// if disboard bump

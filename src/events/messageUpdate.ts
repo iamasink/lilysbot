@@ -30,17 +30,21 @@ export default new Event({
 
 		if (oldmessage.embeds.length < newmessage.embeds.length) return
 
+		if (oldmessage.content == newmessage.content) return
+
 		if (oldmessage.attachments != newmessage.attachments) {
 			console.log("attachments were changed")
 		}
+
+
 
 		log.log(
 			oldmessage.guild,
 			`A message (https://discord.com/channels/${oldmessage.guildId}/${oldmessage.channelId}/${oldmessage.id}) was edited by ${oldmessage.author} in ${oldmessage.channel}:\nOld: ${oldmessage.content}\nNew: ${newmessage.content}`,
 		)
-		console.log("old")
-		console.log(oldmessage)
-		console.log("new")
-		console.log(newmessage)
+		// console.log("old")
+		// console.log(oldmessage)
+		// console.log("new")
+		// console.log(newmessage)
 	},
 })

@@ -100,45 +100,49 @@ export default new Event({
 		// add xp
 
 		// fetch a few messages
-		const messages = await message.channel.messages.fetch({ limit: 5 })
-		const newmessages: Message[] = []
+		try {
+			const messages = await message.channel.messages.fetch({ limit: 5 })
+			const newmessages: Message[] = []
 
-		// ignore bots in last few messages
-		messages.forEach((message: Message) => {
-			if (message.author.bot) return
-			newmessages.push(message)
-		})
+			// ignore bots in last few messages
+			messages.forEach((message: Message) => {
+				if (message.author.bot) return
+				newmessages.push(message)
+			})
 
-		//console.log(newmessages)
+			//console.log(newmessages)
 
-		if (message.author.bot) {
-			//console.log("author is a bot, so not adding xp")
-			return
+			if (message.author.bot) {
+				//console.log("author is a bot, so not adding xp")
+				return
+			}
+			// if there's few valid messages, its probably all bot messages, don't add xp
+			if (newmessages.length < 2) return
+			if (newmessages[0].author.id === newmessages[1].author.id) {
+				//console.log("user sent 2 messages to the same channel, not adding xp")
+				return
+			}
+			// if (messages.last().author.bot) {
+			// 	console.log("last message was from a bot, so not adding xp")
+			// 	return
+			// }
+
+			// const messages = await message.channel.messages.fetch({ limit: 2 })
+			// console.log(messages.map(e => e.author.id))
+			// if ( === message.author.id) {
+			// 	console.log("suser sent multiple messages in a row, cancelling xp addition")
+			// 	return
+
+			// }
+			const currentXp = await database.get<number>(
+				`.guilds.${guild.id}.users.${user.id}.xp`,
+			)
+			// newXp is random between +5 and +15
+			const newXp = Math.floor(currentXp + 5 + Math.random() * 11)
+			// sets new xp value
+			await database.set(`.guilds.${guild.id}.users.${user.id}.xp`, newXp)
+		} catch (e) {
+			console.error("something went wrong while fetching messages..", e)
 		}
-		// if there's few valid messages, its probably all bot messages, don't add xp
-		if (newmessages.length < 2) return
-		if (newmessages[0].author.id === newmessages[1].author.id) {
-			//console.log("user sent 2 messages to the same channel, not adding xp")
-			return
-		}
-		// if (messages.last().author.bot) {
-		// 	console.log("last message was from a bot, so not adding xp")
-		// 	return
-		// }
-
-		// const messages = await message.channel.messages.fetch({ limit: 2 })
-		// console.log(messages.map(e => e.author.id))
-		// if ( === message.author.id) {
-		// 	console.log("suser sent multiple messages in a row, cancelling xp addition")
-		// 	return
-
-		// }
-		const currentXp = await database.get<number>(
-			`.guilds.${guild.id}.users.${user.id}.xp`,
-		)
-		// newXp is random between +5 and +15
-		const newXp = Math.floor(currentXp + 5 + Math.random() * 11)
-		// sets new xp value
-		await database.set(`.guilds.${guild.id}.users.${user.id}.xp`, newXp)
 	},
 })

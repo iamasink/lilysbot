@@ -28,7 +28,7 @@
 	"dependencies": {
 		"@discordjs/rest": "^2.4.3",
 		"@discordjs/voice": "^0.18.0",
-		"@octokit/rest": "^20.1.1",
+		"@octokit/rest": "^22.0.0",
 		"axios": "^1.7.4",
 		"bl": "^6.0.8",
 		"common-tags": "^1.8.2",
